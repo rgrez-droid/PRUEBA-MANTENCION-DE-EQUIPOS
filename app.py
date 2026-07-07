@@ -2078,8 +2078,8 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
 
 .progress-fill {
     height: 7px;
-    background: #22c55e;
     border-radius: 999px;
+    background-color: var(--barra-color, #94a3b8) !important;
 }
 
 [data-testid="stDataFrame"] {
@@ -3469,7 +3469,7 @@ def tarjeta_equipo(fila):
     <div class="equipo-sub">Lectura actual: {escape_html(valor_uso)}</div>
     <div class="equipo-sub">Próxima mantención: <b>{proxima_txt}</b></div>
     <div class="progress-bg">
-        <div class="progress-fill" style="width:{avance:.0f}%; background:{color_barra} !important;"></div>
+        <div class="progress-fill" style="width:{avance:.0f}%; --barra-color:{color_barra}; background-color:{color_barra} !important;"></div>
     </div>
     <div class="equipo-sub"><b>Análisis próxima mantención:</b> {texto_barra}</div>
 </div>
@@ -3503,10 +3503,15 @@ def construir_menu(equipos, mantenciones, gastos, combustible, checklist, docume
     else:
         icono_menu_html = '<div class="menu-icon">🚜</div>'
 
+    # Estado del menú usado por CSS.
+    # Se define aquí para evitar alerta de Pylance cuando analiza esta función.
+    colapsado = bool(st.session_state.get("menu_colapsado", False))
+    estado_menu_css = "menu-state-collapsed" if colapsado else "menu-state-expanded"
+
     st.markdown(
         f"""
         <div class="menu-bg"></div>
-        <div class="menu-marker"></div>
+        <div class="menu-marker {estado_menu_css}"></div>
         <div class="menu-panel-content">
             <div class="menu-brand">
                 {icono_menu_html}
@@ -3924,13 +3929,11 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
 
 
 def pagina_equipos(equipos_f):
-    st.markdown('<div class="panel-title">Ficha y Estado General de Equipos</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Ficha y Estado General de Equipos</div><div class="panel-subtitle">Vista rápida de equipos</div></div>', unsafe_allow_html=True)
 
     if equipos_f.empty:
         st.info("No existen equipos registrados.")
         return
-
-    st.markdown('<div class="panel-title">Vista rápida de equipos</div>', unsafe_allow_html=True)
 
     cantidad_columnas = min(len(equipos_f), 7)
 
@@ -4001,7 +4004,7 @@ def pagina_equipos(equipos_f):
 
 
 def pagina_mantenciones(mant_f):
-    st.markdown('<div class="panel-title">Historial de Mantenciones</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Historial de Mantenciones</div></div>', unsafe_allow_html=True)
 
     if mant_f.empty:
         st.info("No existen mantenciones para el filtro aplicado.")
@@ -4168,7 +4171,7 @@ def pagina_repuestos(gastos_f):
 
 
 def pagina_costos(mant_f, gastos_f, combustible_f):
-    st.markdown('<div class="panel-title">Análisis de Costos</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Análisis de Costos</div></div>', unsafe_allow_html=True)
 
     gastos_sin_combustible = gastos_no_combustible(gastos_f)
 
@@ -4196,7 +4199,7 @@ def pagina_costos(mant_f, gastos_f, combustible_f):
 
 
 def pagina_proximas(proximas_base, filtro_equipo):
-    st.markdown('<div class="panel-title">Próximas Mantenciones por Km/Horómetro</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Próximas Mantenciones por Km/Horómetro</div></div>', unsafe_allow_html=True)
 
     if "Proxima_Mantencion" not in proximas_base.columns:
         proximas_base = pd.DataFrame(columns=["Equipo", "Categoria", "Tipo_Mantencion", "Proxima_Mantencion", "Km_Horometro_Actual", "Unidad_Control", "Costo_CLP"])
@@ -4222,7 +4225,7 @@ def pagina_proximas(proximas_base, filtro_equipo):
 
 
 def pagina_alertas(proximas_mantenciones, checklist, documentos, filtro_equipo):
-    st.markdown('<div class="panel-title">Alertas Operacionales</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Alertas Operacionales</div></div>', unsafe_allow_html=True)
 
     hoy = pd.Timestamp(datetime.now().date())
 
@@ -4432,7 +4435,7 @@ def pagina_alertas(proximas_mantenciones, checklist, documentos, filtro_equipo):
         mostrar_tabla_clara(mostrar_docs, height=260)
 
 def pagina_documentos(documentos_f):
-    st.markdown('<div class="panel-title">Control Documental</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Control Documental</div></div>', unsafe_allow_html=True)
 
     if documentos_f.empty:
         st.info("No existen documentos para el filtro aplicado.")
@@ -6657,8 +6660,8 @@ def preparar_tabla_repuestos(gastos):
 
 
 def pagina_repuestos(gastos_f):
-    st.markdown('<div class="panel-title">Gastos Adicionales</div>', unsafe_allow_html=True)
-    st.caption("Repuestos, administrativos y gastos adicionales asociados a mantenciones preventivas/correctivas.")
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Gastos Adicionales</div><div class="panel-subtitle">Repuestos, administrativos y gastos asociados a mantenciones preventivas/correctivas.</div></div>', unsafe_allow_html=True)
+    # st.caption("Repuestos, administrativos y gastos adicionales asociados a mantenciones preventivas/correctivas.")
 
     gastos_sin_combustible = gastos_no_combustible(gastos_f)
     if gastos_sin_combustible.empty:
@@ -6710,7 +6713,7 @@ def pagina_repuestos(gastos_f):
 
 
 def pagina_costos(mant_f, gastos_f, combustible_f):
-    st.markdown('<div class="panel-title">Análisis de Costos</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Análisis de Costos</div></div>', unsafe_allow_html=True)
 
     gastos_sin_combustible = gastos_no_combustible(gastos_f)
     costo_mantenciones = float(mant_f["Costo_CLP"].sum()) if "Costo_CLP" in mant_f.columns else 0.0
@@ -6736,7 +6739,7 @@ def pagina_costos(mant_f, gastos_f, combustible_f):
 
 
 def pagina_documentos(documentos_f):
-    st.markdown('<div class="panel-title">Control Documental</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Control Documental</div></div>', unsafe_allow_html=True)
 
     if documentos_f.empty:
         st.info("No existen documentos para el filtro aplicado.")
@@ -7244,7 +7247,7 @@ def celda_html_con_enlace(columna, valor):
 
 
 def pagina_documentos(documentos_f):
-    st.markdown('<div class="panel-title">Control Documental</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Control Documental</div></div>', unsafe_allow_html=True)
 
     if documentos_f.empty:
         st.info("No existen documentos para el filtro aplicado.")
@@ -7843,8 +7846,8 @@ def crear_barra_costos(costos_item):
 
 
 def pagina_repuestos(gastos_f):
-    st.markdown('<div class="panel-title">Gastos Adicionales</div>', unsafe_allow_html=True)
-    st.caption("Repuestos, administrativos y gastos adicionales asociados a mantenciones preventivas/correctivas.")
+    st.markdown('<div class="section-head"><div class="panel-title page-section-title">Gastos Adicionales</div><div class="panel-subtitle">Repuestos, administrativos y gastos asociados a mantenciones preventivas/correctivas.</div></div>', unsafe_allow_html=True)
+    # st.caption("Repuestos, administrativos y gastos adicionales asociados a mantenciones preventivas/correctivas.")
 
     gastos_sin_combustible = gastos_no_combustible(gastos_f)
     if gastos_sin_combustible.empty:
@@ -8372,7 +8375,8 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
             st.info("No existen mantenciones registradas para el filtro aplicado.")
 
     with c2:
-        st.markdown('<div class="panel-title chart-title">Distribución de Costos</div>', unsafe_allow_html=True)
+        st.markdown('<div class="dashboard-costos-spacer"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title chart-title dashboard-costos-title">Distribución de Costos</div>', unsafe_allow_html=True)
         costos_item = construir_consolidado_costos(mant_f, gastos_f)
         st.plotly_chart(crear_donut_costos(costos_item), use_container_width=True)
 
@@ -8618,6 +8622,913 @@ section.main > div {
     """,
     unsafe_allow_html=True,
 )
+
+
+
+# =========================================================
+# CORRECCIÓN FINAL URGENTE V6.1
+# - Menú desplegable real: botón para minimizar / expandir.
+# - Dashboard principal más compacto en Gastos / Próximas Mantenciones.
+# - Próximas mantenciones con estructura clara por equipo.
+# - Logo superior derecho SAIVAM más grande, manteniendo el fondo actual.
+# =========================================================
+
+def _menu_colapsado():
+    """Menú fijo. Se elimina la opción de minimizar/expandir para evitar perder el menú."""
+    st.session_state["menu_colapsado"] = False
+    return False
+
+
+def aplicar_ajustes_finales_ui():
+    """CSS final dinámico. Se llama antes y después de construir la página para ganar prioridad."""
+    colapsado = _menu_colapsado()
+    menu_w = 86 if colapsado else 276
+    inner_w = 58 if colapsado else 244
+    logo_w = 168
+
+    css_extra_colapsado = ""
+    if colapsado:
+        css_extra_colapsado = f"""
+section[data-testid="stSidebar"] .menu-text,
+section[data-testid="stSidebar"] .menu-footer-box,
+section[data-testid="stSidebar"] .menu-filter-area,
+section[data-testid="stSidebar"] .menu-botones-title {{
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}}
+
+section[data-testid="stSidebar"] .menu-brand {{
+    justify-content: center !important;
+    width: {inner_w}px !important;
+    max-width: {inner_w}px !important;
+    margin: 2px auto 8px auto !important;
+    gap: 0 !important;
+}}
+
+section[data-testid="stSidebar"] .menu-icon-img {{
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+}}
+
+section[data-testid="stSidebar"] .menu-line {{
+    width: {inner_w}px !important;
+    max-width: {inner_w}px !important;
+    margin: 8px auto !important;
+}}
+
+section[data-testid="stSidebar"] .menu-active-item,
+section[data-testid="stSidebar"] div[data-testid="stButton"] button {{
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0 !important;
+    font-size: 20px !important;
+}}
+
+section[data-testid="stSidebar"] .menu-toggle-wrap,
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {{
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+}}
+section[data-testid="stSidebar"] div[data-testid="stButton"],
+section[data-testid="stSidebar"] .menu-active-item,
+section[data-testid="stSidebar"] .menu-toggle-wrap {{
+    margin-left: auto !important;
+    margin-right: auto !important;
+}}
+
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,
+section[data-testid="stSidebar"] .menu-active-item {{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}}
+
+section[data-testid="stSidebar"] div[data-testid="stButton"] button *,
+section[data-testid="stSidebar"] div[data-testid="stButton"] button p,
+section[data-testid="stSidebar"] .menu-active-item * {{
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}}
+"""
+
+    st.markdown(
+        f"""
+<style>
+:root {{
+    --menu-panel-width: {menu_w}px !important;
+    --menu-inner-width: {inner_w}px !important;
+    --menu-panel-width-final: {menu_w}px !important;
+    --menu-inner-width-final: {inner_w}px !important;
+    --content-padding-x: 14px !important;
+}}
+
+section[data-testid="stSidebar"] {{
+    width: {menu_w}px !important;
+    min-width: {menu_w}px !important;
+    max-width: {menu_w}px !important;
+    top: 0 !important;
+    left: 0 !important;
+    background: #020617 !important;
+    transition: width .20s ease, min-width .20s ease, max-width .20s ease !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    z-index: 99999 !important;
+}}
+
+section[data-testid="stSidebar"] > div,
+section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {{
+    width: {menu_w}px !important;
+    min-width: {menu_w}px !important;
+    max-width: {menu_w}px !important;
+    padding: 9px 12px 13px 12px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+}}
+
+section[data-testid="stSidebar"] .menu-panel-content,
+section[data-testid="stSidebar"] .menu-brand,
+section[data-testid="stSidebar"] .menu-line,
+section[data-testid="stSidebar"] .menu-footer-box,
+section[data-testid="stSidebar"] div[data-testid="stButton"],
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
+section[data-testid="stSidebar"] [data-baseweb="select"],
+section[data-testid="stSidebar"] [data-baseweb="select"] > div,
+section[data-testid="stSidebar"] .menu-active-item {{
+    width: {inner_w}px !important;
+    min-width: {inner_w}px !important;
+    max-width: {inner_w}px !important;
+    box-sizing: border-box !important;
+}}
+
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,
+section[data-testid="stSidebar"] .menu-active-item {{
+    width: {inner_w}px !important;
+    min-width: {inner_w}px !important;
+    max-width: {inner_w}px !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    border-radius: 14px !important;
+    margin-bottom: 7px !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}}
+
+section[data-testid="stSidebar"] .menu-toggle-wrap,
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {{
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    box-sizing: border-box !important;
+}}
+
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {{
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%) !important;
+    border: 1px solid rgba(219,234,254,.95) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 950 !important;
+    box-shadow: 0 8px 20px rgba(37,99,235,.35) !important;
+}}
+
+section[data-testid="stSidebar"] .menu-toggle-wrap {{
+    margin: 0 0 10px 0 !important;
+}}
+
+[data-testid="stAppViewContainer"] > .main,
+div[data-testid="stMain"],
+section.main,
+main {{
+    margin-left: {menu_w}px !important;
+    width: calc(100vw - {menu_w}px) !important;
+    max-width: calc(100vw - {menu_w}px) !important;
+}}
+
+.main .block-container,
+.block-container,
+div[data-testid="stMainBlockContainer"] {{
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}}
+
+.saivam-marca-principal {{
+    left: {menu_w}px !important;
+    width: calc(100vw - {menu_w}px) !important;
+}}
+
+.main-fixed-header {{
+    min-height: 58px !important;
+    height: 58px !important;
+    margin-bottom: 8px !important;
+    padding: 4px 12px 0 0 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+}}
+
+.main-fixed-logo img,
+.header-logo-box img {{
+    width: {logo_w}px !important;
+    max-width: {logo_w}px !important;
+    height: auto !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    object-fit: contain !important;
+}}
+
+.main-fixed-title,
+.title-main {{
+    font-size: clamp(30px, 2.15vw, 40px) !important;
+    line-height: 1.03 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}}
+
+div[data-testid="stVerticalBlock"] {{
+    gap: 0.22rem !important;
+}}
+
+div[data-testid="stHorizontalBlock"] {{
+    gap: 0.78rem !important;
+}}
+
+.panel-title {{
+    display: block !important;
+    clear: both !important;
+    position: relative !important;
+    z-index: 5 !important;
+    color: #0f172a !important;
+    font-weight: 950 !important;
+    font-size: clamp(18px, 1.15vw, 22px) !important;
+    line-height: 1.22 !important;
+    min-height: 28px !important;
+    margin-top: 16px !important;
+    margin-bottom: 12px !important;
+    padding: 2px 0 6px 0 !important;
+    overflow: visible !important;
+}}
+
+.section-head {{
+    display: block !important;
+    clear: both !important;
+    position: relative !important;
+    z-index: 6 !important;
+    width: 100% !important;
+    margin: 2px 0 14px 0 !important;
+    padding: 0 0 2px 0 !important;
+    overflow: visible !important;
+}}
+
+.section-head .panel-title,
+.page-section-title {{
+    margin-top: 0 !important;
+    margin-bottom: 4px !important;
+    padding: 0 !important;
+    min-height: 26px !important;
+}}
+
+.panel-subtitle {{
+    display: block !important;
+    clear: both !important;
+    color: #334155 !important;
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+    font-weight: 850 !important;
+    margin: 0 0 8px 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    z-index: 6 !important;
+}}
+
+[data-testid="stMarkdownContainer"]:has(.panel-title),
+[data-testid="stMarkdownContainer"]:has(.section-head) {{
+    overflow: visible !important;
+}}
+
+.tabla-clara-wrap {{
+    margin-top: 8px !important;
+}}
+
+.dashboard-proximas .panel-title,
+.proximas-box .panel-title,
+.chart-title,
+.panel-title.chart-title {{
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
+    min-height: 24px !important;
+    padding-bottom: 4px !important;
+}}
+
+.kpi-card {{
+    min-height: 118px !important;
+    padding: 15px 17px !important;
+}}
+
+.kpi-icon {{
+    width: 44px !important;
+    height: 44px !important;
+    margin-bottom: 7px !important;
+}}
+
+.dashboard-proximas,
+.proximas-box {{
+    background: rgba(255,255,255,.72) !important;
+    border: 1px solid rgba(203,213,225,.72) !important;
+    border-radius: 16px !important;
+    padding: 7px 10px !important;
+    margin-top: 0 !important;
+    box-shadow: 0 10px 24px rgba(15,23,42,.045) !important;
+}}
+
+.dashboard-proximas .next-item,
+.proximas-box .next-item {{
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 96px !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    min-height: 54px !important;
+    padding: 7px 0 !important;
+    border-bottom: 1px solid rgba(148,163,184,.28) !important;
+}}
+
+.dashboard-proximas .next-item:last-child,
+.proximas-box .next-item:last-child {{
+    border-bottom: 0 !important;
+}}
+
+.dashboard-proximas .next-title,
+.proximas-box .next-title {{
+    font-size: 13.2px !important;
+    line-height: 1.14 !important;
+    font-weight: 950 !important;
+    color: #0f172a !important;
+    margin-bottom: 3px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+}}
+
+.dashboard-proximas .next-sub,
+.dashboard-proximas .next-sub-line,
+.proximas-box .next-sub,
+.proximas-box .next-sub-line {{
+    font-size: 11.3px !important;
+    line-height: 1.18 !important;
+    font-weight: 750 !important;
+    color: #334155 !important;
+    margin: 0 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+}}
+
+.dashboard-proximas .next-meta,
+.proximas-box .next-meta {{
+    display: flex !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+    margin-top: 2px !important;
+}}
+
+.dashboard-proximas .badge-days,
+.proximas-box .badge-days {{
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    font-size: 10.2px !important;
+    line-height: 1.1 !important;
+    font-weight: 950 !important;
+    padding: 7px 6px !important;
+    white-space: normal !important;
+    text-align: center !important;
+    border-radius: 999px !important;
+}}
+
+.dashboard-compact-table [data-testid="stDataFrame"] {{
+    margin-top: 0 !important;
+}}
+
+div[data-testid="stPlotlyChart"] {{
+    margin-top: 0 !important;
+}}
+
+{css_extra_colapsado}
+
+@media (max-width: 1400px) {{
+    .main-fixed-logo img,
+    .header-logo-box img {{
+        width: 148px !important;
+        max-width: 148px !important;
+    }}
+
+    .main-fixed-title,
+    .title-main {{
+        font-size: clamp(27px, 2vw, 36px) !important;
+    }}
+}}
+</style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def construir_menu(equipos, mantenciones, gastos, combustible, checklist, documentos):
+    """Menú lateral con botón real de minimizar / expandir."""
+    colapsado = _menu_colapsado()
+
+    ruta_logo_menu = (
+        buscar_imagen_por_nombre("logoredondo")
+        or buscar_imagen_por_nombre("logo redondo")
+        or buscar_imagen_por_nombre("logo_redondo")
+        or buscar_imagen_por_nombre("logo-redondo")
+    )
+
+    if ruta_logo_menu:
+        logo_menu_b64 = archivo_a_base64(ruta_logo_menu)
+        logo_menu_mime = extension_mime(ruta_logo_menu)
+        icono_menu_html = (
+            '<div class="menu-icon-img">'
+            f'<img src="data:{logo_menu_mime};base64,{logo_menu_b64}" alt="Logo menú">'
+            '</div>'
+        )
+    else:
+        icono_menu_html = '<div class="menu-icon">🚜</div>'
+
+    estado_menu_css = "menu-state-collapsed" if colapsado else "menu-state-expanded"
+
+    st.markdown(
+        f"""
+        <div class="menu-bg"></div>
+        <div class="menu-marker {estado_menu_css}"></div>
+        <div class="menu-panel-content">
+            <div class="menu-brand">
+                {icono_menu_html}
+                <div class="menu-text">
+                    <div class="menu-title">SEGUIMIENTO<br>EQUIPOS MÓVILES</div>
+                    <div class="menu-subtitle">SAIVAM · MULCHÉN</div>
+                </div>
+            </div>
+            <hr class="menu-line">
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Menú fijo: se elimina el botón de minimizar/expandir.
+    st.markdown('<div class="menu-fixed-spacer"></div>', unsafe_allow_html=True)
+
+    paginas_menu = {
+        "panel": ("📊", "Dashboard Ejecutivo"),
+        "equipos": ("🚚", "Equipos"),
+        "mantenciones": ("🛠️", "Mantenciones"),
+        "repuestos": ("🧾", "Gastos Adicionales"),
+        "costos": ("💰", "Costos"),
+        "proximas": ("📅", "Próximas Mantenciones"),
+        "alertas": ("🔔", "Alertas"),
+        "documentos": ("📁", "Documentación Legal"),
+    }
+
+    pagina_actual = st.query_params.get("pagina", "panel")
+    if pagina_actual not in paginas_menu:
+        pagina_actual = "panel"
+        st.query_params["pagina"] = "panel"
+
+    st.markdown('<div class="menu-botones-title"></div>', unsafe_allow_html=True)
+
+    for clave, (icono, nombre) in paginas_menu.items():
+        es_actual = clave == pagina_actual
+        texto_completo = f"{icono} {nombre}"
+        texto_visible = icono if colapsado else texto_completo
+
+        if es_actual:
+            st.markdown(
+                f'<div class="menu-active-item" title="{escape_html(nombre)}">{escape_html(texto_visible)}</div>',
+                unsafe_allow_html=True,
+            )
+        else:
+            if st.button(
+                texto_visible,
+                key=f"menu_{clave}",
+                help=nombre,
+                use_container_width=True,
+            ):
+                st.query_params["pagina"] = clave
+                st.rerun()
+
+    st.markdown('<hr class="menu-line">', unsafe_allow_html=True)
+
+    if st.button("🔄" if colapsado else "🔄 Actualizar", key="actualizar_base_datos", help="Actualizar datos", use_container_width=True):
+        st.cache_data.clear()
+        st.rerun()
+
+    pagina = f"{paginas_menu[pagina_actual][0]} {paginas_menu[pagina_actual][1]}"
+
+    equipos_disponibles = (
+        ["Todos los equipos"]
+        + equipos["Equipo"]
+        .dropna()
+        .astype(str)
+        .str.strip()
+        .loc[lambda x: x != ""]
+        .drop_duplicates()
+        .tolist()
+    )
+
+    anios_base = pd.concat(
+        [
+            mantenciones["Año"],
+            gastos["Año"],
+            combustible["Año"],
+            checklist["Año"],
+            documentos["Año"],
+        ],
+        ignore_index=True,
+    )
+
+    anios_disponibles = sorted(
+        [
+            int(x)
+            for x in anios_base.dropna().unique().tolist()
+            if str(x) != "nan"
+        ]
+    )
+
+    opciones_anio = ["Todos"] + anios_disponibles
+    opciones_mes = ["Todos"] + list(MESES.values())
+
+    if st.session_state.get("filtro_equipo_menu", "Todos los equipos") not in equipos_disponibles:
+        st.session_state["filtro_equipo_menu"] = "Todos los equipos"
+    if st.session_state.get("filtro_anio_menu", "Todos") not in opciones_anio:
+        st.session_state["filtro_anio_menu"] = "Todos"
+    if st.session_state.get("filtro_mes_menu", "Todos") not in opciones_mes:
+        st.session_state["filtro_mes_menu"] = "Todos"
+
+    if not colapsado:
+        st.markdown('<hr class="menu-line"><div class="menu-filter-area">', unsafe_allow_html=True)
+        filtro_equipo = st.selectbox("Equipo", equipos_disponibles, key="filtro_equipo_menu")
+        filtro_anio = st.selectbox("Año", opciones_anio, key="filtro_anio_menu")
+        filtro_mes = st.selectbox("Mes", opciones_mes, key="filtro_mes_menu")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown(
+            f"""
+            <div class="menu-footer-box">
+                <div class="menu-info">
+                    <b>Contrato:</b> {CONTRATO}<br>
+                    <b>Cliente:</b> {CLIENTE}<br>
+                    <b>Versión:</b> {VERSION}<br>
+                    <b>Actualización:</b><br>
+                    {datetime.now().strftime("%d/%m/%Y %H:%M")}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        filtro_equipo = st.session_state.get("filtro_equipo_menu", "Todos los equipos")
+        filtro_anio = st.session_state.get("filtro_anio_menu", "Todos")
+        filtro_mes = st.session_state.get("filtro_mes_menu", "Todos")
+
+        if filtro_equipo not in equipos_disponibles:
+            filtro_equipo = "Todos los equipos"
+        if filtro_anio not in opciones_anio:
+            filtro_anio = "Todos"
+        if filtro_mes not in opciones_mes:
+            filtro_mes = "Todos"
+
+    return pagina, filtro_equipo, filtro_anio, filtro_mes
+
+
+def crear_donut_costos(costos_item):
+    """Dona más baja para reducir espacio vertical del Dashboard."""
+    fig = go.Figure()
+
+    if costos_item is None or costos_item.empty:
+        fig.update_layout(
+            height=248,
+            paper_bgcolor="rgba(255,255,255,0.82)",
+            plot_bgcolor="rgba(255,255,255,0.82)",
+            annotations=[dict(text="Sin costos", x=0.5, y=0.5, showarrow=False, font_size=15, font_color="#0f172a")],
+            margin=dict(l=6, r=6, t=10, b=12),
+        )
+        return fig
+
+    total = float(costos_item["Costo"].sum())
+
+    fig.add_trace(
+        go.Pie(
+            labels=costos_item["Item"],
+            values=costos_item["Costo"],
+            hole=0.62,
+            sort=False,
+            direction="clockwise",
+            textinfo="percent",
+            texttemplate="%{percent:.1%}",
+            textposition="auto",
+            insidetextorientation="radial",
+            textfont=dict(color="white", size=12, family="Arial Black"),
+            outsidetextfont=dict(color="#0f172a", size=11, family="Arial Black"),
+            hovertemplate="<b>%{label}</b><br>Monto: %{customdata}<br>Participación: %{percent}<extra></extra>",
+            customdata=[pesos(v) for v in costos_item["Costo"]],
+            domain=dict(x=[0.05, 0.95], y=[0.31, 0.91]),
+            showlegend=True,
+        )
+    )
+
+    fig.update_layout(
+        height=248,
+        paper_bgcolor="rgba(255,255,255,0.82)",
+        plot_bgcolor="rgba(255,255,255,0.82)",
+        font=dict(color="#0f172a", size=11),
+        margin=dict(l=6, r=6, t=10, b=50),
+        annotations=[
+            dict(
+                text="Total<br><b>" + pesos(total) + "</b>",
+                x=0.50,
+                y=0.61,
+                xref="paper",
+                yref="paper",
+                font_size=13,
+                font_color="#0f172a",
+                showarrow=False,
+                align="center",
+            )
+        ],
+        legend=dict(
+            title=dict(text="Tipo de costo", font=dict(size=10, color="#0f172a")),
+            orientation="h",
+            x=0.50,
+            y=0.01,
+            xanchor="center",
+            yanchor="bottom",
+            font=dict(size=10, color="#0f172a", family="Arial"),
+            bgcolor="rgba(255,255,255,0.82)",
+            bordercolor="rgba(15,23,42,0.16)",
+            borderwidth=1,
+            itemclick=False,
+            itemdoubleclick=False,
+        ),
+        uniformtext_minsize=8,
+        uniformtext_mode="show",
+    )
+    return fig
+
+
+def _render_item_proxima_dashboard(fila):
+    """Devuelve una fila HTML limpia para Próximas Mantenciones del Dashboard.
+
+    Ajuste V6.8 solicitado:
+    - No muestra columna ni texto "Próxima".
+    - Debajo del nombre del equipo muestra la lectura actual de Km/Horómetro.
+    - El badge naranjo/rojo queda dentro del mismo cuadro.
+    """
+    equipo = escape_html(fila.get("Equipo", "Sin equipo"))
+
+    unidad = unidad_control_texto(fila.get("Unidad_Control", ""))
+    actual_num = limpiar_numero(fila.get("Km_Horometro_Actual", 0))
+    saldo_num = limpiar_numero(fila.get("Saldo_Restante", 0))
+
+    actual_txt = f"{numero(actual_num)} {unidad}" if actual_num > 0 else "Sin dato"
+    saldo_txt = formatear_saldo_control(saldo_num, unidad)
+
+    if saldo_num < 0:
+        clase_badge = "badge-days badge-overdue"
+        badge_txt = f"Vencida {saldo_txt}"
+    elif saldo_num == 0:
+        clase_badge = "badge-days badge-danger"
+        badge_txt = f"Faltan {saldo_txt}"
+    else:
+        clase_badge = "badge-days badge-warning"
+        badge_txt = f"Faltan {saldo_txt}"
+
+    return f"""
+<div class="next-item next-row-v68">
+    <div class="next-info-v68">
+        <div class="next-equipo-v68">{equipo}</div>
+        <div class="next-actual-v68"><span>Km/Horómetro actual:</span> {escape_html(actual_txt)}</div>
+    </div>
+    <div class="{clase_badge} next-badge-v68">{escape_html(badge_txt)}</div>
+</div>
+"""
+
+def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_originales, filtro_equipo):
+    """Dashboard Ejecutivo compacto y ordenado."""
+    gastos_sin_combustible = gastos_no_combustible(gastos_f)
+
+    costo_mantenciones = float(mant_f["Costo_CLP"].sum()) if "Costo_CLP" in mant_f.columns else 0.0
+    costo_gastos = float(gastos_sin_combustible["Costo_CLP"].sum()) if "Costo_CLP" in gastos_sin_combustible.columns else 0.0
+    costo_total = costo_mantenciones + costo_gastos
+
+    mant_realizadas = len(mant_f)
+    repuestos_utilizados = len(gastos_sin_combustible)
+    equipos_registrados = len(equipos_f)
+
+    if "Proxima_Mantencion" not in proximas_originales.columns:
+        proximas_originales = pd.DataFrame(columns=[
+            "Equipo", "Categoria", "Tipo_Mantencion", "Proxima_Mantencion",
+            "Km_Horometro_Actual", "Unidad_Control", "Costo_CLP"
+        ])
+
+    mant_proximas = proximas_originales.copy()
+    if "Proxima_Mantencion" in mant_proximas.columns:
+        mant_proximas["Proxima_Mantencion"] = mant_proximas["Proxima_Mantencion"].apply(limpiar_numero)
+        mant_proximas = mant_proximas[mant_proximas["Proxima_Mantencion"] > 0].copy()
+
+    if filtro_equipo != "Todos los equipos" and "Equipo" in mant_proximas.columns:
+        mant_proximas = mant_proximas[mant_proximas["Equipo"] == filtro_equipo]
+
+    mant_proximas = resumen_proximas_por_equipo(mant_proximas) if not mant_proximas.empty else mant_proximas
+
+    if not mant_proximas.empty:
+        proxima_fila = mant_proximas.iloc[0]
+        proxima_texto = str(proxima_fila.get("Equipo", "Sin equipo")).strip() or "Sin equipo"
+        proxima_sub = f"Próx.: {proxima_fila.get('Proxima_Texto', 'Sin dato')} | {proxima_fila.get('Texto_Estado', 'Sin análisis')}"
+    else:
+        proxima_texto = "Sin registro"
+        proxima_sub = "No programada"
+
+    k1, k2, k3, k4, k5 = st.columns(5)
+    with k1:
+        kpi_card("🛠️", "Mantenciones", f"{mant_realizadas}", "Registros del período", "#dbeafe")
+    with k2:
+        kpi_card("💲", "Monto Total", pesos(costo_total), "Costos del período", "#dcfce7")
+    with k3:
+        kpi_card("🧰", "Gastos Adic.", f"{repuestos_utilizados}", "Repuestos, mantenciones y administrativos", "#f3e8ff")
+    with k4:
+        kpi_card("📅", "Próxima Mantención", proxima_texto, proxima_sub, "#ffedd5")
+    with k5:
+        kpi_card("🚚", "Equipos Registrados", f"{equipos_registrados}", "Total equipos", "#ccfbf1")
+
+    c1, c2 = st.columns([1.60, 1.0])
+
+    with c1:
+        st.markdown('<div class="panel-title">Histórico de Mantenciones</div>', unsafe_allow_html=True)
+        historico = mant_f.copy()
+        if "Tipo_Mantencion" in historico.columns:
+            historico["Mantencion"] = historico["Tipo_Mantencion"].apply(normalizar_tipo_mantencion)
+
+        if not historico.empty:
+            historico = historico.sort_values("Fecha", ascending=False).head(6)
+            columnas_base = ["Fecha", "Equipo", "Mantencion", "Descripcion", "Costo_CLP", "Estado_Mantencion"]
+            columnas_base = [c for c in columnas_base if c in historico.columns]
+            mostrar = historico[columnas_base].copy()
+            if "Fecha" in mostrar.columns:
+                mostrar["Fecha"] = mostrar["Fecha"].apply(fecha_texto)
+            if "Costo_CLP" in mostrar.columns:
+                mostrar["Costo_CLP"] = mostrar["Costo_CLP"].apply(pesos)
+            mostrar = mostrar.rename(columns={
+                "Mantencion": "Tipo",
+                "Descripcion": "Descripción",
+                "Costo_CLP": "Monto",
+                "Estado_Mantencion": "Estado",
+            })
+            st.markdown('<div class="dashboard-compact-table">', unsafe_allow_html=True)
+            mostrar_tabla_clara(mostrar, height=210)
+            st.markdown('</div>', unsafe_allow_html=True)
+        else:
+            st.info("No existen mantenciones registradas para el filtro aplicado.")
+
+    with c2:
+        st.markdown('<div class="dashboard-costos-spacer"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title chart-title dashboard-costos-title">Distribución de Costos</div>', unsafe_allow_html=True)
+        costos_item = construir_consolidado_costos(mant_f, gastos_f)
+        st.plotly_chart(crear_donut_costos(costos_item), use_container_width=True)
+
+    c3, c4, c5 = st.columns([1.05, 1.36, 1.25])
+
+    with c3:
+        st.markdown('<div class="panel-title">Gastos Adicionales</div>', unsafe_allow_html=True)
+        repuestos = gastos_sin_combustible.copy()
+        if not repuestos.empty:
+            repuestos = repuestos.sort_values("Fecha", ascending=False).head(5)
+            columnas_repuestos = ["Fecha", "Equipo", "Tipo_Gasto", "Descripcion", "Costo_CLP"]
+            columnas_repuestos = [c for c in columnas_repuestos if c in repuestos.columns]
+            mostrar = repuestos[columnas_repuestos].copy()
+            if "Fecha" in mostrar.columns:
+                mostrar["Fecha"] = mostrar["Fecha"].apply(fecha_texto)
+            if "Costo_CLP" in mostrar.columns:
+                mostrar["Costo_CLP"] = mostrar["Costo_CLP"].apply(pesos)
+            mostrar = mostrar.rename(columns={
+                "Tipo_Gasto": "Tipo",
+                "Descripcion": "Detalle",
+                "Costo_CLP": "Monto",
+            })
+            st.markdown('<div class="dashboard-compact-table">', unsafe_allow_html=True)
+            mostrar_tabla_clara(mostrar, height=170)
+            st.markdown('</div>', unsafe_allow_html=True)
+        else:
+            st.info("No existen gastos adicionales o administrativos registrados.")
+
+    with c4:
+        if not mant_proximas.empty:
+            filas_proximas_html = "".join(
+                _render_item_proxima_dashboard(fila)
+                for _, fila in mant_proximas.head(7).iterrows()
+            )
+        else:
+            filas_proximas_html = '<div class="proximas-empty-v68">No existen próximas mantenciones registradas.</div>'
+
+        html_proximas = (
+            '<div class="dashboard-proximas dashboard-proximas-v68">'
+            '<div class="panel-title proximas-title-v68">Próximas Mantenciones</div>'
+            '<div class="next-list-v68">'
+            + filas_proximas_html
+            + '</div></div>'
+        )
+        st.markdown(html_proximas, unsafe_allow_html=True)
+
+    with c5:
+        st.markdown('<div class="panel-title">Evolución de Costos</div>', unsafe_allow_html=True)
+
+        mant_mes = (
+            mant_f.groupby(["Año", "Mes_Numero", "Periodo"], as_index=False)["Costo_CLP"].sum()
+            .rename(columns={"Costo_CLP": "Mantenciones"})
+        ) if not mant_f.empty and "Costo_CLP" in mant_f.columns else pd.DataFrame(columns=["Año", "Mes_Numero", "Periodo", "Mantenciones"])
+
+        gasto_mes = (
+            gastos_sin_combustible.groupby(["Año", "Mes_Numero", "Periodo"], as_index=False)["Costo_CLP"].sum()
+            .rename(columns={"Costo_CLP": "Gastos"})
+        ) if not gastos_sin_combustible.empty and "Costo_CLP" in gastos_sin_combustible.columns else pd.DataFrame(columns=["Año", "Mes_Numero", "Periodo", "Gastos"])
+
+        comb_mes = (
+            combustible_f.groupby(["Año", "Mes_Numero", "Periodo"], as_index=False)["Costo_Total"].sum()
+            .rename(columns={"Costo_Total": "Combustible"})
+        ) if not combustible_f.empty and "Costo_Total" in combustible_f.columns else pd.DataFrame(columns=["Año", "Mes_Numero", "Periodo", "Combustible"])
+
+        costos_mes = (
+            mant_mes
+            .merge(gasto_mes, on=["Año", "Mes_Numero", "Periodo"], how="outer")
+            .merge(comb_mes, on=["Año", "Mes_Numero", "Periodo"], how="outer")
+            .fillna(0)
+        )
+
+        if not costos_mes.empty:
+            costos_mes = costos_mes.sort_values(["Año", "Mes_Numero"])
+            costos_mes["Monto Acumulado"] = (
+                costos_mes["Mantenciones"] + costos_mes["Gastos"] + costos_mes["Combustible"]
+            ).cumsum()
+
+            fig_linea = px.line(
+                costos_mes,
+                x="Periodo",
+                y="Monto Acumulado",
+                markers=True,
+                template="plotly_white",
+            )
+            fig_linea.update_traces(
+                line=dict(width=3, color="#2563eb"),
+                marker=dict(size=7),
+                name="",
+                showlegend=False,
+                customdata=costos_mes["Monto Acumulado"].apply(pesos),
+                hovertemplate="<b>%{x}</b><br>Monto acumulado: %{customdata}<extra></extra>",
+            )
+            fig_linea.update_layout(title_text="", showlegend=False, legend_title_text="")
+            st.plotly_chart(aplicar_formato_grafico(fig_linea, 190), use_container_width=True)
+        else:
+            st.info("Sin costos para graficar.")
+
+    st.markdown('<div class="panel-title">Estado de los Equipos</div>', unsafe_allow_html=True)
+
+    if equipos_f.empty:
+        st.info("No existen equipos registrados.")
+    else:
+        cantidad_columnas = min(len(equipos_f), 7)
+        if cantidad_columnas <= 0:
+            cantidad_columnas = 1
+        columnas = st.columns(cantidad_columnas)
+        for columna, (_, fila) in zip(columnas, equipos_f.head(7).iterrows()):
+            with columna:
+                tarjeta_equipo(fila)
+
+
+aplicar_ajustes_finales_ui()
+
 
 try:
     mostrar_panel()
@@ -9661,3 +10572,1025 @@ div[data-testid="stPlotlyChart"] {
     unsafe_allow_html=True,
 )
 
+
+
+# Refuerzo final posterior a los estilos acumulados.
+aplicar_ajustes_finales_ui()
+
+# =========================================================
+# AJUSTE FINAL V6.2
+# - Botón menú solo con ícono.
+# - Separación segura de títulos/subtítulos para que no queden debajo de tablas, KPIs o tarjetas.
+# =========================================================
+st.markdown(
+    """
+<style>
+section[data-testid="stSidebar"] .menu-toggle-wrap,
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+}
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 21px !important;
+    line-height: 1 !important;
+}
+.panel-title {
+    display: block !important;
+    clear: both !important;
+    position: relative !important;
+    z-index: 20 !important;
+    color: #0f172a !important;
+    font-weight: 950 !important;
+    font-size: clamp(18px, 1.15vw, 22px) !important;
+    line-height: 1.22 !important;
+    min-height: 30px !important;
+    margin-top: 16px !important;
+    margin-bottom: 12px !important;
+    padding: 2px 0 7px 0 !important;
+    overflow: visible !important;
+}
+.section-head {
+    display: block !important;
+    clear: both !important;
+    position: relative !important;
+    z-index: 21 !important;
+    width: 100% !important;
+    margin: 2px 0 16px 0 !important;
+    padding: 0 0 2px 0 !important;
+    overflow: visible !important;
+}
+.section-head .panel-title,
+.page-section-title {
+    margin-top: 0 !important;
+    margin-bottom: 5px !important;
+    padding: 0 !important;
+    min-height: 28px !important;
+}
+.panel-subtitle {
+    display: block !important;
+    clear: both !important;
+    color: #334155 !important;
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+    font-weight: 850 !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    z-index: 21 !important;
+}
+.tabla-clara-wrap {
+    margin-top: 10px !important;
+}
+.equipo-card,
+.kpi-card,
+.tabla-clara-wrap,
+[data-testid="stPlotlyChart"] {
+    position: relative !important;
+    z-index: 2 !important;
+}
+.dashboard-proximas .panel-title,
+.proximas-box .panel-title,
+.chart-title,
+.panel-title.chart-title {
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
+    min-height: 24px !important;
+    padding-bottom: 4px !important;
+}
+[data-testid="stElementContainer"]:has(.section-head),
+[data-testid="stElementContainer"]:has(.panel-title) {
+    overflow: visible !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
+# AJUSTE FINAL V6.3
+# - Próximas Mantenciones dashboard con formato uniforme por equipo.
+# - Íconos centrados cuando el menú está minimizado.
+# =========================================================
+st.markdown(
+    """
+<style>
+/* ===== Próximas Mantenciones: formato uniforme y con separación real ===== */
+.dashboard-proximas,
+.proximas-box {
+    padding: 12px 14px !important;
+    border-radius: 17px !important;
+    background: rgba(255,255,255,.74) !important;
+}
+
+.dashboard-proximas .panel-title,
+.proximas-box .panel-title {
+    margin: 0 0 9px 0 !important;
+    padding: 0 0 6px 0 !important;
+    min-height: 26px !important;
+    line-height: 1.18 !important;
+}
+
+.dashboard-proximas .next-item,
+.proximas-box .next-item,
+.dashboard-proximas .next-row-pro,
+.proximas-box .next-row-pro {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 102px !important;
+    align-items: center !important;
+    column-gap: 12px !important;
+    min-height: 62px !important;
+    padding: 8px 0 !important;
+    margin: 0 !important;
+    border-bottom: 1px solid rgba(100,116,139,.24) !important;
+    box-sizing: border-box !important;
+}
+
+.dashboard-proximas .next-item:last-child,
+.proximas-box .next-item:last-child {
+    border-bottom: 0 !important;
+}
+
+.dashboard-proximas .next-info,
+.proximas-box .next-info {
+    min-width: 0 !important;
+    width: 100% !important;
+}
+
+.dashboard-proximas .next-header-row,
+.proximas-box .next-header-row {
+    display: grid !important;
+    grid-template-columns: minmax(120px, 0.95fr) minmax(120px, 1.05fr) !important;
+    gap: 8px !important;
+    align-items: end !important;
+    margin-bottom: 5px !important;
+}
+
+.dashboard-proximas .next-title,
+.proximas-box .next-title {
+    font-size: 13.4px !important;
+    line-height: 1.12 !important;
+    font-weight: 950 !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+}
+
+.dashboard-proximas .next-frequency,
+.proximas-box .next-frequency {
+    font-size: 10.7px !important;
+    line-height: 1.1 !important;
+    font-weight: 850 !important;
+    color: #475569 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+.dashboard-proximas .next-values-grid,
+.proximas-box .next-values-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+}
+
+.dashboard-proximas .next-value-box,
+.proximas-box .next-value-box {
+    display: grid !important;
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: rgba(248,250,252,.62) !important;
+    border: 1px solid rgba(148,163,184,.26) !important;
+    border-radius: 9px !important;
+    padding: 3px 6px !important;
+    min-height: 25px !important;
+    box-sizing: border-box !important;
+}
+
+.dashboard-proximas .next-label,
+.proximas-box .next-label {
+    color: #475569 !important;
+    font-size: 10.1px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .15px !important;
+}
+
+.dashboard-proximas .next-value,
+.proximas-box .next-value {
+    color: #0f172a !important;
+    font-size: 11.5px !important;
+    line-height: 1.08 !important;
+    font-weight: 850 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+
+.dashboard-proximas .badge-days,
+.proximas-box .badge-days {
+    width: 102px !important;
+    min-width: 102px !important;
+    max-width: 102px !important;
+    min-height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 10.2px !important;
+    line-height: 1.12 !important;
+    font-weight: 950 !important;
+    padding: 6px 7px !important;
+    border-radius: 999px !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+}
+
+/* ===== Menú minimizado: botones e íconos centrados ===== */
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] {
+    text-align: center !important;
+}
+
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-panel-content,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-brand,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-line,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"],
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"],
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item {
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+}
+
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item {
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 21px !important;
+    line-height: 1 !important;
+}
+
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button > div,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button p,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button span,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item > div,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item p,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item span {
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap,
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+}
+
+@media (max-width: 1500px) {
+    .dashboard-proximas .next-item,
+    .proximas-box .next-item,
+    .dashboard-proximas .next-row-pro,
+    .proximas-box .next-row-pro {
+        grid-template-columns: minmax(0, 1fr) 94px !important;
+        column-gap: 9px !important;
+        min-height: 60px !important;
+    }
+    .dashboard-proximas .next-header-row,
+    .proximas-box .next-header-row {
+        grid-template-columns: 1fr !important;
+        gap: 2px !important;
+        margin-bottom: 4px !important;
+    }
+    .dashboard-proximas .next-values-grid,
+    .proximas-box .next-values-grid {
+        grid-template-columns: 1fr !important;
+        gap: 4px !important;
+    }
+    .dashboard-proximas .badge-days,
+    .proximas-box .badge-days {
+        width: 94px !important;
+        min-width: 94px !important;
+        max-width: 94px !important;
+        font-size: 9.7px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# AJUSTE FINAL V6.5
+# - Baja el cuadro Distribución de Costos en Dashboard Ejecutivo.
+# - Próximas Mantenciones en una fila uniforme por equipo.
+# =========================================================
+st.markdown(
+    """
+<style>
+/* Baja el bloque Distribución de Costos para que no se monte sobre los KPI */
+.dashboard-costos-spacer {
+    height: 18px !important;
+    display: block !important;
+}
+.dashboard-costos-title,
+.panel-title.chart-title.dashboard-costos-title {
+    margin-top: 4px !important;
+    margin-bottom: 12px !important;
+    line-height: 1.18 !important;
+    position: relative !important;
+    z-index: 30 !important;
+}
+
+/* Contenedor de Próximas Mantenciones del Dashboard */
+.dashboard-proximas,
+.proximas-box {
+    padding: 14px 16px !important;
+    border-radius: 18px !important;
+    background: rgba(255,255,255,.70) !important;
+    overflow: visible !important;
+}
+.dashboard-proximas .panel-title,
+.proximas-box .panel-title {
+    margin: 0 0 10px 0 !important;
+    padding: 0 0 6px 0 !important;
+    min-height: 28px !important;
+    line-height: 1.18 !important;
+    clear: both !important;
+}
+
+/* Fila por equipo: equipo | actual | próxima | saldo */
+.dashboard-proximas .next-row-v65,
+.proximas-box .next-row-v65,
+.dashboard-proximas .next-item.next-row-v65,
+.proximas-box .next-item.next-row-v65 {
+    display: grid !important;
+    grid-template-columns: minmax(118px, .95fr) minmax(120px, 1fr) minmax(128px, 1fr) 104px !important;
+    align-items: center !important;
+    column-gap: 8px !important;
+    min-height: 48px !important;
+    padding: 7px 0 !important;
+    margin: 0 !important;
+    border-bottom: 1px solid rgba(100,116,139,.22) !important;
+    box-sizing: border-box !important;
+}
+.dashboard-proximas .next-row-v65:last-child,
+.proximas-box .next-row-v65:last-child {
+    border-bottom: 0 !important;
+}
+.dashboard-proximas .next-equipo-block,
+.proximas-box .next-equipo-block {
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+.dashboard-proximas .next-row-v65 .next-title,
+.proximas-box .next-row-v65 .next-title {
+    font-size: 12.9px !important;
+    line-height: 1.08 !important;
+    font-weight: 950 !important;
+    color: #0f172a !important;
+    margin: 0 0 3px 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+.dashboard-proximas .next-row-v65 .next-frequency,
+.proximas-box .next-row-v65 .next-frequency {
+    font-size: 10.2px !important;
+    line-height: 1.05 !important;
+    font-weight: 800 !important;
+    color: #475569 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+.dashboard-proximas .next-metric-box,
+.proximas-box .next-metric-box {
+    display: grid !important;
+    grid-template-columns: 42px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: rgba(248,250,252,.72) !important;
+    border: 1px solid rgba(148,163,184,.24) !important;
+    border-radius: 9px !important;
+    padding: 4px 6px !important;
+    min-height: 30px !important;
+    box-sizing: border-box !important;
+}
+.dashboard-proximas .next-row-v65 .next-label,
+.proximas-box .next-row-v65 .next-label {
+    color: #475569 !important;
+    font-size: 9.7px !important;
+    line-height: 1 !important;
+    font-weight: 950 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .10px !important;
+}
+.dashboard-proximas .next-row-v65 .next-value,
+.proximas-box .next-row-v65 .next-value {
+    color: #0f172a !important;
+    font-size: 11.2px !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+.dashboard-proximas .next-row-v65 .badge-days,
+.proximas-box .next-row-v65 .badge-days {
+    width: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+    min-height: 30px !important;
+    padding: 5px 7px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 10.2px !important;
+    line-height: 1.08 !important;
+    font-weight: 950 !important;
+    border-radius: 999px !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 1500px) {
+    .dashboard-proximas .next-row-v65,
+    .proximas-box .next-row-v65,
+    .dashboard-proximas .next-item.next-row-v65,
+    .proximas-box .next-item.next-row-v65 {
+        grid-template-columns: minmax(105px, .9fr) minmax(96px, 1fr) minmax(102px, 1fr) 92px !important;
+        column-gap: 6px !important;
+        min-height: 48px !important;
+        padding: 7px 0 !important;
+    }
+    .dashboard-proximas .next-metric-box,
+    .proximas-box .next-metric-box {
+        grid-template-columns: 36px minmax(0, 1fr) !important;
+        padding: 4px 5px !important;
+    }
+    .dashboard-proximas .next-row-v65 .next-value,
+    .proximas-box .next-row-v65 .next-value {
+        font-size: 10.4px !important;
+    }
+    .dashboard-proximas .next-row-v65 .badge-days,
+    .proximas-box .next-row-v65 .badge-days {
+        width: 92px !important;
+        min-width: 92px !important;
+        max-width: 92px !important;
+        font-size: 9.3px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# AJUSTE FINAL V6.6
+# - Distribución de Costos más abajo respecto a los KPI.
+# - Próximas Mantenciones: una fila limpia por equipo con Actual, Próxima y Faltan.
+# =========================================================
+st.markdown(
+    """
+<style>
+/* Más separación entre KPI superiores y Distribución de Costos */
+.dashboard-costos-spacer {
+    height: 42px !important;
+    min-height: 42px !important;
+    display: block !important;
+}
+.dashboard-costos-title,
+.panel-title.chart-title.dashboard-costos-title {
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+    padding-top: 0 !important;
+    line-height: 1.20 !important;
+}
+
+/* Próximas Mantenciones Dashboard: fila final ordenada */
+.dashboard-proximas,
+.proximas-box {
+    padding: 12px 14px !important;
+    overflow: visible !important;
+}
+.dashboard-proximas .panel-title,
+.proximas-box .panel-title {
+    margin: 0 0 12px 0 !important;
+    padding: 0 0 6px 0 !important;
+    min-height: 28px !important;
+}
+.dashboard-proximas .next-row-v66,
+.proximas-box .next-row-v66,
+.dashboard-proximas .next-item.next-row-v66,
+.proximas-box .next-item.next-row-v66 {
+    display: grid !important;
+    grid-template-columns: minmax(110px, 0.72fr) minmax(145px, 1fr) 108px !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    min-height: 54px !important;
+    padding: 8px 0 !important;
+    margin: 0 !important;
+    border-bottom: 1px solid rgba(100,116,139,.24) !important;
+    box-sizing: border-box !important;
+}
+.dashboard-proximas .next-row-v66:last-child,
+.proximas-box .next-row-v66:last-child {
+    border-bottom: 0 !important;
+}
+.dashboard-proximas .next-equipo-v66,
+.proximas-box .next-equipo-v66,
+.dashboard-proximas .next-data-v66,
+.proximas-box .next-data-v66 {
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+.dashboard-proximas .next-row-v66 .next-title,
+.proximas-box .next-row-v66 .next-title {
+    font-size: 12.8px !important;
+    line-height: 1.08 !important;
+    font-weight: 950 !important;
+    color: #0f172a !important;
+    margin: 0 0 3px 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+.dashboard-proximas .next-row-v66 .next-frequency,
+.proximas-box .next-row-v66 .next-frequency {
+    font-size: 10.3px !important;
+    line-height: 1.08 !important;
+    font-weight: 800 !important;
+    color: #475569 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+.dashboard-proximas .next-data-v66,
+.proximas-box .next-data-v66 {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    row-gap: 4px !important;
+    background: rgba(248,250,252,.62) !important;
+    border: 1px solid rgba(148,163,184,.22) !important;
+    border-radius: 10px !important;
+    padding: 6px 8px !important;
+    box-sizing: border-box !important;
+}
+.dashboard-proximas .next-kv-v66,
+.proximas-box .next-kv-v66 {
+    color: #0f172a !important;
+    font-size: 11.4px !important;
+    line-height: 1.08 !important;
+    font-weight: 850 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.dashboard-proximas .next-kv-v66 span,
+.proximas-box .next-kv-v66 span {
+    color: #334155 !important;
+    font-weight: 950 !important;
+}
+.dashboard-proximas .next-badge-v66,
+.proximas-box .next-badge-v66,
+.dashboard-proximas .next-row-v66 .badge-days,
+.proximas-box .next-row-v66 .badge-days {
+    width: 108px !important;
+    min-width: 108px !important;
+    max-width: 108px !important;
+    min-height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 9.6px !important;
+    line-height: 1.10 !important;
+    font-weight: 950 !important;
+    padding: 5px 7px !important;
+    border-radius: 999px !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 1500px) {
+    .dashboard-costos-spacer {
+        height: 48px !important;
+        min-height: 48px !important;
+    }
+    .dashboard-proximas .next-row-v66,
+    .proximas-box .next-row-v66,
+    .dashboard-proximas .next-item.next-row-v66,
+    .proximas-box .next-item.next-row-v66 {
+        grid-template-columns: minmax(92px, 0.68fr) minmax(130px, 1fr) 92px !important;
+        column-gap: 7px !important;
+        min-height: 56px !important;
+        padding: 8px 0 !important;
+    }
+    .dashboard-proximas .next-row-v66 .next-title,
+    .proximas-box .next-row-v66 .next-title {
+        font-size: 11.8px !important;
+    }
+    .dashboard-proximas .next-row-v66 .next-frequency,
+    .proximas-box .next-row-v66 .next-frequency {
+        font-size: 9.6px !important;
+    }
+    .dashboard-proximas .next-data-v66,
+    .proximas-box .next-data-v66 {
+        padding: 5px 6px !important;
+        row-gap: 3px !important;
+    }
+    .dashboard-proximas .next-kv-v66,
+    .proximas-box .next-kv-v66 {
+        font-size: 10.5px !important;
+    }
+    .dashboard-proximas .next-badge-v66,
+    .proximas-box .next-badge-v66,
+    .dashboard-proximas .next-row-v66 .badge-days,
+    .proximas-box .next-row-v66 .badge-days {
+        width: 92px !important;
+        min-width: 92px !important;
+        max-width: 92px !important;
+        font-size: 8.8px !important;
+        padding: 5px 5px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# AJUSTE FINAL V6.7
+# - Menú fijo: sin botón minimizar/expandir y sin controles nativos.
+# - Elimina barra blanca superior en Próximas Mantenciones.
+# - Próximas Mantenciones: una fila limpia por equipo, solo Actual/Próxima/Faltan.
+# =========================================================
+st.markdown(
+    """
+<style>
+:root {
+    --menu-panel-width: 280px !important;
+    --menu-inner-width: 248px !important;
+    --menu-panel-width-final: 280px !important;
+    --menu-inner-width-final: 248px !important;
+}
+section[data-testid="stSidebar"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translateX(0px) !important;
+    width: var(--menu-panel-width) !important;
+    min-width: var(--menu-panel-width) !important;
+    max-width: var(--menu-panel-width) !important;
+}
+section[data-testid="stSidebar"] > div,
+section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+    width: var(--menu-panel-width) !important;
+    min-width: var(--menu-panel-width) !important;
+    max-width: var(--menu-panel-width) !important;
+}
+[data-testid="stAppViewContainer"] > .main,
+section.main,
+main {
+    margin-left: var(--menu-panel-width) !important;
+    width: calc(100vw - var(--menu-panel-width)) !important;
+    max-width: calc(100vw - var(--menu-panel-width)) !important;
+}
+section[data-testid="stSidebar"] .menu-toggle-wrap,
+section[data-testid="stSidebar"] .menu-fixed-spacer,
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"],
+button[title="Collapse sidebar"],
+button[title="Close sidebar"],
+button[title="Open sidebar"],
+button[aria-label="Collapse sidebar"],
+button[aria-label="Close sidebar"],
+button[aria-label="Open sidebar"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    pointer-events: none !important;
+}
+section[data-testid="stSidebar"] .menu-text,
+section[data-testid="stSidebar"] .menu-footer-box,
+section[data-testid="stSidebar"] .menu-filter-area,
+section[data-testid="stSidebar"] .menu-botones-title {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,
+section[data-testid="stSidebar"] .menu-active-item {
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+.dashboard-proximas:not(.dashboard-proximas-v67):empty,
+.proximas-box:empty {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+.dashboard-proximas-v67 {
+    background: rgba(255,255,255,.72) !important;
+    border: 1px solid rgba(203,213,225,.72) !important;
+    border-radius: 16px !important;
+    padding: 10px 12px !important;
+    margin-top: 0 !important;
+    box-shadow: 0 10px 24px rgba(15,23,42,.045) !important;
+    overflow: visible !important;
+}
+.dashboard-proximas-v67 .proximas-title-v67 {
+    display: block !important;
+    margin: 0 0 8px 0 !important;
+    padding: 0 0 5px 0 !important;
+    min-height: 24px !important;
+    line-height: 1.15 !important;
+    font-size: clamp(18px, 1.05vw, 21px) !important;
+    font-weight: 950 !important;
+    color: #0f172a !important;
+}
+.next-list-v67 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+}
+.dashboard-proximas-v67 .next-row-v67 {
+    display: grid !important;
+    grid-template-columns: minmax(112px, .95fr) minmax(120px, 1fr) minmax(120px, 1fr) 116px !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    min-height: 42px !important;
+    padding: 7px 0 !important;
+    margin: 0 !important;
+    border-bottom: 1px solid rgba(100,116,139,.22) !important;
+    box-sizing: border-box !important;
+}
+.dashboard-proximas-v67 .next-row-v67:last-child {
+    border-bottom: 0 !important;
+}
+.dashboard-proximas-v67 .next-equipo-v67 {
+    color: #0f172a !important;
+    font-size: 12.5px !important;
+    line-height: 1.10 !important;
+    font-weight: 950 !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+.dashboard-proximas-v67 .next-actual-v67,
+.dashboard-proximas-v67 .next-proxima-v67 {
+    color: #0f172a !important;
+    font-size: 12.1px !important;
+    line-height: 1.10 !important;
+    font-weight: 850 !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.dashboard-proximas-v67 .next-actual-v67 span,
+.dashboard-proximas-v67 .next-proxima-v67 span {
+    color: #334155 !important;
+    font-weight: 950 !important;
+}
+.dashboard-proximas-v67 .next-badge-v67,
+.dashboard-proximas-v67 .badge-days.next-badge-v67 {
+    width: 116px !important;
+    min-width: 116px !important;
+    max-width: 116px !important;
+    min-height: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 9.4px !important;
+    line-height: 1.08 !important;
+    font-weight: 950 !important;
+    padding: 5px 7px !important;
+    border-radius: 999px !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+}
+.proximas-empty-v68 {
+    color: #334155 !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    padding: 8px 0 !important;
+}
+@media (max-width: 1500px) {
+    .dashboard-proximas-v67 .next-row-v67 {
+        grid-template-columns: minmax(92px, .9fr) minmax(98px, 1fr) minmax(98px, 1fr) 100px !important;
+        column-gap: 7px !important;
+        min-height: 40px !important;
+        padding: 6px 0 !important;
+    }
+    .dashboard-proximas-v67 .next-equipo-v67 {
+        font-size: 11.3px !important;
+    }
+    .dashboard-proximas-v67 .next-actual-v67,
+    .dashboard-proximas-v67 .next-proxima-v67 {
+        font-size: 10.8px !important;
+    }
+    .dashboard-proximas-v67 .next-badge-v67,
+    .dashboard-proximas-v67 .badge-days.next-badge-v67 {
+        width: 100px !important;
+        min-width: 100px !important;
+        max-width: 100px !important;
+        font-size: 8.7px !important;
+        padding: 5px 5px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# AJUSTE FINAL V6.8
+# - Próximas Mantenciones dashboard: sin texto Próxima, lectura actual bajo equipo.
+# - Badge naranjo/rojo siempre dentro del cuadro.
+# =========================================================
+st.markdown(
+    """
+<style>
+.dashboard-proximas-v68 {
+    background: rgba(255,255,255,.72) !important;
+    border: 1px solid rgba(203,213,225,.72) !important;
+    border-radius: 18px !important;
+    padding: 14px 16px 16px 16px !important;
+    margin-top: 0 !important;
+    box-shadow: 0 10px 24px rgba(15,23,42,.045) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+}
+.dashboard-proximas-v68 .proximas-title-v68 {
+    display: block !important;
+    margin: 0 0 12px 0 !important;
+    padding: 0 !important;
+    min-height: 26px !important;
+    line-height: 1.15 !important;
+    font-size: clamp(19px, 1.08vw, 22px) !important;
+    font-weight: 950 !important;
+    color: #0f172a !important;
+}
+.next-list-v68 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+.dashboard-proximas-v68 .next-row-v68,
+.dashboard-proximas-v68 .next-item.next-row-v68 {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 128px !important;
+    align-items: center !important;
+    column-gap: 12px !important;
+    min-height: 52px !important;
+    padding: 8px 0 !important;
+    margin: 0 !important;
+    border-bottom: 1px solid rgba(100,116,139,.20) !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+.dashboard-proximas-v68 .next-row-v68:last-child {
+    border-bottom: 0 !important;
+}
+.dashboard-proximas-v68 .next-info-v68 {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+.dashboard-proximas-v68 .next-equipo-v68 {
+    color: #0f172a !important;
+    font-size: 13px !important;
+    line-height: 1.10 !important;
+    font-weight: 950 !important;
+    margin: 0 0 5px 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+.dashboard-proximas-v68 .next-actual-v68 {
+    color: #0f172a !important;
+    font-size: 12.2px !important;
+    line-height: 1.16 !important;
+    font-weight: 850 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+.dashboard-proximas-v68 .next-actual-v68 span {
+    color: #334155 !important;
+    font-weight: 950 !important;
+}
+.dashboard-proximas-v68 .next-badge-v68,
+.dashboard-proximas-v68 .badge-days.next-badge-v68 {
+    justify-self: end !important;
+    width: 128px !important;
+    min-width: 128px !important;
+    max-width: 128px !important;
+    min-height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 9.3px !important;
+    line-height: 1.08 !important;
+    font-weight: 950 !important;
+    padding: 5px 8px !important;
+    border-radius: 999px !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+    overflow-wrap: anywhere !important;
+}
+.proximas-empty-v68 {
+    color: #334155 !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    padding: 8px 0 !important;
+}
+@media (max-width: 1500px) {
+    .dashboard-proximas-v68 {
+        padding: 12px 12px 14px 12px !important;
+    }
+    .dashboard-proximas-v68 .next-row-v68,
+    .dashboard-proximas-v68 .next-item.next-row-v68 {
+        grid-template-columns: minmax(0, 1fr) 108px !important;
+        column-gap: 8px !important;
+        min-height: 50px !important;
+        padding: 7px 0 !important;
+    }
+    .dashboard-proximas-v68 .next-equipo-v68 {
+        font-size: 12px !important;
+    }
+    .dashboard-proximas-v68 .next-actual-v68 {
+        font-size: 11px !important;
+    }
+    .dashboard-proximas-v68 .next-badge-v68,
+    .dashboard-proximas-v68 .badge-days.next-badge-v68 {
+        width: 108px !important;
+        min-width: 108px !important;
+        max-width: 108px !important;
+        font-size: 8.4px !important;
+        padding: 5px 5px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
