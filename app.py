@@ -8580,3 +8580,130 @@ td, th { white-space: normal !important; }
     """,
     unsafe_allow_html=True,
 )
+
+
+# =========================================================
+# AJUSTE FINAL V5.7: SUBIR TODAS LAS PÁGINAS PRINCIPALES
+# - Elimina espacio superior vacío en Dashboard, Mantenciones, Costos, Alertas, etc.
+# - Mantiene título y logo más arriba para aprovechar pantalla al 100%.
+# =========================================================
+st.markdown(
+    """
+<style>
+/* Quita márgenes/paddings superiores acumulados de Streamlit */
+html, body, .stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > .main,
+div[data-testid="stMain"],
+section.main,
+main {
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+}
+
+.main .block-container,
+.block-container,
+div[data-testid="stMainBlockContainer"],
+section.main > div {
+    padding-top: 0px !important;
+    margin-top: -92px !important;
+    padding-bottom: 0.8rem !important;
+}
+
+/* Encabezado común de todas las páginas */
+.main-fixed-header {
+    position: relative !important;
+    top: auto !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    padding: 0px 10px 0px 0px !important;
+    margin-top: 0px !important;
+    margin-bottom: 2px !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+}
+
+.main-fixed-title,
+.title-main {
+    font-size: clamp(27px, 2.05vw, 36px) !important;
+    line-height: 0.98 !important;
+    margin: 0px !important;
+    padding: 0px !important;
+    white-space: normal !important;
+}
+
+.main-fixed-logo,
+.header-logo-box {
+    margin: 0px !important;
+    padding: 0px !important;
+    align-self: flex-end !important;
+}
+
+.main-fixed-logo img,
+.header-logo-box img {
+    width: 112px !important;
+    max-width: 112px !important;
+    height: auto !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.main-fixed-header-spacer,
+.header-separador {
+    height: 0px !important;
+    min-height: 0px !important;
+    max-height: 0px !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+/* Reduce espacios verticales generales entre bloques */
+div[data-testid="stVerticalBlock"] {
+    gap: 0.32rem !important;
+}
+
+.panel-title {
+    margin-top: 8px !important;
+    margin-bottom: 5px !important;
+}
+
+/* Dashboard: acerca KPI al título */
+.kpi-card {
+    margin-top: 0px !important;
+}
+
+/* En pantallas más bajas, sube un poco más */
+@media (max-height: 850px) {
+    .main .block-container,
+    .block-container,
+    div[data-testid="stMainBlockContainer"],
+    section.main > div {
+        margin-top: -112px !important;
+    }
+
+    .main-fixed-header {
+        min-height: 38px !important;
+        height: 38px !important;
+    }
+
+    .main-fixed-title,
+    .title-main {
+        font-size: clamp(25px, 1.95vw, 34px) !important;
+    }
+
+    .main-fixed-logo img,
+    .header-logo-box img {
+        width: 104px !important;
+        max-width: 104px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
