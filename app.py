@@ -3561,7 +3561,7 @@ def construir_menu(equipos, mantenciones, gastos, combustible, checklist, docume
 
     st.markdown('<hr class="menu-line">', unsafe_allow_html=True)
 
-    if st.button("🔄 Actualizar Base de Datos", key="actualizar_base_datos", use_container_width=True):
+    if st.button("🔄 Actualizar", key="actualizar_base_datos", use_container_width=True):
         st.cache_data.clear()
         st.rerun()
 
@@ -7928,6 +7928,269 @@ st.markdown(
     min-width: 62px !important;
     font-size: 9.5px !important;
     padding: 5px 7px !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# AJUSTE FINAL V5.6
+# - Sube el título y logo de la página principal para aprovechar el espacio superior.
+# - Compacta la tabla de Gastos Adicionales del Dashboard para evitar barra horizontal.
+# - Botón del menú queda solo como "Actualizar".
+# =========================================================
+
+
+def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_originales, filtro_equipo):
+    """Dashboard Ejecutivo optimizado para ver más contenido en 100% de zoom."""
+    gastos_sin_combustible = gastos_no_combustible(gastos_f)
+
+    costo_mantenciones = float(mant_f["Costo_CLP"].sum()) if "Costo_CLP" in mant_f.columns else 0.0
+    costo_gastos = float(gastos_sin_combustible["Costo_CLP"].sum()) if "Costo_CLP" in gastos_sin_combustible.columns else 0.0
+    costo_total = costo_mantenciones + costo_gastos
+
+    mant_realizadas = len(mant_f)
+    repuestos_utilizados = len(gastos_sin_combustible)
+    equipos_registrados = len(equipos_f)
+
+    if "Proxima_Mantencion" not in proximas_originales.columns:
+        proximas_originales = pd.DataFrame(columns=[
+            "Equipo", "Categoria", "Tipo_Mantencion", "Proxima_Mantencion",
+            "Km_Horometro_Actual", "Unidad_Control", "Costo_CLP"
+        ])
+
+    mant_proximas = proximas_originales.copy()
+    if "Proxima_Mantencion" in mant_proximas.columns:
+        mant_proximas["Proxima_Mantencion"] = mant_proximas["Proxima_Mantencion"].apply(limpiar_numero)
+        mant_proximas = mant_proximas[mant_proximas["Proxima_Mantencion"] > 0].copy()
+
+    if filtro_equipo != "Todos los equipos" and "Equipo" in mant_proximas.columns:
+        mant_proximas = mant_proximas[mant_proximas["Equipo"] == filtro_equipo]
+
+    mant_proximas = resumen_proximas_por_equipo(mant_proximas) if not mant_proximas.empty else mant_proximas
+
+    if not mant_proximas.empty:
+        proxima_fila = mant_proximas.iloc[0]
+        equipo_proximo = str(proxima_fila.get("Equipo", "Sin equipo")).strip()
+        proxima_valor = proxima_fila.get("Proxima_Texto", "Sin dato")
+        proxima_estado = proxima_fila.get("Texto_Estado", "Sin análisis")
+        proxima_texto = equipo_proximo if equipo_proximo else "Sin equipo"
+        proxima_sub = f"Próx.: {proxima_valor} | {proxima_estado}"
+    else:
+        proxima_texto = "Sin registro"
+        proxima_sub = "No programada"
+
+    k1, k2, k3, k4, k5 = st.columns(5)
+    with k1:
+        kpi_card("🛠️", "Mantenciones", f"{mant_realizadas}", "Registros del período", "#dbeafe")
+    with k2:
+        kpi_card("💲", "Monto Total", pesos(costo_total), "Costos del período", "#dcfce7")
+    with k3:
+        kpi_card("🧰", "Gastos Adic.", f"{repuestos_utilizados}", "Repuestos, mantenciones y administrativos", "#f3e8ff")
+    with k4:
+        kpi_card("📅", "Próxima Mantención", proxima_texto, proxima_sub, "#ffedd5")
+    with k5:
+        kpi_card("🚚", "Equipos Registrados", f"{equipos_registrados}", "Total equipos", "#ccfbf1")
+
+    c1, c2 = st.columns([1.55, 1])
+
+    with c1:
+        st.markdown('<div class="panel-title">Histórico de Mantenciones</div>', unsafe_allow_html=True)
+        historico = mant_f.copy()
+        if "Tipo_Mantencion" in historico.columns:
+            historico["Mantencion"] = historico["Tipo_Mantencion"].apply(normalizar_tipo_mantencion)
+
+        if not historico.empty:
+            historico = historico.sort_values("Fecha", ascending=False).head(6)
+            columnas_base = ["Fecha", "Equipo", "Mantencion", "Descripcion", "Costo_CLP", "Estado_Mantencion"]
+            columnas_base = [c for c in columnas_base if c in historico.columns]
+            mostrar = historico[columnas_base].copy()
+            if "Fecha" in mostrar.columns:
+                mostrar["Fecha"] = mostrar["Fecha"].apply(fecha_texto)
+            if "Costo_CLP" in mostrar.columns:
+                mostrar["Costo_CLP"] = mostrar["Costo_CLP"].apply(pesos)
+            mostrar = mostrar.rename(columns={
+                "Mantencion": "Tipo",
+                "Descripcion": "Descripción",
+                "Costo_CLP": "Monto",
+                "Estado_Mantencion": "Estado",
+            })
+            mostrar_tabla_clara(mostrar, height=245)
+        else:
+            st.info("No existen mantenciones registradas para el filtro aplicado.")
+
+    with c2:
+        st.markdown('<div class="panel-title">Distribución de Costos</div>', unsafe_allow_html=True)
+        costos_item = construir_consolidado_costos(mant_f, gastos_f)
+        st.plotly_chart(crear_donut_costos(costos_item), use_container_width=True)
+
+    c3, c4, c5 = st.columns([1.18, 1.05, 1.22])
+
+    with c3:
+        st.markdown('<div class="panel-title">Gastos Adicionales</div>', unsafe_allow_html=True)
+        repuestos = gastos_sin_combustible.copy()
+        if not repuestos.empty:
+            repuestos = repuestos.sort_values("Fecha", ascending=False).head(4)
+            columnas_repuestos = ["Fecha", "Equipo", "Tipo_Gasto", "Descripcion", "Costo_CLP"]
+            columnas_repuestos = [c for c in columnas_repuestos if c in repuestos.columns]
+            mostrar = repuestos[columnas_repuestos].copy()
+            if "Fecha" in mostrar.columns:
+                mostrar["Fecha"] = mostrar["Fecha"].apply(fecha_texto)
+            if "Costo_CLP" in mostrar.columns:
+                mostrar["Costo_CLP"] = mostrar["Costo_CLP"].apply(pesos)
+            mostrar = mostrar.rename(columns={
+                "Tipo_Gasto": "Tipo",
+                "Descripcion": "Detalle",
+                "Costo_CLP": "Monto",
+            })
+            mostrar_tabla_clara(mostrar, height=158)
+        else:
+            st.info("No existen gastos adicionales registrados.")
+
+    with c4:
+        st.markdown('<div class="proximas-box">', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">Próximas Mantenciones</div>', unsafe_allow_html=True)
+        proximas = mant_proximas.copy()
+        if not proximas.empty:
+            for _, fila in proximas.head(6).iterrows():
+                equipo = escape_html(fila.get("Equipo", "Sin equipo"))
+                categoria = escape_html(fila.get("Categoria", fila.get("Tipo_Mantencion", "")))
+                proxima_txt = escape_html(fila.get("Proxima_Texto", formatear_valor_control(fila.get("Proxima_Mantencion", 0), fila.get("Unidad_Control", ""))))
+                saldo = formatear_saldo_control(fila.get("Saldo_Restante", 0), fila.get("Unidad_Control", ""))
+                estado = str(fila.get("Estado_Control", ""))
+                clase = "badge-danger" if estado in ["Vencida", "Crítica", "Vence ahora"] else "badge-warning"
+                st.markdown(
+                    f"""
+                    <div class="next-item">
+                        <div>
+                            <div class="next-title">{equipo}</div>
+                            <div class="next-sub">{categoria}</div>
+                            <div class="next-sub">Próx.: {proxima_txt}</div>
+                        </div>
+                        <div class="badge-days {clase}">{escape_html(saldo)}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.info("No existen próximas mantenciones registradas.")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with c5:
+        st.markdown('<div class="panel-title">Evolución de Costos</div>', unsafe_allow_html=True)
+        if not mant_f.empty or not gastos_sin_combustible.empty:
+            partes = []
+            if not mant_f.empty and "Fecha" in mant_f.columns and "Costo_CLP" in mant_f.columns:
+                a = mant_f[["Fecha", "Costo_CLP"]].copy()
+                a["Costo"] = a["Costo_CLP"].apply(limpiar_numero)
+                partes.append(a[["Fecha", "Costo"]])
+            if not gastos_sin_combustible.empty and "Fecha" in gastos_sin_combustible.columns and "Costo_CLP" in gastos_sin_combustible.columns:
+                b = gastos_sin_combustible[["Fecha", "Costo_CLP"]].copy()
+                b["Costo"] = b["Costo_CLP"].apply(limpiar_numero)
+                partes.append(b[["Fecha", "Costo"]])
+            if partes:
+                evolucion = pd.concat(partes, ignore_index=True)
+                evolucion["Fecha"] = evolucion["Fecha"].apply(convertir_fecha)
+                evolucion = evolucion.dropna(subset=["Fecha"])
+                if not evolucion.empty:
+                    evolucion["Año"] = evolucion["Fecha"].dt.year
+                    evolucion["Mes_Numero"] = evolucion["Fecha"].dt.month
+                    evolucion["Mes"] = evolucion["Mes_Numero"].map(MESES)
+                    evolucion["Periodo"] = evolucion["Mes"].fillna("") + " " + evolucion["Año"].astype(str)
+                    evolucion = evolucion.groupby(["Año", "Mes_Numero", "Periodo"], as_index=False)["Costo"].sum()
+                    evolucion = evolucion.sort_values(["Año", "Mes_Numero"])
+                    evolucion["Costo_Millones"] = evolucion["Costo"] / 1_000_000
+                    fig = px.line(evolucion, x="Periodo", y="Costo_Millones", markers=True, template="plotly_white", custom_data=["Costo"])
+                    fig.update_traces(line=dict(width=3), marker=dict(size=7), hovertemplate="Periodo: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>")
+                    fig.update_layout(title=None, xaxis_title="", yaxis_title="", showlegend=False, margin=dict(l=8, r=8, t=10, b=8))
+                    fig.update_yaxes(tickformat=".2f", ticksuffix="M")
+                    st.plotly_chart(aplicar_formato_grafico(fig, 245), use_container_width=True)
+                else:
+                    st.info("Sin costos con fecha para graficar.")
+            else:
+                st.info("Sin información de costos para graficar.")
+        else:
+            st.info("Sin información de costos para graficar.")
+
+    st.markdown('<div class="panel-title">Estado de los Equipos</div>', unsafe_allow_html=True)
+    cols = st.columns(min(7, max(1, len(equipos_f)))) if not equipos_f.empty else []
+    for idx, (_, fila) in enumerate(equipos_f.iterrows()):
+        with cols[idx % len(cols)]:
+            tarjeta_equipo(fila)
+
+
+st.markdown(
+    """
+<style>
+/* V5.6: sube el encabezado principal y aprovecha el espacio superior */
+.main .block-container,
+.block-container,
+div[data-testid="stMainBlockContainer"] {
+    padding-top: 0px !important;
+}
+.main-fixed-header {
+    min-height: 42px !important;
+    margin-top: -34px !important;
+    margin-bottom: -4px !important;
+    padding-top: 0px !important;
+    align-items: flex-end !important;
+}
+.main-fixed-title,
+.title-main {
+    font-size: clamp(28px, 2.15vw, 37px) !important;
+    line-height: 1.0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.main-fixed-logo,
+.header-logo-box {
+    margin-top: 0px !important;
+    padding-top: 0px !important;
+}
+.main-fixed-logo img,
+.header-logo-box img {
+    width: 118px !important;
+    max-width: 118px !important;
+}
+.main-fixed-header-spacer,
+.header-separador {
+    height: 2px !important;
+    min-height: 2px !important;
+}
+
+/* V5.6: tabla de Gastos Adicionales más compacta y sin barra horizontal */
+.tabla-clara-wrap {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+.tabla-clara {
+    table-layout: fixed !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 11.4px !important;
+}
+.tabla-clara thead th,
+.tabla-clara tbody td {
+    padding: 7px 8px !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.22 !important;
+}
+.tabla-clara td.monto,
+.tabla-clara th.monto,
+.tabla-clara td:last-child,
+.tabla-clara th:last-child {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    text-align: right !important;
+}
+
+/* V5.6: botón de actualización más corto */
+section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    font-size: 13.6px !important;
 }
 </style>
     """,
