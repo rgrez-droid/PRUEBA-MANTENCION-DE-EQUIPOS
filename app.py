@@ -4088,12 +4088,21 @@ def pagina_mantenciones(mant_f):
         )
 
         fig.update_layout(
-            title="Distribución de costos por tipo de mantención",
+            title=dict(
+                text="Distribución de costos por tipo de mantención",
+                x=0.01,
+                xanchor="left",
+                y=0.98,
+                yanchor="top",
+                font=dict(size=16, color=COLOR_TEXTO),
+            ),
             showlegend=True,
             legend_title_text="Tipo",
+            margin=dict(l=18, r=18, t=42, b=18),
         )
 
-        st.plotly_chart(aplicar_formato_grafico(fig, 420), use_container_width=True)
+        # Altura menor para que el gráfico de torta quepa completo en la pantalla.
+        st.plotly_chart(aplicar_formato_grafico(fig, 340), use_container_width=True)
 
     if mant_vista.empty:
         st.info("No existen mantenciones para el tipo seleccionado.")
@@ -7406,17 +7415,17 @@ def crear_donut_costos(costos_item):
             outsidetextfont=dict(color="#0f172a", size=13, family="Arial Black"),
             hovertemplate="<b>%{label}</b><br>Monto: %{customdata}<br>Participación: %{percent}<extra></extra>",
             customdata=[pesos(v) for v in costos_item["Costo"]],
-            domain=dict(x=[0.06, 0.94], y=[0.24, 0.96]),
+            domain=dict(x=[0.07, 0.93], y=[0.22, 0.96]),
             showlegend=True,
         )
     )
 
     fig.update_layout(
-        height=310,
+        height=285,
         paper_bgcolor="rgba(255,255,255,0.82)",
         plot_bgcolor="rgba(255,255,255,0.82)",
         font=dict(color="#0f172a", size=12),
-        margin=dict(l=6, r=6, t=4, b=52),
+        margin=dict(l=6, r=6, t=0, b=44),
         annotations=[
             dict(
                 text="Total<br><b>" + pesos(total) + "</b>",
@@ -8017,7 +8026,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
                 "Costo_CLP": "Monto",
                 "Estado_Mantencion": "Estado",
             })
-            mostrar_tabla_clara(mostrar, height=245)
+            mostrar_tabla_clara(mostrar, height=218)
         else:
             st.info("No existen mantenciones registradas para el filtro aplicado.")
 
@@ -8026,7 +8035,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
         costos_item = construir_consolidado_costos(mant_f, gastos_f)
         st.plotly_chart(crear_donut_costos(costos_item), use_container_width=True)
 
-    c3, c4, c5 = st.columns([1.18, 1.05, 1.22])
+    c3, c4, c5 = st.columns([1.22, 1.18, 1.18])
 
     with c3:
         st.markdown('<div class="panel-title">Gastos Adicionales</div>', unsafe_allow_html=True)
@@ -8045,7 +8054,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
                 "Descripcion": "Detalle",
                 "Costo_CLP": "Monto",
             })
-            mostrar_tabla_clara(mostrar, height=158)
+            mostrar_tabla_clara(mostrar, height=142)
         else:
             st.info("No existen gastos adicionales registrados.")
 
@@ -8104,9 +8113,11 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
                     evolucion["Costo_Millones"] = evolucion["Costo"] / 1_000_000
                     fig = px.line(evolucion, x="Periodo", y="Costo_Millones", markers=True, template="plotly_white", custom_data=["Costo"])
                     fig.update_traces(line=dict(width=3), marker=dict(size=7), hovertemplate="Periodo: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>")
-                    fig.update_layout(title=None, xaxis_title="", yaxis_title="", showlegend=False, margin=dict(l=8, r=8, t=10, b=8))
+                    fig.update_layout(title_text="", xaxis_title="", yaxis_title="", showlegend=False, margin=dict(l=8, r=8, t=2, b=8))
                     fig.update_yaxes(tickformat=".2f", ticksuffix="M")
-                    st.plotly_chart(aplicar_formato_grafico(fig, 245), use_container_width=True)
+                    fig = aplicar_formato_grafico(fig, 220)
+                    fig.update_layout(title_text="", margin=dict(l=16, r=12, t=2, b=28))
+                    st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.info("Sin costos con fecha para graficar.")
             else:
@@ -8191,6 +8202,417 @@ div[data-testid="stMainBlockContainer"] {
 /* V5.6: botón de actualización más corto */
 section[data-testid="stSidebar"] div[data-testid="stButton"] button {
     font-size: 13.6px !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# =========================================================
+# AJUSTE FINAL V5.9
+# - Habilita botón nativo para minimizar menú y agranda sidebar.
+# - Deja un espacio controlado bajo el título principal.
+# - Ajusta dona y evolución de costos dentro de sus marcos.
+# - Mejora resumen de próximas mantenciones en Dashboard.
+# =========================================================
+
+def crear_donut_costos(costos_item):
+    """Dona de costos ajustada para que porcentajes y leyenda queden dentro del marco."""
+    fig = go.Figure()
+
+    if costos_item is None or costos_item.empty:
+        fig.update_layout(
+            height=292,
+            paper_bgcolor="rgba(255,255,255,0.82)",
+            plot_bgcolor="rgba(255,255,255,0.82)",
+            annotations=[dict(text="Sin costos", x=0.5, y=0.5, showarrow=False, font_size=16, font_color="#0f172a")],
+            margin=dict(l=8, r=8, t=12, b=16),
+        )
+        return fig
+
+    total = float(costos_item["Costo"].sum())
+
+    fig.add_trace(
+        go.Pie(
+            labels=costos_item["Item"],
+            values=costos_item["Costo"],
+            hole=0.62,
+            sort=False,
+            direction="clockwise",
+            textinfo="percent",
+            texttemplate="%{percent:.1%}",
+            textposition="auto",
+            insidetextorientation="radial",
+            textfont=dict(color="white", size=13, family="Arial Black"),
+            outsidetextfont=dict(color="#0f172a", size=12, family="Arial Black"),
+            hovertemplate="<b>%{label}</b><br>Monto: %{customdata}<br>Participación: %{percent}<extra></extra>",
+            customdata=[pesos(v) for v in costos_item["Costo"]],
+            domain=dict(x=[0.05, 0.95], y=[0.30, 0.90]),
+            showlegend=True,
+        )
+    )
+
+    fig.update_layout(
+        height=292,
+        paper_bgcolor="rgba(255,255,255,0.82)",
+        plot_bgcolor="rgba(255,255,255,0.82)",
+        font=dict(color="#0f172a", size=12),
+        margin=dict(l=8, r=8, t=16, b=58),
+        annotations=[
+            dict(
+                text="Total<br><b>" + pesos(total) + "</b>",
+                x=0.50,
+                y=0.60,
+                xref="paper",
+                yref="paper",
+                font_size=14,
+                font_color="#0f172a",
+                showarrow=False,
+                align="center",
+            )
+        ],
+        legend=dict(
+            title=dict(text="Tipo de costo", font=dict(size=11, color="#0f172a")),
+            orientation="h",
+            x=0.50,
+            y=0.01,
+            xanchor="center",
+            yanchor="bottom",
+            font=dict(size=11, color="#0f172a", family="Arial"),
+            bgcolor="rgba(255,255,255,0.82)",
+            bordercolor="rgba(15,23,42,0.16)",
+            borderwidth=1,
+            itemclick=False,
+            itemdoubleclick=False,
+        ),
+        uniformtext_minsize=8,
+        uniformtext_mode="show",
+    )
+    return fig
+
+
+def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_originales, filtro_equipo):
+    """Dashboard Ejecutivo V5.9: distribución, próximas y evolución mejor encuadradas."""
+    gastos_sin_combustible = gastos_no_combustible(gastos_f)
+
+    costo_mantenciones = float(mant_f["Costo_CLP"].sum()) if "Costo_CLP" in mant_f.columns else 0.0
+    costo_gastos = float(gastos_sin_combustible["Costo_CLP"].sum()) if "Costo_CLP" in gastos_sin_combustible.columns else 0.0
+    costo_total = costo_mantenciones + costo_gastos
+
+    mant_realizadas = len(mant_f)
+    repuestos_utilizados = len(gastos_sin_combustible)
+    equipos_registrados = len(equipos_f)
+
+    if "Proxima_Mantencion" not in proximas_originales.columns:
+        proximas_originales = pd.DataFrame(columns=[
+            "Equipo", "Categoria", "Tipo_Mantencion", "Proxima_Mantencion",
+            "Km_Horometro_Actual", "Unidad_Control", "Costo_CLP"
+        ])
+
+    mant_proximas = proximas_originales.copy()
+    if "Proxima_Mantencion" in mant_proximas.columns:
+        mant_proximas["Proxima_Mantencion"] = mant_proximas["Proxima_Mantencion"].apply(limpiar_numero)
+        mant_proximas = mant_proximas[mant_proximas["Proxima_Mantencion"] > 0].copy()
+
+    if filtro_equipo != "Todos los equipos" and "Equipo" in mant_proximas.columns:
+        mant_proximas = mant_proximas[mant_proximas["Equipo"] == filtro_equipo]
+
+    mant_proximas = resumen_proximas_por_equipo(mant_proximas) if not mant_proximas.empty else mant_proximas
+
+    if not mant_proximas.empty:
+        proxima_fila = mant_proximas.iloc[0]
+        equipo_proximo = str(proxima_fila.get("Equipo", "Sin equipo")).strip()
+        proxima_valor = proxima_fila.get("Proxima_Texto", "Sin dato")
+        proxima_estado = proxima_fila.get("Texto_Estado", "Sin análisis")
+        proxima_texto = equipo_proximo if equipo_proximo else "Sin equipo"
+        proxima_sub = f"Próx.: {proxima_valor} | {proxima_estado}"
+    else:
+        proxima_texto = "Sin registro"
+        proxima_sub = "No programada"
+
+    k1, k2, k3, k4, k5 = st.columns(5)
+    with k1:
+        kpi_card("🛠️", "Mantenciones", f"{mant_realizadas}", "Registros del período", "#dbeafe")
+    with k2:
+        kpi_card("💲", "Monto Total", pesos(costo_total), "Costos del período", "#dcfce7")
+    with k3:
+        kpi_card("🧰", "Gastos Adic.", f"{repuestos_utilizados}", "Repuestos, mantenciones y administrativos", "#f3e8ff")
+    with k4:
+        kpi_card("📅", "Próxima Mantención", proxima_texto, proxima_sub, "#ffedd5")
+    with k5:
+        kpi_card("🚚", "Equipos Registrados", f"{equipos_registrados}", "Total equipos", "#ccfbf1")
+
+    c1, c2 = st.columns([1.55, 1])
+
+    with c1:
+        st.markdown('<div class="panel-title">Histórico de Mantenciones</div>', unsafe_allow_html=True)
+        historico = mant_f.copy()
+        if "Tipo_Mantencion" in historico.columns:
+            historico["Mantencion"] = historico["Tipo_Mantencion"].apply(normalizar_tipo_mantencion)
+
+        if not historico.empty:
+            historico = historico.sort_values("Fecha", ascending=False).head(6)
+            columnas_base = ["Fecha", "Equipo", "Mantencion", "Descripcion", "Costo_CLP", "Estado_Mantencion"]
+            columnas_base = [c for c in columnas_base if c in historico.columns]
+            mostrar = historico[columnas_base].copy()
+            if "Fecha" in mostrar.columns:
+                mostrar["Fecha"] = mostrar["Fecha"].apply(fecha_texto)
+            if "Costo_CLP" in mostrar.columns:
+                mostrar["Costo_CLP"] = mostrar["Costo_CLP"].apply(pesos)
+            mostrar = mostrar.rename(columns={
+                "Mantencion": "Tipo",
+                "Descripcion": "Descripción",
+                "Costo_CLP": "Monto",
+                "Estado_Mantencion": "Estado",
+            })
+            mostrar_tabla_clara(mostrar, height=230)
+        else:
+            st.info("No existen mantenciones registradas para el filtro aplicado.")
+
+    with c2:
+        st.markdown('<div class="panel-title chart-title">Distribución de Costos</div>', unsafe_allow_html=True)
+        costos_item = construir_consolidado_costos(mant_f, gastos_f)
+        st.plotly_chart(crear_donut_costos(costos_item), use_container_width=True)
+
+    c3, c4, c5 = st.columns([1.10, 1.38, 1.36])
+
+    with c3:
+        st.markdown('<div class="panel-title">Gastos Adicionales</div>', unsafe_allow_html=True)
+        repuestos = gastos_sin_combustible.copy()
+        if not repuestos.empty:
+            repuestos = repuestos.sort_values("Fecha", ascending=False).head(4)
+            columnas_repuestos = ["Fecha", "Equipo", "Tipo_Gasto", "Descripcion", "Costo_CLP"]
+            columnas_repuestos = [c for c in columnas_repuestos if c in repuestos.columns]
+            mostrar = repuestos[columnas_repuestos].copy()
+            if "Fecha" in mostrar.columns:
+                mostrar["Fecha"] = mostrar["Fecha"].apply(fecha_texto)
+            if "Costo_CLP" in mostrar.columns:
+                mostrar["Costo_CLP"] = mostrar["Costo_CLP"].apply(pesos)
+            mostrar = mostrar.rename(columns={
+                "Tipo_Gasto": "Tipo",
+                "Descripcion": "Detalle",
+                "Costo_CLP": "Monto",
+            })
+            mostrar_tabla_clara(mostrar, height=122)
+        else:
+            st.info("No existen gastos adicionales registrados.")
+
+    with c4:
+        st.markdown('<div class="proximas-box dashboard-proximas">', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">Próximas Mantenciones</div>', unsafe_allow_html=True)
+        proximas = mant_proximas.copy()
+        if not proximas.empty:
+            for _, fila in proximas.head(6).iterrows():
+                equipo = escape_html(fila.get("Equipo", "Sin equipo"))
+                categoria = escape_html(fila.get("Categoria", fila.get("Tipo_Mantencion", "")))
+                proxima_txt = escape_html(fila.get("Proxima_Texto", formatear_valor_control(fila.get("Proxima_Mantencion", 0), fila.get("Unidad_Control", ""))))
+                saldo = formatear_saldo_control(fila.get("Saldo_Restante", 0), fila.get("Unidad_Control", ""))
+                estado = str(fila.get("Estado_Control", ""))
+                clase = "badge-danger" if estado in ["Vencida", "Crítica", "Vence ahora"] else "badge-warning"
+                st.markdown(
+                    f"""
+                    <div class="next-item">
+                        <div class="next-info">
+                            <div class="next-title">{equipo}</div>
+                            <div class="next-sub-line">{categoria} · Próx.: {proxima_txt}</div>
+                        </div>
+                        <div class="badge-days {clase}">{escape_html(saldo)}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.info("No existen próximas mantenciones registradas.")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with c5:
+        st.markdown('<div class="panel-title chart-title">Evolución de Costos</div>', unsafe_allow_html=True)
+        if not mant_f.empty or not gastos_sin_combustible.empty:
+            partes = []
+            if not mant_f.empty and "Fecha" in mant_f.columns and "Costo_CLP" in mant_f.columns:
+                a = mant_f[["Fecha", "Costo_CLP"]].copy()
+                a["Costo"] = a["Costo_CLP"].apply(limpiar_numero)
+                partes.append(a[["Fecha", "Costo"]])
+            if not gastos_sin_combustible.empty and "Fecha" in gastos_sin_combustible.columns and "Costo_CLP" in gastos_sin_combustible.columns:
+                b = gastos_sin_combustible[["Fecha", "Costo_CLP"]].copy()
+                b["Costo"] = b["Costo_CLP"].apply(limpiar_numero)
+                partes.append(b[["Fecha", "Costo"]])
+            if partes:
+                evolucion = pd.concat(partes, ignore_index=True)
+                evolucion["Fecha"] = evolucion["Fecha"].apply(convertir_fecha)
+                evolucion = evolucion.dropna(subset=["Fecha"])
+                if not evolucion.empty:
+                    evolucion["Año"] = evolucion["Fecha"].dt.year
+                    evolucion["Mes_Numero"] = evolucion["Fecha"].dt.month
+                    evolucion["Mes"] = evolucion["Mes_Numero"].map(MESES)
+                    evolucion["Periodo"] = evolucion["Mes"].fillna("") + " " + evolucion["Año"].astype(str)
+                    evolucion = evolucion.groupby(["Año", "Mes_Numero", "Periodo"], as_index=False)["Costo"].sum()
+                    evolucion = evolucion.sort_values(["Año", "Mes_Numero"])
+                    evolucion["Costo_Millones"] = evolucion["Costo"] / 1_000_000
+                    fig = px.line(evolucion, x="Periodo", y="Costo_Millones", markers=True, template="plotly_white", custom_data=["Costo"])
+                    fig.update_traces(line=dict(width=3), marker=dict(size=7), hovertemplate="Periodo: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>")
+                    fig.update_layout(title_text="", xaxis_title="", yaxis_title="", showlegend=False, margin=dict(l=48, r=18, t=18, b=42))
+                    fig.update_yaxes(tickformat=".2f", ticksuffix="M", rangemode="tozero")
+                    fig = aplicar_formato_grafico(fig, 250)
+                    fig.update_layout(title_text="", margin=dict(l=50, r=18, t=18, b=42))
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("Sin costos con fecha para graficar.")
+            else:
+                st.info("Sin información de costos para graficar.")
+        else:
+            st.info("Sin información de costos para graficar.")
+
+    st.markdown('<div class="panel-title equipos-title-dashboard">Estado de los Equipos</div>', unsafe_allow_html=True)
+    cols = st.columns(min(7, max(1, len(equipos_f)))) if not equipos_f.empty else []
+    for idx, (_, fila) in enumerate(equipos_f.iterrows()):
+        with cols[idx % len(cols)]:
+            tarjeta_equipo(fila)
+
+
+st.markdown(
+    """
+<style>
+/* V5.9 aplicado antes de cargar la pantalla */
+:root {
+    --menu-panel-width: 345px !important;
+    --menu-inner-width: 304px !important;
+    --menu-panel-width-final: 345px !important;
+    --menu-inner-width-final: 304px !important;
+}
+
+section[data-testid="stSidebar"] {
+    width: 345px !important;
+    min-width: 345px !important;
+    max-width: 345px !important;
+}
+section[data-testid="stSidebar"] > div,
+section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+    width: 345px !important;
+    min-width: 345px !important;
+    max-width: 345px !important;
+}
+[data-testid="stAppViewContainer"] > .main,
+section.main,
+main {
+    margin-left: 345px !important;
+    width: calc(100vw - 345px) !important;
+    max-width: calc(100vw - 345px) !important;
+}
+
+/* Vuelve visible el botón nativo para minimizar/expandir el menú */
+[data-testid="collapsedControl"],
+button[title="Collapse sidebar"],
+button[title="Close sidebar"],
+button[aria-label="Collapse sidebar"],
+button[aria-label="Close sidebar"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    z-index: 10050 !important;
+}
+
+.main .block-container,
+.block-container,
+div[data-testid="stMainBlockContainer"],
+section.main > div {
+    margin-top: -62px !important;
+    padding-top: 0px !important;
+}
+.main-fixed-header {
+    min-height: 58px !important;
+    height: 58px !important;
+    margin-top: 0px !important;
+    margin-bottom: 12px !important;
+    padding-top: 8px !important;
+    align-items: flex-end !important;
+}
+.main-fixed-title,
+.title-main {
+    font-size: clamp(28px, 2.1vw, 37px) !important;
+    line-height: 1.03 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.main-fixed-logo img,
+.header-logo-box img {
+    width: 116px !important;
+    max-width: 116px !important;
+}
+.main-fixed-header-spacer,
+.header-separador {
+    height: 8px !important;
+    min-height: 8px !important;
+}
+
+.panel-title {
+    margin-top: 7px !important;
+    margin-bottom: 5px !important;
+}
+.chart-title {
+    margin-bottom: 2px !important;
+}
+
+/* Gráficos dentro del marco */
+[data-testid="stPlotlyChart"] {
+    overflow: hidden !important;
+    border-radius: 12px !important;
+    margin-bottom: 0px !important;
+}
+[data-testid="stPlotlyChart"] > div {
+    max-height: 310px !important;
+}
+
+/* Próximas mantenciones del Dashboard: compacto, sin montarse */
+.dashboard-proximas .next-item,
+.proximas-box .next-item {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    column-gap: 8px !important;
+    min-height: 34px !important;
+    padding: 2px 0 !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
+}
+.dashboard-proximas .next-info,
+.proximas-box .next-info {
+    min-width: 0 !important;
+}
+.dashboard-proximas .next-title,
+.proximas-box .next-title {
+    font-size: 11.8px !important;
+    line-height: 1.02 !important;
+    margin-bottom: 1px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.dashboard-proximas .next-sub-line,
+.proximas-box .next-sub-line,
+.dashboard-proximas .next-sub,
+.proximas-box .next-sub {
+    display: block !important;
+    font-size: 9.2px !important;
+    line-height: 1.05 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.dashboard-proximas .badge-days,
+.proximas-box .badge-days {
+    min-width: 76px !important;
+    max-width: 86px !important;
+    font-size: 8.7px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
 }
 </style>
     """,
@@ -8707,3 +9129,535 @@ div[data-testid="stVerticalBlock"] {
     """,
     unsafe_allow_html=True,
 )
+
+
+# =========================================================
+# AJUSTE FINAL V5.8: ESPACIO SUPERIOR Y DASHBOARD MÁS EQUILIBRADO
+# - Baja levemente los títulos para que no queden pegados al borde superior.
+# - Deja un pequeño espacio entre título/logo y contenido.
+# - Compacta la zona Gastos Adicionales / Próximas Mantenciones.
+# =========================================================
+st.markdown(
+    """
+<style>
+/* Baja levemente todas las páginas, sin volver a dejar el espacio superior excesivo */
+.main .block-container,
+.block-container,
+div[data-testid="stMainBlockContainer"],
+section.main > div {
+    margin-top: -72px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0.65rem !important;
+}
+
+.main-fixed-header {
+    min-height: 50px !important;
+    height: 50px !important;
+    margin-top: 0px !important;
+    margin-bottom: 9px !important;
+    padding-top: 4px !important;
+    padding-right: 10px !important;
+    align-items: flex-end !important;
+}
+
+.main-fixed-title,
+.title-main {
+    line-height: 1.03 !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.main-fixed-logo,
+.header-logo-box {
+    align-self: flex-end !important;
+    margin-bottom: 2px !important;
+}
+
+.main-fixed-logo img,
+.header-logo-box img {
+    width: 116px !important;
+    max-width: 116px !important;
+}
+
+.main-fixed-header-spacer,
+.header-separador {
+    height: 4px !important;
+    min-height: 4px !important;
+    max-height: 4px !important;
+}
+
+/* Menos aire entre secciones del Dashboard */
+div[data-testid="stVerticalBlock"] {
+    gap: 0.24rem !important;
+}
+
+.panel-title {
+    margin-top: 5px !important;
+    margin-bottom: 4px !important;
+}
+
+/* Tablas más compactas para que Gastos Adicionales se vea completo */
+.tabla-clara-wrap {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+.tabla-clara {
+    font-size: 10.8px !important;
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+.tabla-clara thead th,
+.tabla-clara tbody td {
+    padding: 5px 7px !important;
+    line-height: 1.16 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* Montos siempre en una línea */
+.tabla-clara td.monto,
+.tabla-clara th.monto,
+.tabla-clara td:last-child,
+.tabla-clara th:last-child {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-align: right !important;
+}
+
+/* Próximas Mantenciones más compactas verticalmente, pero legibles */
+.proximas-box .panel-title {
+    margin-top: 0px !important;
+}
+
+.next-item {
+    min-height: 28px !important;
+    padding: 2px 0 !important;
+}
+
+.next-title {
+    font-size: 10.8px !important;
+    line-height: 1.05 !important;
+}
+
+.next-sub {
+    font-size: 9px !important;
+    line-height: 1.05 !important;
+    margin-top: 0px !important;
+}
+
+.badge-days {
+    font-size: 8.7px !important;
+    padding: 3px 6px !important;
+    min-width: 72px !important;
+    text-align: center !important;
+}
+
+/* En pantallas bajas se conserva el aprovechamiento, pero sin cortar el título */
+@media (max-height: 850px) {
+    .main .block-container,
+    .block-container,
+    div[data-testid="stMainBlockContainer"],
+    section.main > div {
+        margin-top: -82px !important;
+    }
+
+    .main-fixed-header {
+        min-height: 46px !important;
+        height: 46px !important;
+        margin-bottom: 7px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# OVERRIDE VISUAL FINAL V5.9
+# =========================================================
+st.markdown(
+    """
+<style>
+:root {
+    --menu-panel-width: 345px !important;
+    --menu-inner-width: 304px !important;
+    --menu-panel-width-final: 345px !important;
+    --menu-inner-width-final: 304px !important;
+}
+section[data-testid="stSidebar"] {
+    width: 345px !important;
+    min-width: 345px !important;
+    max-width: 345px !important;
+}
+section[data-testid="stSidebar"] > div,
+section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+    width: 345px !important;
+    min-width: 345px !important;
+    max-width: 345px !important;
+}
+section[data-testid="stSidebar"] .menu-panel-content,
+section[data-testid="stSidebar"] .menu-line,
+section[data-testid="stSidebar"] .menu-footer-box,
+section[data-testid="stSidebar"] div[data-testid="stButton"],
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
+section[data-testid="stSidebar"] [data-baseweb="select"],
+section[data-testid="stSidebar"] [data-baseweb="select"] > div,
+section[data-testid="stSidebar"] .menu-brand,
+section[data-testid="stSidebar"] .menu-active-item {
+    width: 304px !important;
+    max-width: 304px !important;
+}
+section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    width: 304px !important;
+    min-height: 52px !important;
+    font-size: 15px !important;
+}
+[data-testid="stAppViewContainer"] > .main,
+section.main,
+main {
+    margin-left: 345px !important;
+    width: calc(100vw - 345px) !important;
+    max-width: calc(100vw - 345px) !important;
+}
+[data-testid="collapsedControl"],
+button[title="Collapse sidebar"],
+button[title="Close sidebar"],
+button[aria-label="Collapse sidebar"],
+button[aria-label="Close sidebar"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    z-index: 10050 !important;
+}
+.main .block-container,
+.block-container,
+div[data-testid="stMainBlockContainer"],
+section.main > div {
+    margin-top: -62px !important;
+    padding-top: 0px !important;
+}
+.main-fixed-header {
+    min-height: 58px !important;
+    height: 58px !important;
+    margin-top: 0px !important;
+    margin-bottom: 12px !important;
+    padding-top: 8px !important;
+    align-items: flex-end !important;
+}
+.main-fixed-title,
+.title-main {
+    font-size: clamp(28px, 2.1vw, 37px) !important;
+    line-height: 1.03 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.main-fixed-logo img,
+.header-logo-box img {
+    width: 116px !important;
+    max-width: 116px !important;
+}
+.main-fixed-header-spacer,
+.header-separador {
+    height: 8px !important;
+    min-height: 8px !important;
+}
+.panel-title {
+    margin-top: 7px !important;
+    margin-bottom: 5px !important;
+}
+[data-testid="stPlotlyChart"] {
+    overflow: hidden !important;
+    border-radius: 12px !important;
+}
+.dashboard-proximas .next-item,
+.proximas-box .next-item {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    column-gap: 8px !important;
+    min-height: 34px !important;
+    padding: 2px 0 !important;
+}
+.dashboard-proximas .next-title,
+.proximas-box .next-title {
+    font-size: 11.8px !important;
+    line-height: 1.02 !important;
+    margin-bottom: 1px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.dashboard-proximas .next-sub-line,
+.proximas-box .next-sub-line,
+.dashboard-proximas .next-sub,
+.proximas-box .next-sub {
+    display: block !important;
+    font-size: 9.2px !important;
+    line-height: 1.05 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.dashboard-proximas .badge-days,
+.proximas-box .badge-days {
+    min-width: 76px !important;
+    max-width: 86px !important;
+    font-size: 8.7px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
+# AJUSTE FINAL SOLICITADO V6.0
+# 1) Menú izquierdo 20% más angosto y botón nativo claro para ocultar/mostrar.
+# 2) Títulos de distribución dentro de fondo blanco del gráfico.
+# 3) Próximas mantenciones ordenadas, con tipografía uniforme y mejor espaciado.
+# 4) Gráfico de torta de Historial de Mantenciones encuadrado completo.
+# =========================================================
+st.markdown(
+    """
+<style>
+:root {
+    --menu-panel-width: 276px !important;
+    --menu-inner-width: 244px !important;
+    --menu-panel-width-final: 276px !important;
+    --menu-inner-width-final: 244px !important;
+    --content-padding-x: 16px !important;
+}
+
+/* 1. Menú izquierdo 20% más angosto */
+section[data-testid="stSidebar"] {
+    width: var(--menu-panel-width) !important;
+    min-width: var(--menu-panel-width) !important;
+    max-width: var(--menu-panel-width) !important;
+    transition: width .22s ease, min-width .22s ease, max-width .22s ease !important;
+}
+section[data-testid="stSidebar"] > div,
+section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+    width: var(--menu-panel-width) !important;
+    min-width: var(--menu-panel-width) !important;
+    max-width: var(--menu-panel-width) !important;
+    padding: 10px 12px 14px 12px !important;
+    box-sizing: border-box !important;
+}
+section[data-testid="stSidebar"] .menu-panel-content,
+section[data-testid="stSidebar"] .menu-brand,
+section[data-testid="stSidebar"] .menu-line,
+section[data-testid="stSidebar"] .menu-footer-box,
+section[data-testid="stSidebar"] div[data-testid="stButton"],
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
+section[data-testid="stSidebar"] [data-baseweb="select"],
+section[data-testid="stSidebar"] [data-baseweb="select"] > div,
+section[data-testid="stSidebar"] .menu-active-item,
+section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    width: var(--menu-inner-width) !important;
+    min-width: var(--menu-inner-width) !important;
+    max-width: var(--menu-inner-width) !important;
+    box-sizing: border-box !important;
+}
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,
+section[data-testid="stSidebar"] .menu-active-item {
+    min-height: 48px !important;
+    height: 48px !important;
+    font-size: 14px !important;
+    padding: 9px 11px !important;
+    border-radius: 14px !important;
+}
+[data-testid="stAppViewContainer"] > .main,
+div[data-testid="stMain"],
+section.main,
+main {
+    margin-left: var(--menu-panel-width) !important;
+    width: calc(100vw - var(--menu-panel-width)) !important;
+    max-width: calc(100vw - var(--menu-panel-width)) !important;
+}
+.main .block-container,
+.block-container,
+div[data-testid="stMainBlockContainer"] {
+    padding-left: var(--content-padding-x) !important;
+    padding-right: var(--content-padding-x) !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+/* Botón claro para minimizar/agrandar menú */
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"],
+button[title="Collapse sidebar"],
+button[title="Close sidebar"],
+button[title="Open sidebar"],
+button[aria-label="Collapse sidebar"],
+button[aria-label="Close sidebar"],
+button[aria-label="Open sidebar"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    position: fixed !important;
+    top: 14px !important;
+    left: calc(var(--menu-panel-width) - 17px) !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    border-radius: 999px !important;
+    background: #2563eb !important;
+    border: 2px solid #ffffff !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(15,23,42,.35) !important;
+    z-index: 100000 !important;
+}
+[data-testid="collapsedControl"] svg,
+[data-testid="stSidebarCollapsedControl"] svg,
+button[title="Collapse sidebar"] svg,
+button[title="Close sidebar"] svg,
+button[title="Open sidebar"] svg,
+button[aria-label="Collapse sidebar"] svg,
+button[aria-label="Close sidebar"] svg,
+button[aria-label="Open sidebar"] svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/* 2. Títulos de distribución dentro de tarjeta blanca */
+.chart-title,
+.panel-title.chart-title {
+    display: block !important;
+    width: 100% !important;
+    background: rgba(255,255,255,.82) !important;
+    border: 1px solid rgba(203,213,225,.75) !important;
+    border-bottom: 0 !important;
+    border-radius: 18px 18px 0 0 !important;
+    padding: 10px 14px 7px 14px !important;
+    margin: 8px 0 -1px 0 !important;
+    box-sizing: border-box !important;
+}
+.chart-title + div[data-testid="stPlotlyChart"],
+.panel-title.chart-title + div[data-testid="stPlotlyChart"] {
+    background: rgba(255,255,255,.82) !important;
+    border: 1px solid rgba(203,213,225,.75) !important;
+    border-top: 0 !important;
+    border-radius: 0 0 18px 18px !important;
+    padding: 4px 8px 8px 8px !important;
+    box-sizing: border-box !important;
+}
+
+/* 3. Próximas Mantenciones más ordenadas */
+.dashboard-proximas,
+.proximas-box {
+    padding: 8px 10px !important;
+    border-radius: 16px !important;
+}
+.dashboard-proximas .next-item,
+.proximas-box .next-item {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 92px !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    min-height: 44px !important;
+    padding: 6px 0 !important;
+    border-bottom: 1px solid rgba(148,163,184,.28) !important;
+}
+.dashboard-proximas .next-item:last-child,
+.proximas-box .next-item:last-child {
+    border-bottom: 0 !important;
+}
+.dashboard-proximas .next-title,
+.proximas-box .next-title {
+    font-size: 12.8px !important;
+    line-height: 1.15 !important;
+    font-weight: 950 !important;
+    margin: 0 0 2px 0 !important;
+    color: #0f172a !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+.dashboard-proximas .next-sub-line,
+.proximas-box .next-sub-line,
+.dashboard-proximas .next-sub,
+.proximas-box .next-sub {
+    font-size: 12.3px !important;
+    line-height: 1.18 !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    color: #0f172a !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+.dashboard-proximas .badge-days,
+.proximas-box .badge-days {
+    width: 92px !important;
+    min-width: 92px !important;
+    max-width: 92px !important;
+    font-size: 10.2px !important;
+    line-height: 1.1 !important;
+    font-weight: 950 !important;
+    padding: 7px 6px !important;
+    white-space: normal !important;
+    text-align: center !important;
+    border-radius: 999px !important;
+}
+
+/* 4. Historial de Mantenciones: torta completa dentro de pantalla */
+div[data-testid="stPlotlyChart"] {
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+.js-plotly-plot,
+.plot-container,
+.svg-container {
+    max-width: 100% !important;
+    overflow: visible !important;
+}
+
+/* Ajuste responsivo */
+@media (max-width: 1400px) {
+    :root {
+        --menu-panel-width: 260px !important;
+        --menu-inner-width: 228px !important;
+        --content-padding-x: 12px !important;
+    }
+    [data-testid="collapsedControl"],
+    [data-testid="stSidebarCollapsedControl"],
+    button[title="Collapse sidebar"],
+    button[title="Close sidebar"],
+    button[title="Open sidebar"],
+    button[aria-label="Collapse sidebar"],
+    button[aria-label="Close sidebar"],
+    button[aria-label="Open sidebar"] {
+        left: calc(var(--menu-panel-width) - 17px) !important;
+    }
+    .dashboard-proximas .next-item,
+    .proximas-box .next-item {
+        grid-template-columns: minmax(0, 1fr) 82px !important;
+    }
+    .dashboard-proximas .badge-days,
+    .proximas-box .badge-days {
+        width: 82px !important;
+        min-width: 82px !important;
+        max-width: 82px !important;
+        font-size: 9.5px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
