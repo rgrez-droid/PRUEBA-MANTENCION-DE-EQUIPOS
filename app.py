@@ -23,6 +23,37 @@ st.set_page_config(
 )
 
 # =========================================================
+# CORRECCIÓN DE CARGA INICIAL
+# =========================================================
+# Evita que las distintas versiones del sello de agua se muestren
+# como una pantalla inicial mientras Streamlit todavía carga los datos.
+# El selector tiene mayor especificidad que los estilos antiguos del archivo.
+st.markdown(
+    """
+<style>
+html body .stApp::before,
+html body .stApp::after,
+html body .stApp [class*="watermark"],
+html body .stApp [class*="Watermark"],
+html body .stApp [class*="sello"],
+html body .stApp [class*="Sello"],
+html body .stApp .saivam-watermark-fixed,
+html body .stApp .saivam-watermark-v38,
+html body .stApp .saivam-marca-principal {
+    content: none !important;
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    background: none !important;
+    background-image: none !important;
+    pointer-events: none !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
 # GOOGLE SHEETS
 # =========================================================
 # Esta app ya NO usa archivo Excel local.
@@ -6101,11 +6132,8 @@ div[data-testid="stMainBlockContainer"] {
         unsafe_allow_html=True,
     )
 
-    if sello_src:
-        st.markdown(
-            '<div class="saivam-marca-principal" style="background-image: url(\'' + sello_src + '\');"></div>',
-            unsafe_allow_html=True,
-        )
+    # La marca de agua de pantalla completa se desactiva para evitar
+    # que aparezca como portada durante la carga inicial.
 
 # =========================================================
 # EJECUCIÓN FINAL V4.8
