@@ -3593,12 +3593,14 @@ def construir_menu(equipos, mantenciones, gastos, combustible, checklist, docume
                 use_container_width=True,
             ):
                 st.query_params["pagina"] = clave
+                st.session_state["_saivam_mobile_menu_open"] = False
                 st.rerun()
 
     st.markdown('<hr class="menu-line">', unsafe_allow_html=True)
 
     if st.button("🔄 Actualizar", key="actualizar_base_datos", use_container_width=True):
         st.cache_data.clear()
+        st.session_state["_saivam_mobile_menu_open"] = False
         st.rerun()
 
     st.markdown('<hr class="menu-line">', unsafe_allow_html=True)
@@ -9166,12 +9168,14 @@ def construir_menu(equipos, mantenciones, gastos, combustible, checklist, docume
                 use_container_width=True,
             ):
                 st.query_params["pagina"] = clave
+                st.session_state["_saivam_mobile_menu_open"] = False
                 st.rerun()
 
     st.markdown('<hr class="menu-line">', unsafe_allow_html=True)
 
     if st.button("🔄" if colapsado else "🔄 Actualizar", key="actualizar_base_datos", help="Actualizar datos", use_container_width=True):
         st.cache_data.clear()
+        st.session_state["_saivam_mobile_menu_open"] = False
         st.rerun()
 
     pagina = f"{paginas_menu[pagina_actual][0]} {paginas_menu[pagina_actual][1]}"
@@ -9557,6 +9561,26 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
 
 aplicar_ajustes_finales_ui()
 
+
+# =========================================================
+# CONTROL MÓVIL NATIVO V7.3
+# Botón real de Streamlit: no utiliza etiquetas HTML interactivas.
+# En computador se oculta mediante CSS; en teléfono abre/cierra el sidebar.
+# =========================================================
+
+if "_saivam_mobile_menu_open" not in st.session_state:
+    st.session_state["_saivam_mobile_menu_open"] = False
+
+def _alternar_menu_movil():
+    st.session_state["_saivam_mobile_menu_open"] = not st.session_state["_saivam_mobile_menu_open"]
+
+with st.container(key="saivam_mobile_menu_control"):
+    st.button(
+        "✕" if st.session_state["_saivam_mobile_menu_open"] else "☰",
+        key="saivam_mobile_menu_button",
+        on_click=_alternar_menu_movil,
+        help="Cerrar menú" if st.session_state["_saivam_mobile_menu_open"] else "Abrir menú",
+    )
 
 try:
     mostrar_panel()
@@ -11625,177 +11649,149 @@ st.markdown(
 
 
 # =========================================================
-# AJUSTE RESPONSIVE FINAL V7.2: MENÚ MÓVIL REALMENTE PLEGABLE
-# - PC: conserva exactamente el menú fijo y la distribución existente.
-# - Teléfono vertical/horizontal: el menú parte cerrado y no ocupa ancho.
-# - Botón flotante abre/cierra el menú sin depender del control nativo de Streamlit.
-# - Las columnas se apilan o reorganizan para evitar contenido cortado.
+# RESPONSIVE FINAL V7.3
+# - Escritorio: no cambia la distribución existente.
+# - Teléfono vertical/horizontal: menú cerrado por defecto y botón Streamlit real.
 # =========================================================
 
-# Control CSS puro para abrir/cerrar el menú en teléfonos.
-# Se renderiza siempre, pero permanece completamente oculto en computador.
-st.markdown(
-    """
-<input
-    type="checkbox"
-    id="saivam-mobile-menu-toggle"
-    class="saivam-mobile-menu-checkbox"
-    aria-hidden="true"
->
-<label
-    for="saivam-mobile-menu-toggle"
-    class="saivam-mobile-menu-open"
-    title="Abrir menú"
-    aria-label="Abrir menú"
->☰</label>
-<label
-    for="saivam-mobile-menu-toggle"
-    class="saivam-mobile-menu-backdrop"
-    aria-label="Cerrar menú"
-></label>
-<label
-    for="saivam-mobile-menu-toggle"
-    class="saivam-mobile-menu-close"
-    title="Cerrar menú"
-    aria-label="Cerrar menú"
->×</label>
-    """,
-    unsafe_allow_html=True,
-)
+_menu_movil_abierto = bool(st.session_state.get("_saivam_mobile_menu_open", False))
+_menu_transform = "translate3d(0,0,0)" if _menu_movil_abierto else "translate3d(-110%,0,0)"
+_menu_visibility = "visible" if _menu_movil_abierto else "hidden"
+_menu_pointer = "auto" if _menu_movil_abierto else "none"
+_boton_left = "calc(var(--mobile-menu-width) - 54px)" if _menu_movil_abierto else "max(10px, env(safe-area-inset-left))"
+_boton_bg = "#ef4444" if _menu_movil_abierto else "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
 
 st.markdown(
-    """
+    f"""
 <style>
-/* Controles móviles completamente invisibles en PC. */
-.saivam-mobile-menu-checkbox,
-.saivam-mobile-menu-open,
-.saivam-mobile-menu-close,
-.saivam-mobile-menu-backdrop {
+/* En escritorio el nuevo control no existe visualmente. */
+.st-key-saivam_mobile_menu_control,
+div[class*="st-key-saivam_mobile_menu_control"] {{
     display: none !important;
-}
+}}
 
-/*
-   Detecta teléfonos por ancho y también por pantalla táctil.
-   La segunda condición permite corregir iPhone en horizontal,
-   aunque Safari informe un viewport mayor a 768 px.
-*/
+/* Safari/iPhone horizontal puede informar un ancho mayor; se complementa con pointer coarse. */
 @media (max-width: 768px),
-       (max-width: 1100px) and (max-height: 650px),
-       (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+       (max-width: 1100px) and (max-height: 700px),
+       (hover: none) and (pointer: coarse) and (max-width: 1100px) {{
 
-    :root {
-        --mobile-menu-width: min(88vw, 300px) !important;
-        --mobile-content-padding: 10px !important;
-    }
+    :root {{
+        --mobile-menu-width: min(86vw, 300px) !important;
+        --mobile-page-padding: 10px !important;
+    }}
 
     html,
     body,
     .stApp,
-    [data-testid="stAppViewContainer"] {
+    [data-testid="stAppViewContainer"] {{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
         overflow-x: hidden !important;
-    }
+    }}
 
-    /* Oculta controles nativos para evitar conflictos con el botón propio. */
+    /* Control nativo real de Streamlit. */
+    .st-key-saivam_mobile_menu_control,
+    div[class*="st-key-saivam_mobile_menu_control"] {{
+        display: block !important;
+        position: fixed !important;
+        top: max(10px, env(safe-area-inset-top)) !important;
+        left: {_boton_left} !important;
+        width: 44px !important;
+        height: 44px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 2147483647 !important;
+    }}
+
+    .st-key-saivam_mobile_menu_control [data-testid="stButton"],
+    div[class*="st-key-saivam_mobile_menu_control"] [data-testid="stButton"] {{
+        width: 44px !important;
+        height: 44px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }}
+
+    .st-key-saivam_mobile_menu_control button,
+    div[class*="st-key-saivam_mobile_menu_control"] button {{
+        width: 44px !important;
+        min-width: 44px !important;
+        max-width: 44px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+        max-height: 44px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 13px !important;
+        border: 2px solid #ffffff !important;
+        background: {_boton_bg} !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        font-size: 24px !important;
+        line-height: 1 !important;
+        font-weight: 950 !important;
+        box-shadow: 0 8px 24px rgba(15,23,42,.42) !important;
+    }}
+
+    /* Oculta controles laterales nativos que estaban en conflicto. */
     [data-testid="stSidebarCollapsedControl"],
     [data-testid="collapsedControl"],
     [data-testid="stSidebarCollapseButton"],
-    button[kind="header"],
     button[title="Open sidebar"],
     button[title="Close sidebar"],
-    button[title="Collapse sidebar"],
     button[aria-label="Open sidebar"],
-    button[aria-label="Close sidebar"],
-    button[aria-label="Collapse sidebar"] {
+    button[aria-label="Close sidebar"] {{
         display: none !important;
         visibility: hidden !important;
-        opacity: 0 !important;
         pointer-events: none !important;
-    }
+    }}
 
-    header[data-testid="stHeader"] {
+    header[data-testid="stHeader"] {{
         display: none !important;
         visibility: hidden !important;
         height: 0 !important;
         min-height: 0 !important;
         max-height: 0 !important;
-    }
+    }}
 
-    /* Checkbox técnico: conserva estado sin JavaScript. */
-    .saivam-mobile-menu-checkbox {
+    /* Sidebar móvil: no reserva ancho cuando está cerrado. */
+    html body section[data-testid="stSidebar"] {{
         display: block !important;
         position: fixed !important;
-        left: -9999px !important;
-        top: -9999px !important;
-        width: 1px !important;
-        height: 1px !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    /* Botón flotante para abrir el menú. */
-    .saivam-mobile-menu-open {
-        display: flex !important;
-        position: fixed !important;
-        top: max(10px, env(safe-area-inset-top)) !important;
-        left: max(10px, env(safe-area-inset-left)) !important;
-        width: 44px !important;
-        height: 44px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        border-radius: 13px !important;
-        background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important;
-        border: 2px solid rgba(255,255,255,.96) !important;
-        color: #ffffff !important;
-        font-size: 25px !important;
-        line-height: 1 !important;
-        font-weight: 950 !important;
-        box-shadow: 0 8px 22px rgba(15,23,42,.38) !important;
-        cursor: pointer !important;
-        user-select: none !important;
-        z-index: 2147483646 !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Menú fuera de la pantalla por defecto. */
-    html body section[data-testid="stSidebar"] {
-        display: block !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        bottom: 0 !important;
+        inset: 0 auto 0 0 !important;
         width: var(--mobile-menu-width) !important;
         min-width: var(--mobile-menu-width) !important;
         max-width: var(--mobile-menu-width) !important;
         height: 100vh !important;
         height: 100dvh !important;
         margin: 0 !important;
-        transform: translate3d(-110%, 0, 0) !important;
-        visibility: hidden !important;
+        transform: {_menu_transform} !important;
+        visibility: {_menu_visibility} !important;
         opacity: 1 !important;
-        pointer-events: none !important;
+        pointer-events: {_menu_pointer} !important;
         overflow-x: hidden !important;
         overflow-y: auto !important;
         overscroll-behavior: contain !important;
-        transition: transform .22s ease, visibility 0s linear .22s !important;
-        z-index: 2147483644 !important;
-        box-shadow: 14px 0 34px rgba(2,6,23,.46) !important;
-    }
+        transition: transform .22s ease, visibility .22s ease !important;
+        z-index: 2147483645 !important;
+        background: #020617 !important;
+        box-shadow: 14px 0 34px rgba(2,6,23,.48) !important;
+    }}
 
     html body section[data-testid="stSidebar"] > div,
-    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {{
         width: var(--mobile-menu-width) !important;
         min-width: var(--mobile-menu-width) !important;
         max-width: var(--mobile-menu-width) !important;
         min-height: 100vh !important;
         min-height: 100dvh !important;
-        padding: 12px 12px calc(24px + env(safe-area-inset-bottom)) 12px !important;
+        padding: 10px 12px calc(28px + env(safe-area-inset-bottom)) 12px !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
-        overflow-y: visible !important;
-    }
+    }}
 
     html body section[data-testid="stSidebar"] .menu-panel-content,
     html body section[data-testid="stSidebar"] .menu-brand,
@@ -11807,16 +11803,16 @@ st.markdown(
     html body section[data-testid="stSidebar"] [data-baseweb="select"],
     html body section[data-testid="stSidebar"] [data-baseweb="select"] > div,
     html body section[data-testid="stSidebar"] .menu-active-item,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button {{
         width: calc(var(--mobile-menu-width) - 24px) !important;
         min-width: 0 !important;
         max-width: calc(var(--mobile-menu-width) - 24px) !important;
         box-sizing: border-box !important;
-    }
+    }}
 
     html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-    html body section[data-testid="stSidebar"] .menu-active-item {
-        min-height: 44px !important;
+    html body section[data-testid="stSidebar"] .menu-active-item {{
+        min-height: 43px !important;
         height: auto !important;
         padding: 9px 10px !important;
         font-size: 13px !important;
@@ -11824,95 +11820,49 @@ st.markdown(
         white-space: normal !important;
         overflow: visible !important;
         text-overflow: clip !important;
-    }
+    }}
 
-    /* Abre el menú al marcar el checkbox. */
-    html body:has(#saivam-mobile-menu-toggle:checked)
-    section[data-testid="stSidebar"] {
-        transform: translate3d(0, 0, 0) !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-        transition: transform .22s ease, visibility 0s linear 0s !important;
-    }
-
-    /* Fondo semitransparente que también sirve para cerrar. */
-    html body:has(#saivam-mobile-menu-toggle:checked)
-    .saivam-mobile-menu-backdrop {
-        display: block !important;
-        position: fixed !important;
-        inset: 0 !important;
-        background: rgba(2,6,23,.50) !important;
-        backdrop-filter: blur(1.5px) !important;
-        -webkit-backdrop-filter: blur(1.5px) !important;
-        cursor: pointer !important;
-        z-index: 2147483643 !important;
-    }
-
-    html body:has(#saivam-mobile-menu-toggle:checked)
-    .saivam-mobile-menu-open {
-        display: none !important;
-    }
-
-    html body:has(#saivam-mobile-menu-toggle:checked)
-    .saivam-mobile-menu-close {
-        display: flex !important;
-        position: fixed !important;
-        top: max(10px, env(safe-area-inset-top)) !important;
-        left: calc(var(--mobile-menu-width) - 54px) !important;
-        width: 42px !important;
-        height: 42px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        border-radius: 13px !important;
-        background: #ef4444 !important;
-        border: 2px solid #ffffff !important;
-        color: #ffffff !important;
-        font-size: 31px !important;
-        line-height: .8 !important;
-        font-weight: 800 !important;
-        box-shadow: 0 8px 22px rgba(15,23,42,.34) !important;
-        cursor: pointer !important;
-        user-select: none !important;
-        z-index: 2147483647 !important;
-        box-sizing: border-box !important;
-    }
-
-    /* El contenido principal ya no reserva espacio para el menú. */
+    /* Contenido principal: ancho completo, sin el margen de 280/300 px de PC. */
     html body [data-testid="stAppViewContainer"] > .main,
     html body div[data-testid="stMain"],
     html body section.main,
-    html body main {
+    html body main {{
         margin-left: 0 !important;
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
         overflow-x: hidden !important;
         box-sizing: border-box !important;
-    }
+    }}
 
     html body .main .block-container,
     html body .block-container,
     html body div[data-testid="stMainBlockContainer"],
-    html body section.main > div {
+    html body section.main > div {{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
         margin: 0 !important;
-        padding: calc(62px + env(safe-area-inset-top)) var(--mobile-content-padding)
-                 calc(78px + env(safe-area-inset-bottom)) var(--mobile-content-padding) !important;
+        padding: calc(62px + env(safe-area-inset-top)) var(--mobile-page-padding)
+                 calc(74px + env(safe-area-inset-bottom)) var(--mobile-page-padding) !important;
         overflow-x: hidden !important;
         box-sizing: border-box !important;
-    }
+    }}
 
-    /* Elimina anchos mínimos heredados desde la versión de escritorio. */
     html body .main *,
-    html body main * {
+    html body main * {{
         min-width: 0;
         box-sizing: border-box;
-    }
+    }}
+
+    .saivam-marca-principal {{
+        left: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+    }}
 
     .main-fixed-header,
-    .header-principal {
+    .header-principal {{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
@@ -11922,253 +11872,156 @@ st.markdown(
         margin: 0 0 8px 0 !important;
         gap: 8px !important;
         overflow: hidden !important;
-    }
+    }}
 
     .main-fixed-title,
-    .title-main {
+    .title-main {{
         min-width: 0 !important;
         max-width: 100% !important;
-        font-size: clamp(20px, 5.6vw, 29px) !important;
+        font-size: clamp(20px, 6vw, 29px) !important;
         line-height: 1.08 !important;
         white-space: normal !important;
         overflow-wrap: anywhere !important;
-        word-break: normal !important;
-    }
+    }}
 
     .main-fixed-logo,
-    .header-logo-box {
+    .header-logo-box {{
         flex: 0 0 auto !important;
-        width: auto !important;
-        max-width: 25% !important;
-    }
+        max-width: 28% !important;
+    }}
 
     .main-fixed-logo img,
-    .header-logo-box img {
-        width: 70px !important;
-        max-width: 70px !important;
+    .header-logo-box img {{
+        width: min(112px, 27vw) !important;
+        max-width: 100% !important;
         height: auto !important;
-        object-fit: contain !important;
-    }
+    }}
 
-    /* Base común: los bloques pueden envolver sus columnas. */
-    html body [data-testid="stHorizontalBlock"] {
+    /* En vertical: todos los bloques quedan en una sola columna legible. */
+    html body [data-testid="stHorizontalBlock"] {{
         display: flex !important;
-        flex-wrap: wrap !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        gap: .55rem !important;
-        align-items: stretch !important;
-    }
-
-    html body [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    .kpi-card,
-    .chart-card,
-    .panel-card,
-    .equipo-card,
-    .dashboard-proximas-v68,
-    .tabla-clara-wrap,
-    [data-testid="stPlotlyChart"],
-    [data-testid="stDataFrame"],
-    [data-testid="stTable"] {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    [data-testid="stPlotlyChart"],
-    .js-plotly-plot,
-    .plot-container,
-    .svg-container {
-        max-width: 100% !important;
-        overflow: hidden !important;
-    }
-
-    .modebar-container,
-    .modebar {
-        display: none !important;
-    }
-
-    /* Tablas: conservar columnas legibles mediante desplazamiento táctil. */
-    .tabla-clara-wrap,
-    [data-testid="stDataFrame"],
-    [data-testid="stTable"] {
-        overflow-x: auto !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        overscroll-behavior-inline: contain !important;
-    }
-
-    .tabla-clara {
-        width: max-content !important;
-        min-width: 680px !important;
-        table-layout: auto !important;
-    }
-
-    .tabla-clara th,
-    .tabla-clara td {
-        min-width: 86px !important;
-        padding: 7px 8px !important;
-        white-space: normal !important;
-        word-break: normal !important;
-        overflow-wrap: normal !important;
-    }
-
-    /* Próximas mantenciones: una sola columna interna. */
-    .dashboard-proximas-v68 .next-row-v68,
-    .dashboard-proximas-v68 .next-item.next-row-v68 {
-        grid-template-columns: minmax(0, 1fr) !important;
-        row-gap: 7px !important;
-        min-height: 0 !important;
-        overflow: visible !important;
-    }
-
-    .dashboard-proximas-v68 .next-badge-v68,
-    .dashboard-proximas-v68 .badge-days.next-badge-v68 {
-        justify-self: start !important;
-        width: auto !important;
-        min-width: 108px !important;
-        max-width: 100% !important;
-    }
-}
-
-/* =========================================================
-   TELÉFONO VERTICAL
-   ========================================================= */
-@media (max-width: 600px) and (orientation: portrait),
-       (hover: none) and (pointer: coarse) and (max-width: 600px) {
-
-    :root {
-        --mobile-menu-width: min(88vw, 294px) !important;
-        --mobile-content-padding: 8px !important;
-    }
-
-    /* Todo el contenido general se apila verticalmente. */
-    html body [data-testid="stHorizontalBlock"] {
         flex-direction: column !important;
-    }
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        gap: .55rem !important;
+    }}
 
-    html body [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+    html body [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
         flex: 1 1 100% !important;
         width: 100% !important;
+        min-width: 0 !important;
         max-width: 100% !important;
-    }
+    }}
 
-    /* Solo los KPI se muestran de dos en dos. */
-    html body [data-testid="stHorizontalBlock"]:has(.kpi-card) {
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: .45rem !important;
-    }
-
-    html body [data-testid="stHorizontalBlock"]:has(.kpi-card)
-    > [data-testid="column"] {
-        flex: 1 1 calc(50% - .25rem) !important;
-        width: calc(50% - .25rem) !important;
-        max-width: calc(50% - .25rem) !important;
-    }
-
-    .kpi-card {
-        min-height: 108px !important;
-        padding: 10px !important;
+    .kpi-card,
+    .panel-box,
+    .chart-card,
+    .equipo-card,
+    .dashboard-proximas,
+    .dashboard-proximas-v68,
+    .proximas-box {{
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
         overflow: hidden !important;
-    }
-
-    .kpi-value {
-        font-size: clamp(17px, 5.5vw, 23px) !important;
-        overflow-wrap: anywhere !important;
-    }
+    }}
 
     .panel-title,
     .page-section-title,
-    .chart-title {
-        font-size: 18px !important;
-        line-height: 1.12 !important;
+    .chart-title {{
+        font-size: clamp(17px, 5vw, 22px) !important;
+        line-height: 1.15 !important;
         white-space: normal !important;
         overflow-wrap: anywhere !important;
-    }
+    }}
 
-    .equipo-card {
-        padding: 11px !important;
-    }
+    [data-testid="stPlotlyChart"],
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"] {{
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }}
+
+    [data-testid="stDataFrame"] {{
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }}
+
+    [data-testid="stPlotlyChart"] {{
+        min-height: 260px !important;
+        overflow: hidden !important;
+    }}
+
+    [data-testid="stPlotlyChart"] > div,
+    [data-testid="stPlotlyChart"] iframe {{
+        width: 100% !important;
+        max-width: 100% !important;
+    }}
 
     .equipo-img,
-    .equipo-img-placeholder {
+    .equipo-img-placeholder {{
         width: 100% !important;
-        height: 160px !important;
-        min-height: 160px !important;
+        height: 170px !important;
+        min-height: 170px !important;
         object-fit: cover !important;
-    }
+    }}
 
-    [data-testid="stPlotlyChart"] {
-        min-height: 270px !important;
-    }
-}
+    .dashboard-proximas-v68 .next-row-v68,
+    .dashboard-proximas-v68 .next-item.next-row-v68 {{
+        grid-template-columns: minmax(0, 1fr) !important;
+        row-gap: 7px !important;
+    }}
 
-/* =========================================================
-   TELÉFONO HORIZONTAL
-   ========================================================= */
+    .dashboard-proximas-v68 .next-badge-v68,
+    .dashboard-proximas-v68 .badge-days.next-badge-v68 {{
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }}
+}}
+
+/* Teléfono horizontal: dos columnas generales y tres KPI por fila. */
 @media (min-width: 601px) and (max-width: 1100px)
-       and (orientation: landscape) and (max-height: 650px),
+       and (orientation: landscape) and (max-height: 700px),
        (hover: none) and (pointer: coarse)
-       and (min-width: 601px) and (max-width: 1100px) {
+       and (min-width: 601px) and (max-width: 1100px) {{
 
-    :root {
+    :root {{
         --mobile-menu-width: min(42vw, 320px) !important;
-        --mobile-content-padding: 10px !important;
-    }
+    }}
 
-    /* Dos columnas generales en horizontal. */
-    html body [data-testid="stHorizontalBlock"] {
+    html body [data-testid="stHorizontalBlock"] {{
         flex-direction: row !important;
         flex-wrap: wrap !important;
-    }
+    }}
 
-    html body [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-        flex: 1 1 calc(50% - .30rem) !important;
-        width: calc(50% - .30rem) !important;
-        max-width: calc(50% - .30rem) !important;
-    }
+    html body [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+        flex: 1 1 calc(50% - .35rem) !important;
+        width: calc(50% - .35rem) !important;
+        max-width: calc(50% - .35rem) !important;
+    }}
 
-    /* KPI: tres por fila. */
     html body [data-testid="stHorizontalBlock"]:has(.kpi-card)
-    > [data-testid="column"] {
-        flex: 1 1 calc(33.333% - .38rem) !important;
-        width: calc(33.333% - .38rem) !important;
-        max-width: calc(33.333% - .38rem) !important;
-    }
+    > [data-testid="column"] {{
+        flex: 1 1 calc(33.333% - .4rem) !important;
+        width: calc(33.333% - .4rem) !important;
+        max-width: calc(33.333% - .4rem) !important;
+    }}
 
-    .kpi-card {
-        min-height: 98px !important;
+    .kpi-card {{
+        min-height: 100px !important;
         padding: 9px 10px !important;
-    }
-
-    .main-fixed-title,
-    .title-main {
-        font-size: clamp(21px, 3.7vw, 29px) !important;
-    }
-
-    .panel-title,
-    .page-section-title,
-    .chart-title {
-        font-size: 18px !important;
-    }
-
-    [data-testid="stPlotlyChart"] {
-        min-height: 250px !important;
-    }
+    }}
 
     .equipo-img,
-    .equipo-img-placeholder {
-        height: 135px !important;
-        min-height: 135px !important;
-    }
-}
+    .equipo-img-placeholder {{
+        height: 145px !important;
+        min-height: 145px !important;
+    }}
+}}
 </style>
     """,
     unsafe_allow_html=True,
