@@ -12708,3 +12708,70 @@ html body .stApp .saivam-marca-principal {
     """,
     unsafe_allow_html=True,
 )
+
+# =========================================================
+# AJUSTE FINAL V9.2 - SELLO SAIVAM A PÁGINA COMPLETA
+# - Ocupa prácticamente toda el área principal.
+# - Permanece visible al navegar y al desplazarse.
+# - Se muestra con mayor intensidad sin bloquear controles.
+# =========================================================
+st.markdown(
+    """
+<style>
+html body .stApp .marca-saivam-oficial-v9 {
+    position: fixed !important;
+    top: 0 !important;
+    left: var(--menu-panel-width, 280px) !important;
+    width: calc(100vw - var(--menu-panel-width, 280px)) !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    z-index: 85 !important;
+    background: transparent !important;
+}
+
+html body .stApp .marca-saivam-oficial-v9 img {
+    display: block !important;
+    width: 96% !important;
+    height: 94% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    opacity: 0.115 !important;
+    filter: saturate(1.04) contrast(1.06) !important;
+    transform: none !important;
+}
+
+/* El menú siempre queda por encima del sello. */
+section[data-testid="stSidebar"] {
+    position: fixed !important;
+    z-index: 1000 !important;
+}
+
+/* En dispositivos móviles utiliza toda la pantalla disponible. */
+@media (max-width: 1100px), (hover: none) and (pointer: coarse) {
+    html body .stApp .marca-saivam-oficial-v9 {
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+
+    html body .stApp .marca-saivam-oficial-v9 img {
+        width: 94vw !important;
+        height: 90vh !important;
+        opacity: 0.10 !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
