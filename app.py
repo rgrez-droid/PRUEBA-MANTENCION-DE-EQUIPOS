@@ -9689,9 +9689,7 @@ def construir_menu(equipos, mantenciones, gastos, combustible, checklist, docume
             <div class="menu-info">
                 <b>Contrato:</b> {CONTRATO}<br>
                 <b>Cliente:</b> {CLIENTE}<br>
-                <b>Versión:</b> {VERSION}<br>
-                <b>Actualización automática:</b><br>
-                cada {CACHE_GOOGLE_SHEETS_SEGUNDOS} segundos
+                <b>Versión:</b> {VERSION}
             </div>
         </div>
         """,
@@ -12411,3 +12409,145 @@ div[class*="st-key-saivam_mobile_menu_control"] {{
     """,
     unsafe_allow_html=True,
 )
+
+# =========================================================
+# AJUSTE FINAL V8.1 - MENÚ Y FILTROS MÁS COMPACTOS
+# Reduce moderadamente la separación vertical sin cambiar
+# el ancho, alto ni posición de los elementos seleccionados.
+# =========================================================
+st.markdown(
+    """
+<style>
+/* Reduce el espacio automático entre bloques internos del sidebar */
+section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] {
+    gap: 0.22rem !important;
+}
+
+/* Menor separación entre cada opción del menú */
+section[data-testid="stSidebar"] div[data-testid="stButton"] {
+    margin-top: 0px !important;
+    margin-bottom: 4px !important;
+}
+
+/* Mantiene todos los botones con el mismo tamaño */
+section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
+section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+/* Acerca el último menú a los filtros Equipo, Año y Mes */
+section[data-testid="stSidebar"] .menu-line {
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+}
+
+/* Compacta ligeramente los filtros sin reducir su legibilidad */
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+    margin-top: 0px !important;
+    margin-bottom: 2px !important;
+}
+
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label {
+    margin-bottom: 2px !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# AJUSTE FINAL V8.2 - SELLO SAIVAM COMPLETO EN TODOS LOS MENÚS
+# - Usa exclusivamente la imagen cuyo nombre base es "saivam".
+# - La muestra completa, centrada y sin recortes.
+# - Reemplaza las versiones anteriores del sello de agua.
+# =========================================================
+def _ruta_saivam_exacta_final():
+    carpetas = [".", "assets", "imagenes", "images", "img", "fotos"]
+    extensiones = [".png", ".jpg", ".jpeg", ".webp", ".PNG", ".JPG", ".JPEG", ".WEBP"]
+
+    # Prioridad absoluta: archivo llamado exactamente saivam + extensión.
+    for carpeta in carpetas:
+        for extension in extensiones:
+            candidato = os.path.join(carpeta, "saivam" + extension)
+            if os.path.isfile(candidato):
+                return candidato
+
+    # Respaldo para diferencias de mayúsculas/minúsculas en GitHub/Linux.
+    for carpeta in carpetas:
+        if not os.path.isdir(carpeta):
+            continue
+        for archivo in glob.glob(os.path.join(carpeta, "*")):
+            if not os.path.isfile(archivo):
+                continue
+            nombre_base, extension = os.path.splitext(os.path.basename(archivo))
+            if nombre_base.lower() == "saivam" and extension.lower() in [".png", ".jpg", ".jpeg", ".webp"]:
+                return archivo
+
+    return None
+
+
+def aplicar_sello_saivam_final():
+    ruta = _ruta_saivam_exacta_final()
+    if not ruta:
+        return
+
+    imagen_b64 = archivo_a_base64(ruta)
+    if not imagen_b64:
+        return
+
+    mime = extension_mime(ruta)
+    sello_src = f"data:{mime};base64,{imagen_b64}"
+
+    st.markdown(
+        f"""
+<style>
+/* Oculta sellos antiguos para evitar duplicados. */
+html body .stApp .marca-fondo-global,
+html body .stApp .saivam-watermark-fixed,
+html body .stApp .saivam-watermark-v38,
+html body .stApp .saivam-marca-principal {{
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}}
+
+/* Sello único y global: aparece en Resumen Ejecutivo y en todos los demás menús. */
+html body .stApp::after {{
+    content: "" !important;
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: calc(var(--menu-panel-width, 280px) + (100vw - var(--menu-panel-width, 280px)) / 2) !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(64vw, 920px) !important;
+    height: min(66vh, 680px) !important;
+    background-image: url('{sello_src}') !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: contain !important;
+    background-color: transparent !important;
+    opacity: 0.055 !important;
+    z-index: 999 !important;
+    pointer-events: none !important;
+    user-select: none !important;
+}}
+
+/* En teléfonos el sello se centra respecto de toda la pantalla. */
+@media (max-width: 1100px), (hover: none) and (pointer: coarse) {{
+    html body .stApp::after {{
+        left: 50vw !important;
+        width: 86vw !important;
+        height: 64vh !important;
+        opacity: 0.05 !important;
+    }}
+}}
+</style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+aplicar_sello_saivam_final()
