@@ -4680,8 +4680,8 @@ def mostrar_panel():
     st.markdown(
         f"""
         <div style="text-align:center; color:#64748b; font-size:12px; padding:22px; line-height:1.55;">
-            <div>Panel desarrollado por <b>{AUTOR}</b></div>
-            <div>{EMPRESA} - Versión {VERSION}</div>
+            <div>Panel desarrollado por.</div>
+            <div><b>Ricardo Grez – Contract Manager | SAIVAM</b></div>
         </div>
         """,
         unsafe_allow_html=True,
