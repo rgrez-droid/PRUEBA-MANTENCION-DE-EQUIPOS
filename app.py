@@ -9559,7 +9559,392 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
                 tarjeta_equipo(fila)
 
 
+# =========================================================
+# AJUSTE FINAL SOLICITADO V8.0
+# - Menú estable: todos los ítems usan el mismo componente y tamaño.
+# - "Dashboard Ejecutivo" pasa a llamarse "Resumen Ejecutivo".
+# - Se elimina el botón manual "Actualizar".
+# - Sello de agua global visible en todas las páginas.
+# - Documentación Legal incorpora KPI y control profesional de vencimientos.
+# =========================================================
+
+
+def construir_menu(equipos, mantenciones, gastos, combustible, checklist, documentos):
+    """Menú lateral fijo y estable, sin cambios de tamaño al seleccionar una página."""
+    ruta_logo_menu = (
+        buscar_imagen_por_nombre("logoredondo")
+        or buscar_imagen_por_nombre("logo redondo")
+        or buscar_imagen_por_nombre("logo_redondo")
+        or buscar_imagen_por_nombre("logo-redondo")
+    )
+
+    if ruta_logo_menu:
+        logo_menu_b64 = archivo_a_base64(ruta_logo_menu)
+        logo_menu_mime = extension_mime(ruta_logo_menu)
+        icono_menu_html = (
+            '<div class="menu-icon-img">'
+            f'<img src="data:{logo_menu_mime};base64,{logo_menu_b64}" alt="Logo menú">'
+            '</div>'
+        )
+    else:
+        icono_menu_html = '<div class="menu-icon">🚜</div>'
+
+    st.markdown(
+        f"""
+        <div class="menu-bg"></div>
+        <div class="menu-marker menu-state-expanded"></div>
+        <div class="menu-panel-content">
+            <div class="menu-brand">
+                {icono_menu_html}
+                <div class="menu-text">
+                    <div class="menu-title">SEGUIMIENTO<br>EQUIPOS MÓVILES</div>
+                    <div class="menu-subtitle">SAIVAM · MULCHÉN</div>
+                </div>
+            </div>
+            <hr class="menu-line">
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # El tercer valor es el nombre interno que ya utiliza mostrar_panel().
+    paginas_menu = {
+        "panel": ("📊", "Resumen Ejecutivo", "📊 Dashboard Ejecutivo"),
+        "equipos": ("🚚", "Equipos", "🚚 Equipos"),
+        "mantenciones": ("🛠️", "Mantenciones", "🛠️ Mantenciones"),
+        "repuestos": ("🧾", "Gastos Adicionales", "🧾 Gastos Adicionales"),
+        "costos": ("💰", "Costos", "💰 Costos"),
+        "proximas": ("📅", "Próximas Mantenciones", "📅 Próximas Mantenciones"),
+        "alertas": ("🔔", "Alertas", "🔔 Alertas"),
+        "documentos": ("📁", "Documentación Legal", "📁 Documentación Legal"),
+    }
+
+    pagina_actual = st.query_params.get("pagina", "panel")
+    if pagina_actual not in paginas_menu:
+        pagina_actual = "panel"
+        st.query_params["pagina"] = "panel"
+
+    # Todos los ítems son botones nativos. El activo queda deshabilitado y se
+    # pinta mediante CSS, por lo que no cambia de posición, ancho ni altura.
+    for clave, (icono, nombre_visible, _) in paginas_menu.items():
+        es_actual = clave == pagina_actual
+        presionado = st.button(
+            f"{icono} {nombre_visible}",
+            key=f"menu_estable_{clave}",
+            help=nombre_visible,
+            use_container_width=True,
+            disabled=es_actual,
+        )
+        if presionado:
+            st.query_params["pagina"] = clave
+            st.session_state["_saivam_mobile_menu_open"] = False
+            st.rerun()
+
+    # No se agrega botón Actualizar: la información ya se renueva mediante
+    # el TTL definido en CACHE_GOOGLE_SHEETS_SEGUNDOS.
+    st.markdown('<hr class="menu-line">', unsafe_allow_html=True)
+
+    equipos_disponibles = (
+        ["Todos los equipos"]
+        + equipos["Equipo"]
+        .dropna()
+        .astype(str)
+        .str.strip()
+        .loc[lambda x: x != ""]
+        .drop_duplicates()
+        .tolist()
+    )
+
+    anios_base = pd.concat(
+        [
+            mantenciones["Año"],
+            gastos["Año"],
+            combustible["Año"],
+            checklist["Año"],
+            documentos["Año"],
+        ],
+        ignore_index=True,
+    )
+
+    anios_disponibles = sorted(
+        [int(x) for x in anios_base.dropna().unique().tolist() if str(x) != "nan"]
+    )
+    opciones_anio = ["Todos"] + anios_disponibles
+    opciones_mes = ["Todos"] + list(MESES.values())
+
+    if st.session_state.get("filtro_equipo_menu", "Todos los equipos") not in equipos_disponibles:
+        st.session_state["filtro_equipo_menu"] = "Todos los equipos"
+    if st.session_state.get("filtro_anio_menu", "Todos") not in opciones_anio:
+        st.session_state["filtro_anio_menu"] = "Todos"
+    if st.session_state.get("filtro_mes_menu", "Todos") not in opciones_mes:
+        st.session_state["filtro_mes_menu"] = "Todos"
+
+    filtro_equipo = st.selectbox("Equipo", equipos_disponibles, key="filtro_equipo_menu")
+    filtro_anio = st.selectbox("Año", opciones_anio, key="filtro_anio_menu")
+    filtro_mes = st.selectbox("Mes", opciones_mes, key="filtro_mes_menu")
+
+    st.markdown(
+        f"""
+        <div class="menu-footer-box">
+            <div class="menu-info">
+                <b>Contrato:</b> {CONTRATO}<br>
+                <b>Cliente:</b> {CLIENTE}<br>
+                <b>Versión:</b> {VERSION}<br>
+                <b>Actualización automática:</b><br>
+                cada {CACHE_GOOGLE_SHEETS_SEGUNDOS} segundos
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    pagina_interna = paginas_menu[pagina_actual][2]
+    return pagina_interna, filtro_equipo, filtro_anio, filtro_mes
+
+
+def _clasificar_vencimiento_documento(fecha_vencimiento, hoy):
+    if pd.isna(fecha_vencimiento):
+        return "Sin fecha", 3
+
+    dias = int((fecha_vencimiento - hoy).days)
+    if dias < 0:
+        return "Vencido", 0
+    if dias <= 30:
+        return "Próximo a vencer", 1
+    return "Vigente", 2
+
+
+def _texto_dias_documento(fecha_vencimiento, hoy):
+    if pd.isna(fecha_vencimiento):
+        return "Sin fecha"
+
+    dias = int((fecha_vencimiento - hoy).days)
+    if dias < 0:
+        return f"Vencido hace {abs(dias)} días"
+    if dias == 0:
+        return "Vence hoy"
+    if dias == 1:
+        return "Vence en 1 día"
+    return f"Vence en {dias} días"
+
+
+def pagina_documentos(documentos_f):
+    """Control documental con KPI, alertas y priorización por vencimiento."""
+    st.markdown(
+        '<div class="section-head"><div class="panel-title page-section-title">Control Documental</div></div>',
+        unsafe_allow_html=True,
+    )
+
+    if documentos_f.empty:
+        st.info("No existen documentos para el filtro aplicado.")
+        return
+
+    hoy = pd.Timestamp.now().normalize()
+    base = documentos_f.copy()
+
+    if "Vencimiento" not in base.columns:
+        base["Vencimiento"] = pd.NaT
+
+    base["_Vencimiento_dt"] = base["Vencimiento"].apply(convertir_fecha)
+    base["_Vencimiento_dt"] = pd.to_datetime(base["_Vencimiento_dt"], errors="coerce").dt.normalize()
+
+    clasificacion = base["_Vencimiento_dt"].apply(
+        lambda fecha: _clasificar_vencimiento_documento(fecha, hoy)
+    )
+    base["Estado"] = [item[0] for item in clasificacion]
+    base["_Prioridad"] = [item[1] for item in clasificacion]
+    base["Días restantes"] = base["_Vencimiento_dt"].apply(
+        lambda fecha: _texto_dias_documento(fecha, hoy)
+    )
+
+    total = int(len(base))
+    vencidos = int((base["Estado"] == "Vencido").sum())
+    proximos_30 = int((base["Estado"] == "Próximo a vencer").sum())
+    vigentes = int((base["Estado"] == "Vigente").sum())
+    sin_fecha = int((base["Estado"] == "Sin fecha").sum())
+
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        kpi_card("📄", "Documentos registrados", numero(total), f"{sin_fecha} sin fecha de vencimiento", "#dbeafe")
+    with c2:
+        kpi_card("⛔", "Documentos vencidos", numero(vencidos), "Requieren regularización", "#fee2e2")
+    with c3:
+        kpi_card("⏳", "Vencen en 30 días", numero(proximos_30), "Prioridad de seguimiento", "#ffedd5")
+    with c4:
+        kpi_card("✅", "Documentos vigentes", numero(vigentes), "Con más de 30 días", "#dcfce7")
+
+    if vencidos > 0:
+        st.error(f"Atención: existen {vencidos} documento(s) vencido(s).")
+    elif proximos_30 > 0:
+        st.warning(f"Seguimiento requerido: {proximos_30} documento(s) vence(n) dentro de los próximos 30 días.")
+    else:
+        st.success("La documentación con fecha de vencimiento se encuentra al día.")
+
+    proximos = base[
+        base["_Vencimiento_dt"].notna() & (base["_Vencimiento_dt"] >= hoy)
+    ].sort_values(["_Vencimiento_dt", "Equipo"], ascending=[True, True]).head(6)
+
+    st.markdown('<div class="panel-title">Próximos vencimientos</div>', unsafe_allow_html=True)
+    if proximos.empty:
+        st.info("No existen vencimientos futuros registrados para el filtro aplicado.")
+    else:
+        columnas_resumen = [
+            c for c in ["Equipo", "Tipo_Documento", "Vencimiento", "Días restantes", "Estado"]
+            if c in proximos.columns
+        ]
+        resumen = proximos[columnas_resumen].copy()
+        if "Vencimiento" in resumen.columns:
+            resumen["Vencimiento"] = resumen["Vencimiento"].apply(fecha_texto)
+        resumen = resumen.rename(columns={"Tipo_Documento": "Tipo documento"})
+        mostrar_tabla_clara(resumen, height=245)
+
+    st.markdown('<div class="panel-title">Detalle de documentación</div>', unsafe_allow_html=True)
+
+    mostrar = base.sort_values(
+        ["_Prioridad", "_Vencimiento_dt", "Equipo"],
+        ascending=[True, True, True],
+        na_position="last",
+    ).copy()
+
+    columnas_eliminar = [
+        "ID_Documento",
+        "ID_Equipo",
+        "Año",
+        "Ano",
+        "Mes",
+        "Mes_Numero",
+        "Periodo",
+        "_Vencimiento_dt",
+        "_Prioridad",
+    ]
+    mostrar = mostrar.drop(columns=[c for c in columnas_eliminar if c in mostrar.columns], errors="ignore")
+
+    for col in ["Fecha", "Vencimiento"]:
+        if col in mostrar.columns:
+            mostrar[col] = mostrar[col].apply(fecha_texto)
+
+    mostrar = mostrar.rename(
+        columns={
+            "Tipo_Documento": "Tipo documento",
+            "Ruta_Link": "Ruta / enlace",
+            "Observacion": "Observación",
+            "Descripcion": "Descripción",
+        }
+    )
+    mostrar_tabla_clara(mostrar, height=520)
+
+
+def aplicar_correcciones_visuales_v80():
+    """Última capa CSS: menú uniforme y marca de agua global."""
+    st.markdown(
+        """
+<style>
+/* Todos los elementos del menú conservan exactamente la misma caja. */
+section[data-testid="stSidebar"] div[data-testid="stButton"],
+section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    min-height: 46px !important;
+    height: 46px !important;
+    margin: 0 0 7px 0 !important;
+    padding: 9px 12px !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* El botón activo sigue siendo un botón nativo; solo cambia su apariencia. */
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:disabled {
+    opacity: 1 !important;
+    cursor: default !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important;
+    border: 1px solid rgba(219, 234, 254, .95) !important;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .34) !important;
+}
+
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:disabled * {
+    opacity: 1 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-weight: 950 !important;
+}
+
+/* Sello global independiente de las reglas antiguas que ocultaban "watermark" o "sello". */
+.marca-fondo-global {
+    position: fixed !important;
+    top: 0 !important;
+    left: var(--menu-panel-width, 280px) !important;
+    width: calc(100vw - var(--menu-panel-width, 280px)) !important;
+    height: 100vh !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: min(52vw, 720px) auto !important;
+    opacity: .065 !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    display: block !important;
+    visibility: visible !important;
+    z-index: 40 !important;
+}
+
+section[data-testid="stSidebar"] {
+    z-index: 1000 !important;
+}
+
+/* La marca queda sobre fondos blancos, sin bloquear tablas, enlaces ni botones. */
+[data-testid="stAppViewContainer"] > .main,
+div[data-testid="stMain"],
+section.main,
+main {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+@media (max-width: 1100px), (hover: none) and (pointer: coarse) {
+    .marca-fondo-global {
+        left: 0 !important;
+        width: 100vw !important;
+        background-size: min(82vw, 620px) auto !important;
+        opacity: .055 !important;
+    }
+}
+</style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def mostrar_marca_fondo_global():
+    ruta = obtener_ruta_sello_saivam() or buscar_imagen_por_nombre("saivam")
+    if not ruta or not os.path.isfile(ruta):
+        return
+
+    imagen_b64 = archivo_a_base64(ruta)
+    if not imagen_b64:
+        return
+
+    mime = extension_mime(ruta)
+    st.markdown(
+        f'<div class="marca-fondo-global" style="background-image:url(\'data:{mime};base64,{imagen_b64}\');"></div>',
+        unsafe_allow_html=True,
+    )
+
+
 aplicar_ajustes_finales_ui()
+aplicar_correcciones_visuales_v80()
+mostrar_marca_fondo_global()
 
 
 # =========================================================
