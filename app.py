@@ -39,7 +39,8 @@ html body .stApp [class*="sello"],
 html body .stApp [class*="Sello"],
 html body .stApp .saivam-watermark-fixed,
 html body .stApp .saivam-watermark-v38,
-html body .stApp .saivam-marca-principal {
+html body .stApp .saivam-marca-principal,
+html body .stApp .marca-fondo-global {
     content: none !important;
     display: none !important;
     visibility: hidden !important;
@@ -195,6 +196,124 @@ def extension_mime(ruta):
         return "image/webp"
 
     return "image/png"
+
+
+
+# =========================================================
+# SELLO DE AGUA OFICIAL SAIVAM - CARGA TEMPRANA
+# Usa exclusivamente un archivo cuyo nombre base sea exactamente "saivam".
+# No utiliza búsquedas parciales, para evitar cargar logos o imágenes distintas.
+# =========================================================
+def _buscar_archivo_saivam_oficial():
+    carpetas = [".", "assets", "imagenes", "images", "img", "fotos"]
+    extensiones_validas = {".png", ".jpg", ".jpeg", ".webp"}
+
+    # Primero revisa los nombres exactos más habituales.
+    for carpeta in carpetas:
+        for extension in [".png", ".jpg", ".jpeg", ".webp", ".PNG", ".JPG", ".JPEG", ".WEBP"]:
+            candidato = os.path.join(carpeta, "saivam" + extension)
+            if os.path.isfile(candidato):
+                return candidato
+
+    # Respaldo compatible con Linux/GitHub: compara sin distinguir mayúsculas.
+    for carpeta in carpetas:
+        if not os.path.isdir(carpeta):
+            continue
+        for archivo in os.listdir(carpeta):
+            ruta = os.path.join(carpeta, archivo)
+            if not os.path.isfile(ruta):
+                continue
+            nombre_base, extension = os.path.splitext(archivo)
+            if nombre_base.lower() == "saivam" and extension.lower() in extensiones_validas:
+                return ruta
+
+    return None
+
+
+def mostrar_marca_saivam_oficial():
+    ruta = _buscar_archivo_saivam_oficial()
+    if not ruta:
+        return
+
+    imagen_b64 = archivo_a_base64(ruta)
+    if not imagen_b64:
+        return
+
+    mime = extension_mime(ruta)
+    st.markdown(
+        f"""
+<style>
+/* Las versiones anteriores quedan desactivadas desde el primer render. */
+html body .stApp .marca-fondo-global,
+html body .stApp .saivam-watermark-fixed,
+html body .stApp .saivam-watermark-v38,
+html body .stApp .saivam-marca-principal {{
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    background-image: none !important;
+}}
+
+/* Única marca permitida en toda la aplicación. */
+html body .stApp .marca-saivam-oficial-v9 {{
+    position: fixed !important;
+    top: 0 !important;
+    left: var(--menu-panel-width, 280px) !important;
+    width: calc(100vw - var(--menu-panel-width, 280px)) !important;
+    height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    z-index: 80 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+}}
+
+html body .stApp .marca-saivam-oficial-v9 img {{
+    display: block !important;
+    width: min(66vw, 900px) !important;
+    height: min(68vh, 680px) !important;
+    max-width: 92% !important;
+    max-height: 82% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    opacity: 0.060 !important;
+    filter: none !important;
+    transform: none !important;
+}}
+
+section[data-testid="stSidebar"] {{
+    z-index: 1000 !important;
+}}
+
+@media (max-width: 1100px), (hover: none) and (pointer: coarse) {{
+    html body .stApp .marca-saivam-oficial-v9 {{
+        left: 0 !important;
+        width: 100vw !important;
+    }}
+
+    html body .stApp .marca-saivam-oficial-v9 img {{
+        width: 86vw !important;
+        height: 62vh !important;
+        max-width: 90vw !important;
+        max-height: 68vh !important;
+        opacity: 0.052 !important;
+    }}
+}}
+</style>
+<div class="marca-saivam-oficial-v9" aria-hidden="true">
+    <img src="data:{mime};base64,{imagen_b64}" alt="">
+</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+mostrar_marca_saivam_oficial()
 
 
 def normalizar_texto(texto):
@@ -9942,7 +10061,8 @@ def mostrar_marca_fondo_global():
 
 aplicar_ajustes_finales_ui()
 aplicar_correcciones_visuales_v80()
-mostrar_marca_fondo_global()
+# La marca antigua se desactiva para impedir el destello inicial.
+# mostrar_marca_fondo_global()
 
 
 # =========================================================
@@ -12550,4 +12670,41 @@ html body .stApp::after {{
     )
 
 
-aplicar_sello_saivam_final()
+# Se utiliza exclusivamente mostrar_marca_saivam_oficial().
+# aplicar_sello_saivam_final()
+
+
+# =========================================================
+# REFUERZO FINAL V9.1 - MARCA OFICIAL SIEMPRE VISIBLE
+# =========================================================
+st.markdown(
+    """
+<style>
+html body .stApp .marca-saivam-oficial-v9 {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    z-index: 80 !important;
+}
+
+html body .stApp .marca-saivam-oficial-v9 img {
+    display: block !important;
+    visibility: visible !important;
+    object-fit: contain !important;
+    opacity: 0.060 !important;
+}
+
+html body .stApp .marca-fondo-global,
+html body .stApp .saivam-watermark-fixed,
+html body .stApp .saivam-watermark-v38,
+html body .stApp .saivam-marca-principal {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    background-image: none !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
