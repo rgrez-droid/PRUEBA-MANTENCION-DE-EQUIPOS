@@ -12710,60 +12710,66 @@ html body .stApp .saivam-marca-principal {
 )
 
 
+
 # =========================================================
-# AJUSTE FINAL V9.3
-# - Sello SAIVAM más grande, completo y centrado.
-# - Menú fijo completamente separado del contenido principal.
-# - Compatible con la estructura actual de Streamlit (stMain).
+# AJUSTE FINAL V9.4
+# - Corrige definitivamente la superposición del menú.
+# - Streamlit actual utiliza section[data-testid="stMain"].
+# - El contenido comienza después del ancho real del sidebar.
+# - Mantiene el sello SAIVAM completo dentro del área principal.
 # =========================================================
 st.markdown(
     """
 <style>
 :root {
-    --menu-panel-width: 280px !important;
+    --menu-panel-width: 286px !important;
 }
 
 /* =========================================================
-   ESCRITORIO: EL CONTENIDO NUNCA QUEDA DEBAJO DEL MENÚ
+   ESCRITORIO: SIDEBAR FIJO Y CONTENIDO TOTALMENTE SEPARADO
    ========================================================= */
-@media (min-width: 1101px) {
+@media screen and (min-width: 1101px) {
+
     html body section[data-testid="stSidebar"] {
         position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        bottom: 0 !important;
+        inset: 0 auto 0 0 !important;
         width: var(--menu-panel-width) !important;
         min-width: var(--menu-panel-width) !important;
         max-width: var(--menu-panel-width) !important;
         height: 100vh !important;
         margin: 0 !important;
-        transform: translateX(0) !important;
-        z-index: 1000 !important;
+        transform: none !important;
+        z-index: 10000 !important;
         box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
     }
 
     /*
-    Streamlit moderno utiliza div[data-testid="stMain"].
-    También se mantienen los selectores antiguos para asegurar compatibilidad.
+    Selector correcto para las versiones actuales de Streamlit:
+    stMain es un elemento SECTION, no un DIV.
     */
-    html body div[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] > .main,
-    html body section.main,
-    html body main {
+    html body section[data-testid="stMain"],
+    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"],
+    html body section.stMain {
         position: relative !important;
+        left: 0 !important;
+        transform: none !important;
         margin-left: var(--menu-panel-width) !important;
+        margin-right: 0 !important;
         width: calc(100vw - var(--menu-panel-width)) !important;
         min-width: 0 !important;
         max-width: calc(100vw - var(--menu-panel-width)) !important;
+        flex: 0 0 calc(100vw - var(--menu-panel-width)) !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
         z-index: 1 !important;
     }
 
+    html body section[data-testid="stMain"] > div,
     html body div[data-testid="stMainBlockContainer"],
-    html body .main .block-container,
-    html body .block-container,
-    html body section.main > div {
+    html body .stMainBlockContainer,
+    html body .block-container {
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
@@ -12773,10 +12779,20 @@ st.markdown(
         padding-right: 14px !important;
         box-sizing: border-box !important;
     }
+
+    /*
+    Evita que cualquier regla antigua vuelva a desplazar el contenido
+    debajo del menú.
+    */
+    html body [data-testid="stAppViewContainer"] {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
 }
 
 /* =========================================================
-   SELLO ÚNICO SAIVAM: GRANDE, COMPLETO Y EN TODA LA PÁGINA
+   SELLO SAIVAM DENTRO DEL ÁREA PRINCIPAL
    ========================================================= */
 html body .stApp .marca-saivam-oficial-v9 {
     position: fixed !important;
@@ -12796,15 +12812,15 @@ html body .stApp .marca-saivam-oficial-v9 {
     z-index: 85 !important;
     background: transparent !important;
     box-sizing: border-box !important;
-    padding: 4px !important;
+    padding: 2px !important;
 }
 
 html body .stApp .marca-saivam-oficial-v9 img {
     display: block !important;
-    width: 99.5% !important;
-    height: 98.5% !important;
-    max-width: 99.5% !important;
-    max-height: 98.5% !important;
+    width: 99.8% !important;
+    height: 99% !important;
+    max-width: 99.8% !important;
+    max-height: 99% !important;
     object-fit: contain !important;
     object-position: center center !important;
     opacity: 0.13 !important;
@@ -12813,22 +12829,29 @@ html body .stApp .marca-saivam-oficial-v9 img {
 }
 
 /* =========================================================
-   TELÉFONOS Y PANTALLAS TÁCTILES
+   MÓVIL: NO SE APLICA EL DESPLAZAMIENTO DE ESCRITORIO
    ========================================================= */
-@media (max-width: 1100px), (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+@media screen and (max-width: 1100px) {
+    html body section[data-testid="stMain"],
+    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"],
+    html body section.stMain {
+        margin-left: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        flex-basis: 100vw !important;
+    }
+
     html body .stApp .marca-saivam-oficial-v9 {
         left: 0 !important;
         width: 100vw !important;
         height: 100vh !important;
-        padding: 3px !important;
     }
 
     html body .stApp .marca-saivam-oficial-v9 img {
         width: 99vw !important;
-        height: 96vh !important;
+        height: 97vh !important;
         max-width: 99vw !important;
-        max-height: 96vh !important;
-        object-fit: contain !important;
+        max-height: 97vh !important;
         opacity: 0.11 !important;
     }
 }
