@@ -9306,7 +9306,6 @@ def construir_menu(equipos, mantenciones, gastos, combustible, checklist, docume
             if st.button(
                 texto_visible,
                 key=f"menu_{clave}",
-                help=nombre,
                 use_container_width=True,
             ):
                 st.query_params["pagina"] = clave
@@ -9922,7 +9921,6 @@ def construir_menu(equipos, mantenciones=None, gastos=None, combustible=None, ch
         presionado = st.button(
             f"{icono} {nombre_visible}",
             key=f"menu_estable_{clave}",
-            help=nombre_visible,
             use_container_width=True,
             disabled=es_actual,
         )
@@ -10700,7 +10698,6 @@ def construir_menu(equipos=None, mantenciones=None, gastos=None, combustible=Non
         presionado = st.button(
             f"{icono} {nombre_visible}",
             key=f"menu_estable_{clave}",
-            help=nombre_visible,
             use_container_width=True,
             disabled=es_actual,
         )
