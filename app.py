@@ -1,18 +1,26 @@
 import base64
 import glob
+import importlib
 import os
 import re
 from datetime import datetime
-from urllib.parse import quote
+from io import BytesIO
+from urllib.request import Request, urlopen
 
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+# Carga dinámica para evitar el aviso de Pylance cuando el entorno local
+# todavía no tiene instalada la dependencia. En Streamlit Cloud se instala
+# desde requirements.txt y la actualización automática sigue funcionando.
 try:
-    from streamlit_autorefresh import st_autorefresh
-except ImportError:
+    st_autorefresh = getattr(
+        importlib.import_module("streamlit_autorefresh"),
+        "st_autorefresh",
+    )
+except (ImportError, AttributeError):
     st_autorefresh = None
 
 
@@ -24,7 +32,179 @@ st.set_page_config(
     page_title="Seguimiento y Control de Equipos Móviles",
     page_icon="🚜",
     layout="wide",
-    initial_sidebar_state="auto",
+    initial_sidebar_state="expanded",
+)
+
+# =========================================================
+# ESTABILIZACIÓN VISUAL DE ARRANQUE
+# - Aplica desde el primer render las medidas finales del layout.
+# - Evita el "salto" visual que antes ocurría mientras se cargaban
+#   los overrides CSS ubicados más abajo en el archivo.
+# =========================================================
+st.markdown(
+    """
+<style>
+/* Variables finales bloqueadas desde el primer frame. La mayor especificidad
+   de html:root evita que overrides antiguos vuelvan a ensanchar el menú. */
+html:root {
+    --menu-panel-width: 230px !important;
+    --menu-inner-width: 204px !important;
+    --menu-panel-width-final: 230px !important;
+    --menu-inner-width-final: 204px !important;
+    --sidebar-compact-width: 230px !important;
+    --sidebar-compact-inner: 204px !important;
+    --sidebar-final-width: 230px !important;
+    --sidebar-final-inner: 204px !important;
+    --main-edge-gap: 16px !important;
+    --content-padding-x: 16px !important;
+}
+
+/* No animar anchos/posiciones durante el arranque. */
+html body section[data-testid="stSidebar"],
+html body section[data-testid="stSidebar"] *,
+html body section[data-testid="stMain"],
+html body div[data-testid="stMain"] {
+    transition: none !important;
+}
+
+@media screen and (min-width: 1101px) {
+    /* Sidebar: geometría definitiva desde el primer render. */
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] {
+        position: fixed !important;
+        inset: 0 auto 0 0 !important;
+        width: 230px !important;
+        min-width: 230px !important;
+        max-width: 230px !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        overflow-y: hidden !important;
+        z-index: 10000 !important;
+    }
+
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] > div,
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+        width: 230px !important;
+        min-width: 230px !important;
+        max-width: 230px !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 12px 13px 18px 13px !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    /* Cabecera del menú y espacio previo a los botones, iguales al estado final. */
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-panel-content {
+        position: fixed !important;
+        top: 12px !important;
+        left: 17px !important;
+        right: auto !important;
+        width: 204px !important;
+        min-width: 204px !important;
+        max-width: 204px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+        z-index: 10020 !important;
+    }
+
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-top-gap {
+        display: block !important;
+        height: 118px !important;
+        min-height: 118px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Navegación compacta desde el inicio. */
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-brand,
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-line,
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"],
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] button,
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-active-item {
+        width: 204px !important;
+        min-width: 204px !important;
+        max-width: 204px !important;
+        box-sizing: border-box !important;
+    }
+
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] button,
+    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-active-item {
+        min-height: 43px !important;
+        height: 43px !important;
+        padding: 8px 9px !important;
+        font-size: 13.2px !important;
+        line-height: 1.18 !important;
+        border-radius: 12px !important;
+        white-space: nowrap !important;
+    }
+
+    /* Área principal: reserva el sidebar desde el primer frame. */
+    html body [data-testid="stAppViewContainer"] section[data-testid="stMain"],
+    html body [data-testid="stAppViewContainer"] div[data-testid="stMain"] {
+        margin: 0 !important;
+        padding-left: 230px !important;
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        left: 0 !important;
+        transform: none !important;
+        overflow-x: hidden !important;
+    }
+
+    html body [data-testid="stAppViewContainer"] div[data-testid="stMainBlockContainer"],
+    html body [data-testid="stAppViewContainer"] section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
+    html body [data-testid="stAppViewContainer"] section[data-testid="stMain"] .block-container,
+    html body [data-testid="stAppViewContainer"] div[data-testid="stMain"] .block-container {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: -62px !important;
+        padding-top: 0 !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Cabecera principal estable desde el primer render. */
+    html body .main-fixed-header {
+        min-height: 58px !important;
+        height: 58px !important;
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+        padding-top: 8px !important;
+        align-items: flex-end !important;
+    }
+
+    html body .main-fixed-title,
+    html body .title-main {
+        font-size: clamp(28px, 2.1vw, 37px) !important;
+        line-height: 1.03 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    html body .main-fixed-logo img,
+    html body .header-logo-box img {
+        width: 116px !important;
+        max-width: 116px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
 )
 
 # Actualización automática de la aplicación cada 60 segundos.
@@ -58,7 +238,7 @@ HOJAS_GOOGLE_SHEETS = [
 
 # Tiempo de actualización automática de datos desde Google Sheets.
 # 60 segundos permite que la app se actualice sin tener que subir archivos a GitHub.
-CACHE_GOOGLE_SHEETS_SEGUNDOS = 45
+CACHE_GOOGLE_SHEETS_SEGUNDOS = 55
 
 LOGO_SUPERIOR = "logo1.png"
 
@@ -376,23 +556,40 @@ def imagen_equipo_src(fila):
     return f"data:{mime};base64,{imagen_b64}"
 
 
-def url_csv_google_sheet(nombre_hoja):
-    """Construye la URL CSV de una hoja específica de Google Sheets.
-    Funciona si el archivo está compartido como lector para cualquier persona con el enlace.
+@st.cache_data(ttl=CACHE_GOOGLE_SHEETS_SEGUNDOS, show_spinner=False)
+@st.cache_data(ttl=CACHE_GOOGLE_SHEETS_SEGUNDOS, show_spinner=False)
+def descargar_google_sheet_xlsx():
+    """Descarga una sola copia XLSX completa del Google Sheets por ciclo de caché.
+
+    Se usa el XLSX en vez del endpoint GViz/CSV porque los filtros visuales
+    aplicados directamente en Google Sheets pueden ocultar filas también para
+    GViz. Pandas lee todas las filas del XLSX, incluso si en Google Sheets están
+    ocultas por un filtro. Así la app solo se filtra con sus propios controles.
     """
-    hoja_codificada = quote(str(nombre_hoja), safe="")
-    return (
-        f"https://docs.google.com/spreadsheets/d/{GOOGLE_SHEET_ID}/gviz/tq"
-        f"?tqx=out:csv&sheet={hoja_codificada}"
-    )
+    url = f"https://docs.google.com/spreadsheets/d/{GOOGLE_SHEET_ID}/export?format=xlsx"
+    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urlopen(req, timeout=30) as respuesta:
+        contenido = respuesta.read()
+
+    if not contenido:
+        raise FileNotFoundError("Google Sheets devolvió un archivo vacío.")
+
+    return contenido
 
 
 def leer_hoja_google_sheet(nombre_hoja):
-    """Lee una hoja de Google Sheets como DataFrame.
-    Si la hoja no existe o está vacía, devuelve un DataFrame vacío para no botar la app.
+    """Lee una pestaña desde la copia XLSX completa del Google Sheets.
+
+    Esta lectura ignora filtros/filas ocultas de la interfaz de Google Sheets,
+    pero sigue incorporando cambios reales de datos cuando se refresca el caché.
     """
     try:
-        df = pd.read_csv(url_csv_google_sheet(nombre_hoja))
+        contenido = descargar_google_sheet_xlsx()
+        df = pd.read_excel(
+            BytesIO(contenido),
+            sheet_name=str(nombre_hoja),
+            engine="openpyxl",
+        )
     except Exception:
         return pd.DataFrame()
 
@@ -400,10 +597,14 @@ def leer_hoja_google_sheet(nombre_hoja):
     df = df.loc[:, ~df.columns.astype(str).str.contains(r"^Unnamed", case=False, regex=True)]
     df = df.dropna(how="all")
 
-    # Elimina filas que vienen vacías desde formato de Google Sheets.
     if not df.empty:
-        texto_fila = df.fillna("").astype(str).agg("".join, axis=1).str.strip()
-        df = df[texto_fila != ""].copy()
+        # No concatenar la fila con ``"".join``: en algunas combinaciones de
+        # pandas/openpyxl pueden conservarse valores numéricos y provocar
+        # ``TypeError: expected str instance, float found``.
+        # Esta máscara solo comprueba si existe al menos una celda con contenido.
+        texto_df = df.fillna("").astype(str)
+        mascara_con_datos = texto_df.apply(lambda col: col.str.strip().ne("")).any(axis=1)
+        df = df.loc[mascara_con_datos].copy()
 
     return normalizar_columnas_dataframe(df)
 
@@ -4406,7 +4607,7 @@ def pagina_repuestos(gastos_f):
             custom_data=["Costo_CLP"],
         )
 
-        fig.update_traces(marker_color="#f59e0b", textposition="outside", hovertemplate="Consolidado: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>")
+        fig.update_traces(marker_color="#f59e0b", textposition="outside", hovertemplate="Consolidado: %{x}<br>Monto: $%{customdata[0]:,.0f}<br>Millones CLP: %{y:.2f} M<extra></extra>")
         fig.update_layout(xaxis_title="Consolidado", yaxis_title="Millones CLP")
         fig.update_yaxes(tickformat=",.1f", ticksuffix=" M", separatethousands=True)
         st.plotly_chart(aplicar_formato_grafico(fig, 390), use_container_width=True)
@@ -6004,7 +6205,7 @@ section[data-testid="stSidebar"] .menu-active-item {
 }
 
 section[data-testid="stSidebar"] div[data-testid="stButton"] {
-    margin-bottom: 4px !important;
+    margin-bottom: 2px !important;
 }
 
 section[data-testid="stSidebar"] div[data-testid="stButton"] button,
@@ -6573,7 +6774,7 @@ def crear_barra_costos(costos_item):
     )
     fig.update_traces(
         textposition="outside",
-        hovertemplate="Categoría: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>",
+        hovertemplate="Categoría: %{x}<br>Monto: $%{customdata[0]:,.0f}<br>Millones CLP: %{y:.2f} M<extra></extra>",
     )
     fig.update_layout(
         xaxis_title="Categoría",
@@ -6675,7 +6876,7 @@ def pagina_repuestos(gastos_f):
         )
         fig.update_traces(
             textposition="outside",
-            hovertemplate="Consolidado: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>",
+            hovertemplate="Consolidado: %{x}<br>Monto: $%{customdata[0]:,.0f}<br>Millones CLP: %{y:.2f} M<extra></extra>",
         )
         fig.update_layout(xaxis_title="Consolidado", yaxis_title="Millones CLP")
         fig.update_yaxes(tickformat=",.1f", ticksuffix=" M", separatethousands=True)
@@ -7282,7 +7483,7 @@ def pesos(valor):
             numero_valor = limpiar_numero(valor)
 
     try:
-        return "$ " + f"{int(round(float(numero_valor))):,}".replace(",", ".")
+        return "$" + f"{int(round(float(numero_valor))):,}".replace(",", ".")
     except Exception:
         return "0 $"
 
@@ -7328,7 +7529,7 @@ def kpi_card(icono, titulo, valor, subtitulo, color_fondo):
 
 
 def celda_html_con_enlace(columna, valor):
-    """Renderiza links y fuerza CLP con $ a la derecha en columnas monetarias."""
+    """Renderiza links y fuerza CLP con $ a la izquierda en columnas monetarias."""
     valor_txt = "" if pd.isna(valor) else str(valor).strip()
     columna_norm = normalizar_texto(columna)
 
@@ -7471,18 +7672,18 @@ st.markdown(
 # OVERRIDE FINAL V5.3: FORMATO CLP DEFINITIVO
 # =========================================================
 def pesos(valor):
-    """Formato CLP final: signo $ a la derecha del monto."""
+    """Formato CLP final: signo $ a la izquierda, sin espacio (ej.: $4.000)."""
     try:
         if pd.isna(valor):
-            return "0 $"
+            return "$0"
     except Exception:
         pass
 
     try:
         numero_valor = limpiar_numero(valor)
-        return f"{int(round(float(numero_valor))):,}".replace(",", ".") + " $"
+        return "$" + f"{int(round(float(numero_valor))):,}".replace(",", ".")
     except Exception:
-        return "0 $"
+        return "$0"
 
 
 def pesos_html(valor):
@@ -7490,7 +7691,7 @@ def pesos_html(valor):
 
 
 def normalizar_monto_clp_texto(valor):
-    """Normaliza montos como '10.000 $', incluso si vienen como '$10.000' o '10.000$'."""
+    """Normaliza cualquier monto a formato '$10.000'."""
     try:
         if pd.isna(valor):
             return ""
@@ -7508,7 +7709,7 @@ def normalizar_monto_clp_texto(valor):
 
 
 def kpi_card(icono, titulo, valor, subtitulo, color_fondo):
-    """Tarjeta KPI con montos CLP siempre con $ a la derecha."""
+    """Tarjeta KPI con montos CLP siempre con $ a la izquierda."""
     valor_txt = "" if pd.isna(valor) else str(valor).strip()
     if "$" in valor_txt or "＄" in valor_txt:
         valor_txt = pesos(valor_txt.replace("＄", "$"))
@@ -7527,7 +7728,7 @@ def kpi_card(icono, titulo, valor, subtitulo, color_fondo):
 
 
 def celda_html_con_enlace(columna, valor):
-    """Renderiza links y fuerza CLP con $ a la derecha en columnas monetarias."""
+    """Renderiza links y fuerza CLP con $ a la izquierda en columnas monetarias."""
     valor_txt = "" if pd.isna(valor) else str(valor).strip()
     columna_norm = normalizar_texto(columna)
 
@@ -7804,7 +8005,7 @@ def crear_barra_costos(costos_item):
     )
     fig.update_traces(
         textposition="outside",
-        hovertemplate="Categoría: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>",
+        hovertemplate="Categoría: %{x}<br>Monto: $%{customdata[0]:,.0f}<br>Millones CLP: %{y:.2f} M<extra></extra>",
         marker_line_width=0,
     )
     fig.update_layout(
@@ -7859,7 +8060,7 @@ def pagina_repuestos(gastos_f):
         )
         fig.update_traces(
             textposition="outside",
-            hovertemplate="Consolidado: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>",
+            hovertemplate="Consolidado: %{x}<br>Monto: $%{customdata[0]:,.0f}<br>Millones CLP: %{y:.2f} M<extra></extra>",
             marker_line_width=0,
         )
         fig.update_layout(
@@ -8089,7 +8290,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
                     evolucion = evolucion.sort_values(["Año", "Mes_Numero"])
                     evolucion["Costo_Millones"] = evolucion["Costo"] / 1_000_000
                     fig = px.line(evolucion, x="Periodo", y="Costo_Millones", markers=True, template="plotly_white", custom_data=["Costo"])
-                    fig.update_traces(line=dict(width=3), marker=dict(size=7), hovertemplate="Periodo: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>")
+                    fig.update_traces(line=dict(width=3), marker=dict(size=7), hovertemplate="Periodo: %{x}<br>Monto: $%{customdata[0]:,.0f}<br>Millones CLP: %{y:.2f} M<extra></extra>")
                     fig.update_layout(title_text="", xaxis_title="", yaxis_title="", showlegend=False, margin=dict(l=8, r=8, t=2, b=8))
                     fig.update_yaxes(tickformat=".2f", ticksuffix="M")
                     fig = aplicar_formato_grafico(fig, 220)
@@ -8430,7 +8631,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
                     evolucion = evolucion.sort_values(["Año", "Mes_Numero"])
                     evolucion["Costo_Millones"] = evolucion["Costo"] / 1_000_000
                     fig = px.line(evolucion, x="Periodo", y="Costo_Millones", markers=True, template="plotly_white", custom_data=["Costo"])
-                    fig.update_traces(line=dict(width=3), marker=dict(size=7), hovertemplate="Periodo: %{x}<br>Monto: %{customdata[0]:,.0f} $<br>Millones CLP: %{y:.2f} M<extra></extra>")
+                    fig.update_traces(line=dict(width=3), marker=dict(size=7), hovertemplate="Periodo: %{x}<br>Monto: $%{customdata[0]:,.0f}<br>Millones CLP: %{y:.2f} M<extra></extra>")
                     fig.update_layout(title_text="", xaxis_title="", yaxis_title="", showlegend=False, margin=dict(l=48, r=18, t=18, b=42))
                     fig.update_yaxes(tickformat=".2f", ticksuffix="M", rangemode="tozero")
                     fig = aplicar_formato_grafico(fig, 250)
@@ -10080,21 +10281,13 @@ def _limpiar_monto_planilla(valor):
 
 
 def _total_servicio_oficial(valor):
-    """
-    Usa exclusivamente los valores NUMÉRICOS de la columna TOTAL SERVICIO.
+    """Convierte correctamente montos provenientes de Google Sheets.
 
-    La planilla contiene algunos totales guardados como texto (por ejemplo "$3.180.406").
-    Excel no los incorpora en la fórmula SUM(L2:L566). Para que Streamlit coincida
-    exactamente con el total oficial de la planilla, esos textos no se convierten
-    a monto para los KPI ni para el consolidado.
+    Google Sheets puede entregar los valores monetarios como texto formateado
+    (por ejemplo "$66.873" o "$1.894.235"). Para los KPI y gráficos estos
+    valores deben convertirse a número en vez de descartarse como 0.
     """
-    if pd.isna(valor):
-        return 0.0
-    if isinstance(valor, bool):
-        return 0.0
-    if isinstance(valor, (int, float)):
-        return float(valor)
-    return 0.0
+    return _limpiar_monto_planilla(valor)
 
 
 def preparar_mantenciones_planilla(df):
@@ -10170,7 +10363,11 @@ def preparar_mantenciones_planilla(df):
     mant["Kilometraje"] = mant["Kilometraje"].apply(limpiar_numero)
     mant["Valor_Neto"] = mant["Valor_Neto"].apply(_limpiar_monto_planilla)
     mant["Valor_Total"] = mant["Valor_Total"].apply(_limpiar_monto_planilla)
-    mant["Total_Servicio"] = mant["Total_Servicio"].apply(_total_servicio_oficial)
+
+    # Monto oficial del servicio: columna VALOR TOTAL (columna K) de Google Sheets.
+    # No se mezcla con TOTAL SERVICIO para evitar dobles criterios o montos distintos.
+    # Así todos los KPI, gráficos y tablas cuadran exactamente con la suma de VALOR TOTAL.
+    mant["Total_Servicio"] = mant["Valor_Total"].astype(float)
 
     # Solo quedan registros reales y los cuatro tipos definidos para el control.
     mant = mant[
@@ -10290,7 +10487,7 @@ def pagina_mantenciones(mant_f):
         )
         fig.update_traces(
             textposition="outside",
-            hovertemplate="Tipo: %{x}<br>Registros: %{y}<br>Total servicio: $ %{customdata[0]:,.0f}<extra></extra>",
+            hovertemplate="Tipo: %{x}<br>Registros: %{y}<br>Total servicio: $%{customdata[0]:,.0f}<extra></extra>",
         )
         fig.update_layout(xaxis_title="Tipo de intervención", yaxis_title="Cantidad de registros")
         st.plotly_chart(aplicar_formato_grafico(fig, 300), use_container_width=True)
@@ -10933,7 +11130,7 @@ def pagina_mantenciones(mant_f, equipos_ref=None):
             cliponaxis=False,
             hovertemplate=(
                 "Tipo: %{x}<br>Registros: %{y}<br>"
-                "Total servicio: $ %{customdata[0]:,.0f}<extra></extra>"
+                "Total servicio: $%{customdata[0]:,.0f}<extra></extra>"
             ),
         )
         fig.update_layout(
@@ -11043,9 +11240,10 @@ def _dashboard_base_intervenciones(mant_f):
 
     base = base[base["Tipo_Intervencion"].isin(["Reparacion", "Mantencion", "Logistica"])].copy()
     base["Fecha"] = base["Fecha"].apply(convertir_fecha)
-    base["Total_Servicio"] = base["Total_Servicio"].apply(_total_servicio_oficial)
     base["Valor_Neto"] = base["Valor_Neto"].apply(_limpiar_monto_planilla)
     base["Valor_Total"] = base["Valor_Total"].apply(_limpiar_monto_planilla)
+    # Una única fuente monetaria para todo el dashboard: VALOR TOTAL.
+    base["Total_Servicio"] = base["Valor_Total"].astype(float)
     base["Kilometraje"] = base["Kilometraje"].apply(limpiar_numero)
 
     for col in ["Tipo_Equipo", "Patente_Codigo", "Modelo", "Contrato", "Ceco", "Proveedor_Tipo", "Nombre_Proveedor"]:
@@ -11066,12 +11264,12 @@ def _dashboard_pesos_compacto(valor):
     valor = float(valor or 0)
     abs_valor = abs(valor)
     if abs_valor >= 1_000_000_000:
-        return f"$ {valor / 1_000_000_000:.1f} mil MM".replace(".", ",")
+        return f"${valor / 1_000_000_000:.1f} mil MM".replace(".", ",")
     if abs_valor >= 1_000_000:
-        return f"$ {valor / 1_000_000:.1f} MM".replace(".", ",")
+        return f"${valor / 1_000_000:.1f} MM".replace(".", ",")
     if abs_valor >= 1_000:
-        return f"$ {valor / 1_000:.1f} mil".replace(".", ",")
-    return "$ " + f"{int(round(valor)):,}".replace(",", ".")
+        return f"${valor / 1_000:.1f} mil".replace(".", ",")
+    return "$" + f"{int(round(valor)):,}".replace(",", ".")
 
 
 def _dashboard_cantidad_equipos(base):
@@ -11946,20 +12144,21 @@ div[data-testid="stDataFrame"] {
 
     # -----------------------------------------------------
     # Filtros ejecutivos: período y contrato
+    # El selector ofrece solamente enero-septiembre de 2026.
+    # IMPORTANTE: "Todos los períodos" usa la base completa de Intervenciones
+    # para que los KPI y costos coincidan exactamente con ese módulo.
     # -----------------------------------------------------
     mant_base["_Periodo_Fecha"] = mant_base["Fecha"].dt.to_period("M").dt.to_timestamp()
     mant_base["_Periodo_Clave"] = mant_base["_Periodo_Fecha"].dt.strftime("%Y-%m")
 
-    periodos_validos = (
-        mant_base.loc[mant_base["_Periodo_Fecha"].notna(), ["_Periodo_Fecha", "_Periodo_Clave"]]
-        .drop_duplicates()
-        .sort_values("_Periodo_Fecha", ascending=False)
-    )
+    # Lista fija visible: solo enero a septiembre de 2026.
+    # Se presenta desde el mes más reciente al más antiguo.
+    meses_resumen_2026 = list(range(9, 0, -1))
+    opciones_periodo = ["Todos"] + [f"2026-{mes:02d}" for mes in meses_resumen_2026]
     periodo_etiquetas = {
-        fila["_Periodo_Clave"]: f"{MESES.get(fila['_Periodo_Fecha'].month, fila['_Periodo_Fecha'].month)} {fila['_Periodo_Fecha'].year}"
-        for _, fila in periodos_validos.iterrows()
+        f"2026-{mes:02d}": f"{MESES[mes]} 2026"
+        for mes in meses_resumen_2026
     }
-    opciones_periodo = ["Todos"] + periodos_validos["_Periodo_Clave"].tolist()
 
     contratos = sorted(
         {
@@ -12128,7 +12327,7 @@ div[data-testid="stDataFrame"] {
         # Vista ejecutiva: monto con separador de miles y participación visual.
         tabla_contrato_vista = tabla_contrato.copy()
         tabla_contrato_vista["Monto"] = tabla_contrato_vista["Monto"].apply(
-            lambda v: f"$ {int(round(float(v))):,}".replace(",", ".")
+            lambda v: f"${int(round(float(v))):,}".replace(",", ".")
         )
 
         # Altura dinámica para mostrar todos los contratos sin dejar espacio vacío innecesario.
@@ -12194,76 +12393,86 @@ div[data-testid="stDataFrame"] {
                 column_config={
                     "Fecha": st.column_config.DateColumn("Fecha", format="DD/MM/YYYY"),
                     "Kilometraje": st.column_config.NumberColumn("Kilometraje", format="%.0f"),
-                    "Total servicio": st.column_config.NumberColumn("Total servicio", format="$ %.0f"),
+                    "Total servicio": st.column_config.NumberColumn("Total servicio", format="$%.0f"),
                 },
             )
 
+@st.cache_data(ttl=CACHE_GOOGLE_SHEETS_SEGUNDOS, show_spinner=False)
+def leer_hoja_google_sheet_cache(nombre_hoja):
+    """Cache independiente por pestaña para evitar recargar todo el archivo en cada página."""
+    return leer_hoja_google_sheet(nombre_hoja)
+
+
+def cargar_datos_pagina(pagina):
+    """Carga solo las pestañas necesarias para la vista actual.
+
+    Esto reduce de 6 lecturas de Google Sheets a 1 o 2 en la carga inicial,
+    manteniendo la actualización automática y el caché por pestaña.
+    """
+    mapa_hojas = {
+        "📊 Dashboard Ejecutivo": ["EQUIPOS", "MANTENCIONES"],
+        "🚚 Equipos": ["EQUIPOS"],
+        "🛠️ Intervenciones": ["EQUIPOS", "MANTENCIONES"],
+        "📁 Documentacion": ["DOCUMENTOS"],
+    }
+    hojas = mapa_hojas.get(pagina, ["EQUIPOS", "MANTENCIONES"])
+    datos = {hoja: leer_hoja_google_sheet_cache(hoja) for hoja in hojas}
+
+    if "EQUIPOS" in hojas and datos.get("EQUIPOS", pd.DataFrame()).empty:
+        raise FileNotFoundError(
+            "No se pudo leer la hoja EQUIPOS desde Google Sheets. "
+            "Revisa que el archivo esté compartido como lector y que la pestaña se llame EQUIPOS."
+        )
+
+    return datos
+
+
 def mostrar_panel():
-    fuente_datos, datos = cargar_datos()
-
-    equipos = preparar_equipos(datos["EQUIPOS"])
-    equipos_planilla = preparar_equipos(datos.get("EQUIPOS_PLANILLA", datos["EQUIPOS"]))
-    mantenciones_google = preparar_mantenciones(datos["MANTENCIONES"])
-    mantenciones_planilla = preparar_mantenciones_planilla(
-        datos.get("MANTENCIONES_PLANILLA", pd.DataFrame())
-    )
-    gastos = preparar_gastos(datos["GASTOS_ADICIONALES"])
-    checklist = preparar_checklist(datos["CHECKLIST"])
-    combustible = preparar_combustible(datos["COMBUSTIBLE"])
-    documentos = preparar_documentos(datos["DOCUMENTOS"])
-    proximas_base = construir_proximas_mantenciones(equipos, mantenciones_google)
-
-    # Menú lateral: solo navegación, sin filtros.
+    # Primero se construye la navegación. No requiere descargar datos.
     with st.sidebar:
         pagina = construir_menu()
 
-    # El resto de páginas trabaja con su base completa.
-    equipos_f = equipos_planilla.copy()
-    mant_f = mantenciones_google.copy()
-    gastos_f = gastos.copy()
-    combustible_f = combustible.copy()
-    documentos_f = documentos.copy()
+    # Después se consulta únicamente la(s) pestaña(s) necesaria(s) para esa página.
+    datos = cargar_datos_pagina(pagina)
 
     if pagina == "📊 Dashboard Ejecutivo":
-        titulo_pagina = "Seguimiento y Control de Equipos Móviles"
-    else:
-        titulo_pagina = pagina.replace("🚚 ", "").replace("🛠️ ", "").replace("📁 ", "")
+        equipos = preparar_equipos(datos.get("EQUIPOS", pd.DataFrame()))
+        mantenciones_planilla = preparar_mantenciones_planilla(
+            datos.get("MANTENCIONES", pd.DataFrame())
+        )
 
-    encabezado(titulo_pagina)
-
-    if pagina == "📊 Dashboard Ejecutivo":
+        encabezado("Seguimiento y Control de Equipos Móviles")
         pagina_dashboard(
-            equipos_f,
+            equipos,
             mantenciones_planilla,
-            gastos_f,
-            combustible_f,
-            proximas_base,
+            None,
+            None,
+            None,
             "Todos los equipos",
         )
-    elif pagina == "🚚 Equipos":
-        pagina_equipos(equipos_f)
-    elif pagina == "🛠️ Intervenciones":
-        # Los filtros se aplican dentro de esta página.
-        pagina_mantenciones(mantenciones_planilla, equipos_planilla)
-    elif pagina == "📁 Documentacion":
-        pagina_documentos(documentos_f)
+        return
 
-try:
-    mostrar_panel()
+    if pagina == "🚚 Equipos":
+        equipos = preparar_equipos(datos.get("EQUIPOS", pd.DataFrame()))
+        encabezado("Equipos")
+        pagina_equipos(equipos)
+        return
 
-except FileNotFoundError:
-    st.error("No se pudo cargar la información desde Google Sheets.")
-    st.info(
-        "Revisa estos puntos: 1) el Google Sheets debe estar compartido como "
-        "'Cualquier persona con el enlace - Lector'; 2) las pestañas deben llamarse "
-        "EQUIPOS, MANTENCIONES, GASTOS_ADICIONALES, CHECKLIST, COMBUSTIBLE y DOCUMENTOS; "
-        "3) la hoja EQUIPOS debe tener datos."
-    )
-    st.code(GOOGLE_SHEET_URL)
+    if pagina == "🛠️ Intervenciones":
+        equipos = preparar_equipos(datos.get("EQUIPOS", pd.DataFrame()))
+        mantenciones_planilla = preparar_mantenciones_planilla(
+            datos.get("MANTENCIONES", pd.DataFrame())
+        )
+        encabezado("Intervenciones")
+        pagina_mantenciones(mantenciones_planilla, equipos)
+        return
 
-except Exception as error:
-    st.error("Ocurrió un error al cargar o procesar la información.")
-    st.exception(error)
+    if pagina == "📁 Documentacion":
+        documentos = preparar_documentos(datos.get("DOCUMENTOS", pd.DataFrame()))
+        encabezado("Documentacion")
+        pagina_documentos(documentos)
+        return
+
 
 # =========================================================
 # AJUSTE FINAL V5.1: VISTA COMPLETA AL 100% DEL NAVEGADOR
@@ -15836,3 +16045,138 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+# =========================================================
+# AJUSTE FINAL V2.8 - CONTENIDO MÁS ARRIBA EN TODAS LAS PÁGINAS
+# - Reduce el espacio vacío sobre el encabezado principal.
+# - Aplica por igual a Resumen Ejecutivo, Equipos, Intervenciones y Documentación.
+# - Se declara al final para prevalecer sobre ajustes visuales anteriores.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (min-width: 1101px) {
+    html body div[data-testid="stMainBlockContainer"],
+    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
+    html body section[data-testid="stMain"] .stMainBlockContainer,
+    html body section[data-testid="stMain"] .block-container,
+    html body div[data-testid="stMain"] .block-container {
+        margin-top: -185px !important;
+        padding-top: 0 !important;
+    }
+
+    html body .main-fixed-header {
+        min-height: 38px !important;
+        height: 38px !important;
+        margin-top: 0 !important;
+        margin-bottom: 4px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        align-items: flex-end !important;
+    }
+
+    html body .main-fixed-header-spacer,
+    html body .header-separador {
+        height: 0 !important;
+        min-height: 0 !important;
+        max-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# AJUSTE FINAL V3.0 - POSICIÓN SUPERIOR AJUSTADA EN TODAS LAS PÁGINAS
+# - Baja levemente el bloque principal respecto del ajuste anterior, manteniéndolo compacto.
+# - Aplica a Resumen Ejecutivo, Equipos, Intervenciones y Documentación.
+# - Se declara al final para anular márgenes/paddings heredados de Streamlit.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (min-width: 1101px) {
+    html body div[data-testid="stMainBlockContainer"],
+    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
+    html body [data-testid="stAppViewContainer"] div[data-testid="stMainBlockContainer"] {
+        position: relative !important;
+        top: -110px !important;
+        transform: none !important;
+        margin-top: 0 !important;
+        margin-bottom: -110px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0.25rem !important;
+    }
+
+    html body .main-fixed-header {
+        margin-top: 0 !important;
+        margin-bottom: 3px !important;
+        min-height: 40px !important;
+        height: 40px !important;
+        padding: 0 10px 0 0 !important;
+        align-items: flex-end !important;
+    }
+
+    html body .main-fixed-header-spacer,
+    html body .header-separador {
+        display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        max-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
+# AJUSTE FINAL V3.1 - AIRE ENTRE TÍTULO Y FILTROS
+# - Agrega una separación visual mínima entre el encabezado de cada página
+#   y la primera fila de filtros/contenido.
+# - Aplica a Resumen Ejecutivo, Equipos, Intervenciones y Documentación.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (min-width: 1101px) {
+    html body .main-fixed-header {
+        margin-bottom: 12px !important;
+    }
+
+    /* Pequeño aire adicional antes de las etiquetas de los filtros. */
+    html body div[data-testid="stMain"] div[data-testid="stSelectbox"] > label,
+    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] > label {
+        margin-top: 1px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
+# EJECUCIÓN FINAL
+# Se deja deliberadamente al final del archivo para que todo el CSS esté
+# cargado antes de dibujar el dashboard. Evita el efecto de "acomodarse"
+# o cambiar de ancho después del primer render.
+# =========================================================
+try:
+    mostrar_panel()
+except FileNotFoundError:
+    st.error("No se pudo cargar la información desde Google Sheets.")
+    st.info(
+        "Revisa que el Google Sheets esté compartido como 'Cualquier persona con el enlace - Lector' "
+        "y que las pestañas requeridas mantengan sus nombres originales."
+    )
+    st.code(GOOGLE_SHEET_URL)
+except Exception as error:
+    st.error("Ocurrió un error al cargar o procesar la información.")
+    st.exception(error)
+
