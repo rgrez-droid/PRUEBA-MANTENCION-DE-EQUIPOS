@@ -246,7 +246,7 @@ AUTOR = "Ricardo Grez"
 EMPRESA = "SAIVAM"
 CONTRATO = "CMPC Mulchén"
 CLIENTE = "CMPC"
-VERSION = "2.6"
+VERSION = "2.9"
 
 MESES = {
     1: "Enero",
@@ -3935,7 +3935,7 @@ def construir_menu(equipos, mantenciones, gastos, combustible, checklist, docume
         f"""
         <div class="menu-footer-box">
             <div class="menu-info">
-                <b>Versión:</b> {VERSION}<br>
+                Versión {VERSION}<br>
                 <b>Actualización:</b><br>
                 {datetime.now().strftime("%d/%m/%Y %H:%M")}
             </div>
@@ -5451,7 +5451,7 @@ section[data-testid="stSidebar"] .menu-active-item {
 # - Total del gráfico donut sin ':' ni barras.
 # =========================================================
 
-VERSION = "2.6"
+VERSION = "2.9"
 
 def pesos(valor):
     """Formato CLP final: signo $ a la izquierda."""
@@ -5666,7 +5666,7 @@ section[data-testid="stSidebar"] [data-baseweb="select"] > div {
 # - Monto total del gráfico donut con signo $ a la izquierda.
 # =========================================================
 
-VERSION = "2.6"
+VERSION = "2.9"
 
 
 def pesos(valor):
@@ -6003,7 +6003,7 @@ section[data-testid="stSidebar"] .menu-footer-box {
 # Refuerza que el menú izquierdo no muestre barra de desplazamiento.
 # =========================================================
 
-VERSION = "2.6"
+VERSION = "2.9"
 
 _aplicar_estilo_v41_final = aplicar_estilo
 
@@ -6039,7 +6039,7 @@ section[data-testid="stSidebar"] *::-webkit-scrollbar {
 # - Mantiene montos con signo $ a la izquierda.
 # =========================================================
 
-VERSION = "2.6"
+VERSION = "2.9"
 
 _aplicar_estilo_v45_base = aplicar_estilo
 
@@ -6568,7 +6568,7 @@ section[data-testid="stSidebar"] {
 # AJUSTE V5.1 - COSTOS, DOCUMENTOS Y GASTOS COMPLEMENTARIOS
 # =========================================================
 
-VERSION = "2.6"
+VERSION = "2.9"
 
 
 def pesos(valor):
@@ -9373,7 +9373,7 @@ def construir_menu(equipos, mantenciones, gastos, combustible, checklist, docume
             f"""
             <div class="menu-footer-box">
                 <div class="menu-info">
-                    <b>Versión:</b> {VERSION}<br>
+                    Versión {VERSION}<br>
                     <b>Actualización:</b><br>
                     {datetime.now().strftime("%d/%m/%Y %H:%M")}
                 </div>
@@ -9909,7 +9909,7 @@ def construir_menu(equipos, mantenciones=None, gastos=None, combustible=None, ch
         "panel": ("📊", "Resumen Ejecutivo", "📊 Dashboard Ejecutivo"),
         "equipos": ("🚚", "Equipos", "🚚 Equipos"),
         "mantenciones": ("🛠️", "Intervenciones", "🛠️ Intervenciones"),
-        "documentos": ("📁", "Documentacion", "📁 Documentacion"),
+        "documentos": ("📁", "Documentacion (Pdt)", "📁 Documentacion"),
     }
 
     pagina_actual = st.query_params.get("pagina", "panel")
@@ -9994,7 +9994,7 @@ def construir_menu(equipos, mantenciones=None, gastos=None, combustible=None, ch
         f"""
         <div class="menu-footer-box">
             <div class="menu-info">
-                <b>Versión:</b> {VERSION}
+                Versión {VERSION}
             </div>
         </div>
         """,
@@ -10687,7 +10687,7 @@ def construir_menu(equipos=None, mantenciones=None, gastos=None, combustible=Non
         "panel": ("📊", "Resumen Ejecutivo", "📊 Dashboard Ejecutivo"),
         "equipos": ("🚚", "Equipos", "🚚 Equipos"),
         "mantenciones": ("🛠️", "Intervenciones", "🛠️ Intervenciones"),
-        "documentos": ("📁", "Documentacion", "📁 Documentacion"),
+        "documentos": ("📁", "Documentacion (Pdt)", "📁 Documentacion"),
     }
 
     pagina_actual = st.query_params.get("pagina", "panel")
@@ -10716,7 +10716,7 @@ def construir_menu(equipos=None, mantenciones=None, gastos=None, combustible=Non
         f"""
         <div class="menu-footer-box" style="margin-top:28px;">
             <div class="menu-info">
-                <b>Versión:</b> {VERSION}
+                Versión {VERSION}
             </div>
         </div>
 
@@ -16155,6 +16155,45 @@ st.markdown(
     html body section[data-testid="stMain"] div[data-testid="stSelectbox"] > label {
         margin-top: 1px !important;
     }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
+# AJUSTE FINAL V3.2 - VERSIÓN COMPACTA SIN RECUADRO
+# - Actualiza la versión visible a 2.9.
+# - Elimina borde, fondo y sombra del indicador de versión.
+# - Reduce tipografía y espaciado para dejarlo discreto.
+# =========================================================
+st.markdown(
+    """
+<style>
+html body section[data-testid="stSidebar"] .menu-footer-box {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+}
+
+html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,
+html body section[data-testid="stSidebar"] .menu-footer-box .menu-info * {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+    font-weight: 650 !important;
+    color: #93c5fd !important;
+    -webkit-text-fill-color: #93c5fd !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 </style>
     """,
