@@ -16549,12 +16549,293 @@ st.markdown(
 )
 
 # =========================================================
+# MÓVIL V11.0 - NAVEGACIÓN SUPERIOR TIPO APP
+# - SOLO teléfonos: el menú lateral desaparece y se reemplaza por
+#   una cabecera superior + navegación horizontal compacta.
+# - Escritorio y tablet mantienen exactamente la estructura existente.
+# =========================================================
+def render_mobile_top_navigation():
+    paginas_mobile = {
+        "panel": "Resumen",
+        "equipos": "Equipos",
+        "mantenciones": "Interv.",
+        "documentos": "Docs",
+    }
+
+    pagina_actual = st.query_params.get("pagina", "panel")
+    if pagina_actual not in paginas_mobile:
+        pagina_actual = "panel"
+
+    with st.container(key="saivam_mobile_topnav"):
+        st.markdown(
+            """
+            <div class="mobile-app-hero">
+                <div class="mobile-app-title">Seguimiento y Control de Equipos Móviles</div>
+                <div class="mobile-app-subtitle">Gestión de flota · SAIVAM</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        columnas = st.columns(4, gap="small")
+        for columna, (clave, etiqueta) in zip(columnas, paginas_mobile.items()):
+            with columna:
+                presionado = st.button(
+                    etiqueta,
+                    key=f"mobile_topnav_{clave}",
+                    use_container_width=True,
+                    disabled=(clave == pagina_actual),
+                )
+                if presionado:
+                    st.query_params["pagina"] = clave
+                    st.session_state["_saivam_mobile_menu_open"] = False
+                    st.rerun()
+
+
+st.markdown(
+    """
+<style>
+/* La navegación superior existe en el DOM, pero no altera escritorio/tablet. */
+.st-key-saivam_mobile_topnav,
+div[class*="st-key-saivam_mobile_topnav"] {
+    display: none !important;
+}
+
+/* Teléfono vertical + teléfono horizontal. No toca escritorio ni tablet grande. */
+@media screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
+
+    :root {
+        --phone-page-gap: 9px !important;
+    }
+
+    /* El sidebar y el antiguo botón hamburguesa dejan de participar en móvil. */
+    html body section[data-testid="stSidebar"],
+    .st-key-saivam_mobile_menu_control,
+    div[class*="st-key-saivam_mobile_menu_control"],
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="collapsedControl"],
+    [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* El contenido ocupa todo el teléfono desde arriba. */
+    html body section[data-testid="stMain"],
+    html body div[data-testid="stMain"],
+    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"] {
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        flex: 0 0 100vw !important;
+        overflow-x: hidden !important;
+    }
+
+    html body div[data-testid="stMainBlockContainer"],
+    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
+    html body section[data-testid="stMain"] .block-container,
+    html body div[data-testid="stMain"] .block-container {
+        position: relative !important;
+        top: 0 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: calc(8px + env(safe-area-inset-top)) var(--phone-page-gap)
+                 calc(64px + env(safe-area-inset-bottom)) var(--phone-page-gap) !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Corrige el fondo/sello para que no comience después del ancho del sidebar. */
+    html body [data-testid="stAppViewContainer"]::after {
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Se usa la cabecera móvil superior; evita duplicar el título original. */
+    html body .main-fixed-header,
+    html body .header-principal,
+    html body .main-fixed-header-spacer,
+    html body .header-separador {
+        display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Contenedor principal del nuevo menú superior. */
+    .st-key-saivam_mobile_topnav,
+    div[class*="st-key-saivam_mobile_topnav"] {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 0 14px 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .st-key-saivam_mobile_topnav > div,
+    div[class*="st-key-saivam_mobile_topnav"] > div {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Tarjeta superior inspirada en la referencia. */
+    .mobile-app-hero {
+        width: 100% !important;
+        min-height: 78px !important;
+        padding: 16px 13px 13px 13px !important;
+        margin: 0 0 9px 0 !important;
+        border-radius: 12px !important;
+        background: linear-gradient(118deg, #0f2f56 0%, #0b4f8f 100%) !important;
+        border: 1px solid rgba(255,255,255,.16) !important;
+        box-shadow: 0 8px 22px rgba(15,23,42,.16) !important;
+        box-sizing: border-box !important;
+    }
+
+    .mobile-app-title {
+        margin: 0 !important;
+        padding: 0 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        font-size: 16px !important;
+        line-height: 1.12 !important;
+        font-weight: 900 !important;
+        letter-spacing: -.2px !important;
+    }
+
+    .mobile-app-subtitle {
+        margin-top: 10px !important;
+        color: rgba(255,255,255,.82) !important;
+        -webkit-text-fill-color: rgba(255,255,255,.82) !important;
+        font-size: 9.4px !important;
+        line-height: 1.1 !important;
+        font-weight: 500 !important;
+    }
+
+    /* Anula la regla móvil general que apila TODOS los st.columns. */
+    .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
+    div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        gap: 6px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="column"],
+    div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+        flex: 1 1 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .st-key-saivam_mobile_topnav div[data-testid="stButton"],
+    div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stButton"] {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .st-key-saivam_mobile_topnav button,
+    div[class*="st-key-saivam_mobile_topnav"] button {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        margin: 0 !important;
+        padding: 0 4px !important;
+        border-radius: 9px !important;
+        border: 1px solid rgba(148,163,184,.22) !important;
+        background: #111827 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        box-shadow: 0 4px 10px rgba(15,23,42,.14) !important;
+        font-size: clamp(9px, 2.7vw, 11px) !important;
+        line-height: 1 !important;
+        font-weight: 800 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .st-key-saivam_mobile_topnav button p,
+    .st-key-saivam_mobile_topnav button span,
+    div[class*="st-key-saivam_mobile_topnav"] button p,
+    div[class*="st-key-saivam_mobile_topnav"] button span {
+        margin: 0 !important;
+        padding: 0 !important;
+        color: inherit !important;
+        -webkit-text-fill-color: inherit !important;
+        font-size: inherit !important;
+        font-weight: inherit !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+    }
+
+    /* Pestaña seleccionada. */
+    .st-key-saivam_mobile_topnav button:disabled,
+    div[class*="st-key-saivam_mobile_topnav"] button:disabled {
+        opacity: 1 !important;
+        cursor: default !important;
+        background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important;
+        border-color: #38bdf8 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        box-shadow: 0 5px 13px rgba(37,99,235,.28) !important;
+    }
+
+    /* Filtros móviles más compactos para conservar el patrón de la referencia. */
+    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] {
+        margin-top: 0 !important;
+        margin-bottom: 4px !important;
+    }
+
+    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label {
+        margin-bottom: 3px !important;
+        font-size: 11px !important;
+        line-height: 1.1 !important;
+    }
+
+    html body section[data-testid="stMain"] [data-baseweb="select"] > div {
+        min-height: 38px !important;
+        height: 38px !important;
+        border-radius: 8px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
 # EJECUCIÓN FINAL
 # Se deja deliberadamente al final del archivo para que todo el CSS esté
 # cargado antes de dibujar el dashboard. Evita el efecto de "acomodarse"
 # o cambiar de ancho después del primer render.
 # =========================================================
 try:
+    render_mobile_top_navigation()
     mostrar_panel()
 except FileNotFoundError:
     st.error("No se pudo cargar la información desde Google Sheets.")
