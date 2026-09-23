@@ -17059,6 +17059,60 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
+# =========================================================
+# MÓVIL V11.3 - AJUSTE DE POSICIÓN DEL MENÚ Y CIERRE DEL ESPACIO
+# - SOLO teléfono.
+# - Baja levemente la fila de botones del menú respecto de la cabecera azul.
+# - Compensa el espacio vertical que Streamlit sigue reservando antes del
+#   contenido de cada página, acercando filtros/KPI al menú superior.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
+
+    /* 1) Baja un poco la fila de navegación sin mover la cabecera completa. */
+    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
+    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+        margin-top: 13px !important;
+        transform: translateY(2px) !important;
+    }
+
+    /*
+       2) Streamlit conserva altura entre el contenedor del menú y el primer
+       bloque de la página aunque el encabezado de escritorio esté oculto.
+       Este margen negativo elimina ese aire únicamente en teléfono.
+    */
+    html body .st-key-saivam_mobile_topnav,
+    html body div[class*="st-key-saivam_mobile_topnav"] {
+        margin-bottom: -66px !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* El primer bloque real después del menú no agrega separación extra. */
+    html body .st-key-saivam_mobile_topnav + div,
+    html body div[class*="st-key-saivam_mobile_topnav"] + div {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Compacta el espacio superior de columnas/filtros en las páginas móviles. */
+    html body section[data-testid="stMain"] [data-testid="stHorizontalBlock"]:not(.st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"]) {
+        margin-top: 0 !important;
+    }
+
+    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # =========================================================
 # EJECUCIÓN FINAL
 # Se deja deliberadamente al final del archivo para que todo el CSS esté
