@@ -16971,6 +16971,94 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
+# =========================================================
+# MÓVIL V11.2 - SEPARACIÓN CABECERA/MENÚ + CONTENIDO INMEDIATO
+# - SOLO teléfono.
+# - Baja la fila de navegación para que no se monte sobre la cabecera azul.
+# - Elimina el espacio residual del encabezado de escritorio oculto, de modo
+#   que los filtros/títulos comiencen inmediatamente debajo del menú móvil.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
+
+    /* 1) Separa físicamente las pestañas de la tarjeta azul. */
+    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
+    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+        margin-top: 9px !important;
+        margin-bottom: 0 !important;
+        position: relative !important;
+        z-index: 2 !important;
+    }
+
+    /* La cabecera no necesita margen propio inferior: lo controla la fila de pestañas. */
+    html body .mobile-app-hero {
+        margin-bottom: 0 !important;
+    }
+
+    /* El contenedor móvil termina justo al finalizar la fila de navegación. */
+    html body .st-key-saivam_mobile_topnav,
+    html body div[class*="st-key-saivam_mobile_topnav"] {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /*
+       2) encabezado() sigue generándose para escritorio. En teléfono sus hijos
+       estaban ocultos, pero el contenedor Streamlit podía seguir reservando
+       espacio vertical. Se elimina el elemento completo solamente en móvil.
+    */
+    html body div[data-testid="stElementContainer"]:has(.main-fixed-header),
+    html body div[data-testid="stElementContainer"]:has(.header-principal) {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        max-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Compatibilidad con versiones de Streamlit donde Markdown agrega un wrapper extra. */
+    html body div[data-testid="stMarkdownContainer"]:has(.main-fixed-header),
+    html body div[data-testid="stMarkdownContainer"]:has(.header-principal) {
+        display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Reduce el aire del bloque principal inmediatamente después del menú móvil. */
+    html body div[data-testid="stMainBlockContainer"] > div[data-testid="stVerticalBlock"],
+    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"] > div[data-testid="stVerticalBlock"] {
+        row-gap: 0.18rem !important;
+    }
+
+    /* Los filtros comienzan casi inmediatamente bajo las pestañas. */
+    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] {
+        margin-top: 0 !important;
+        margin-bottom: 3px !important;
+    }
+
+    /* Evita que un bloque vacío de Markdown deje aire antes del primer filtro. */
+    html body section[data-testid="stMain"] div[data-testid="stElementContainer"]:has(> div[data-testid="stMarkdownContainer"]:empty) {
+        min-height: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # =========================================================
 # EJECUCIÓN FINAL
 # Se deja deliberadamente al final del archivo para que todo el CSS esté
