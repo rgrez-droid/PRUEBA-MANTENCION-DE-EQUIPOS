@@ -12768,20 +12768,24 @@ def mostrar_panel():
         )
 
         encabezado("Seguimiento y Control de Equipos Móviles")
-        pagina_dashboard(
-            equipos,
-            mantenciones_planilla,
-            None,
-            None,
-            None,
-            "Todos los equipos",
-        )
+        # Contenedor identificable para controlar con precisión el inicio del contenido
+        # en teléfonos, sin alterar escritorio/tablet.
+        with st.container(key="saivam_mobile_page_content"):
+            pagina_dashboard(
+                equipos,
+                mantenciones_planilla,
+                None,
+                None,
+                None,
+                "Todos los equipos",
+            )
         return
 
     if pagina == "🚚 Equipos":
         equipos = preparar_equipos(datos.get("EQUIPOS", pd.DataFrame()))
         encabezado("Equipos")
-        pagina_equipos(equipos)
+        with st.container(key="saivam_mobile_page_content"):
+            pagina_equipos(equipos)
         return
 
     if pagina == "🛠️ Intervenciones":
@@ -12790,13 +12794,15 @@ def mostrar_panel():
             datos.get("MANTENCIONES", pd.DataFrame())
         )
         encabezado("Intervenciones")
-        pagina_mantenciones(mantenciones_planilla, equipos)
+        with st.container(key="saivam_mobile_page_content"):
+            pagina_mantenciones(mantenciones_planilla, equipos)
         return
 
     if pagina == "📁 Documentacion":
         documentos = preparar_documentos(datos.get("DOCUMENTOS", pd.DataFrame()))
         encabezado("Documentacion")
-        pagina_documentos(documentos)
+        with st.container(key="saivam_mobile_page_content"):
+            pagina_documentos(documentos)
         return
 
 
@@ -17106,6 +17112,81 @@ st.markdown(
     html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label {
         margin-top: 0 !important;
         padding-top: 0 !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# MÓVIL V11.4 - AJUSTE PRECISO CABECERA / MENÚ / CONTENIDO
+# - SOLO teléfono.
+# - Deja una separación visible entre la tarjeta azul y la fila de botones.
+# - Acerca el contenido real (filtros/KPI) inmediatamente bajo el menú.
+# - No altera escritorio ni tablet.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
+
+    /* 1) Separación limpia: tarjeta azul arriba y pestañas debajo, sin solaparse. */
+    html body .mobile-app-hero {
+        margin-bottom: 0 !important;
+    }
+
+    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
+    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+        margin-top: 8px !important;
+        margin-bottom: 0 !important;
+        transform: none !important;
+        position: relative !important;
+        z-index: 3 !important;
+    }
+
+    /* Mantiene el cierre compacto del contenedor del menú. */
+    html body .st-key-saivam_mobile_topnav,
+    html body div[class*="st-key-saivam_mobile_topnav"] {
+        margin-bottom: -60px !important;
+        padding-bottom: 0 !important;
+    }
+
+    /*
+       2) El contenido de cada página ahora tiene un contenedor con key propio.
+       Lo subimos de forma controlada para eliminar el espacio que Streamlit
+       reserva entre la navegación y el primer filtro/tarjeta.
+    */
+    html body .st-key-saivam_mobile_page_content,
+    html body div[class*="st-key-saivam_mobile_page_content"] {
+        position: relative !important;
+        top: -58px !important;
+        margin-top: 0 !important;
+        margin-bottom: -58px !important;
+        padding-top: 0 !important;
+    }
+
+    html body .st-key-saivam_mobile_page_content > div,
+    html body div[class*="st-key-saivam_mobile_page_content"] > div,
+    html body .st-key-saivam_mobile_page_content [data-testid="stVerticalBlock"],
+    html body div[class*="st-key-saivam_mobile_page_content"] [data-testid="stVerticalBlock"] {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* El primer control no agrega aire superior adicional. */
+    html body .st-key-saivam_mobile_page_content div[data-testid="stSelectbox"]:first-of-type,
+    html body div[class*="st-key-saivam_mobile_page_content"] div[data-testid="stSelectbox"]:first-of-type {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* En móvil los grupos de columnas del contenido no deben sumar margen superior. */
+    html body .st-key-saivam_mobile_page_content [data-testid="stHorizontalBlock"],
+    html body div[class*="st-key-saivam_mobile_page_content"] [data-testid="stHorizontalBlock"] {
+        margin-top: 0 !important;
     }
 }
 </style>
