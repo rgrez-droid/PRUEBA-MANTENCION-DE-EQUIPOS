@@ -4246,8 +4246,8 @@ def pagina_equipos(equipos_f):
     equipos_vista = equipos_f.copy()
 
     # Disponibilidad estandarizada a partir de la columna Estado de la planilla.
-    # Así se aceptan tanto OPERATIVO / NO OPERATIVO como
-    # DISPONIBLE / NO DISPONIBLE.
+    # La fuente puede venir como OPERATIVO / NO OPERATIVO o como
+    # DISPONIBLE / NO DISPONIBLE; internamente se consolida en una sola regla.
     if "Estado" not in equipos_vista.columns:
         equipos_vista["Estado"] = ""
     equipos_vista["Disponibilidad"] = equipos_vista["Estado"].apply(
@@ -4255,7 +4255,7 @@ def pagina_equipos(equipos_f):
     )
 
     # -----------------------------------------------------
-    # Filtros propios de la hoja EQUIPOS: Equipo, Contrato, Modelo y Estado
+    # Filtros: Equipo, Contrato, Modelo y Estado
     # -----------------------------------------------------
     def _opciones_texto_equipos(columna, dataframe=None):
         fuente = equipos_f if dataframe is None else dataframe
@@ -4270,9 +4270,8 @@ def pagina_equipos(equipos_f):
             key=lambda x: x.casefold(),
         )
 
-    # El contrato controla las opciones disponibles del filtro Equipo.
-    # Al cambiar de contrato, el selector de Equipo muestra únicamente
-    # los tipos de equipos registrados dentro de ese contrato.
+    # Contrato controla las opciones de Equipo y Modelo para evitar selecciones
+    # que no existen dentro del contrato elegido.
     opciones_contrato = ["Todos los contratos"] + _opciones_texto_equipos("Contrato")
     if st.session_state.get("filtro_contrato_pagina_equipos", "Todos los contratos") not in opciones_contrato:
         st.session_state["filtro_contrato_pagina_equipos"] = "Todos los contratos"
@@ -4295,16 +4294,16 @@ def pagina_equipos(equipos_f):
     opciones_equipo = ["Todos los equipos"] + _opciones_texto_equipos(
         "Tipo_Equipo", equipos_para_selector
     )
-    opciones_modelo = ["Todos los modelos"] + _opciones_texto_equipos("Modelo")
+    opciones_modelo = ["Todos los modelos"] + _opciones_texto_equipos(
+        "Modelo", equipos_para_selector
+    )
     opciones_estado = [
         "Todos los estados",
-        "Disponible",
-        "No disponible",
+        "Operativo",
+        "No operativo",
         "Sin estado",
     ]
 
-    # Si el usuario cambia de contrato y el equipo seleccionado ya no existe
-    # en ese contrato, se vuelve automáticamente a "Todos los equipos".
     if st.session_state.get("filtro_equipo_pagina_equipos", "Todos los equipos") not in opciones_equipo:
         st.session_state["filtro_equipo_pagina_equipos"] = "Todos los equipos"
 
@@ -4314,6 +4313,7 @@ def pagina_equipos(equipos_f):
     if st.session_state.get("filtro_estado_pagina_equipos", "Todos los estados") not in opciones_estado:
         st.session_state["filtro_estado_pagina_equipos"] = "Todos los estados"
 
+    # Estilo local del módulo Equipos. No modifica el resto de las páginas.
     st.markdown(
         """
         <style>
@@ -4324,6 +4324,70 @@ def pagina_equipos(equipos_f):
         div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] > div {
             min-height: 38px !important;
             height: 38px !important;
+        }
+        .eqp-kpi {
+            min-height: 86px;
+            background: rgba(255,255,255,.90);
+            border: 1px solid rgba(148,163,184,.30);
+            border-radius: 14px;
+            padding: 12px 15px;
+            box-shadow: 0 7px 20px rgba(15,23,42,.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .eqp-kpi::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--eqp-accent, #2563eb);
+        }
+        .eqp-kpi-label {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 800;
+            letter-spacing: .015em;
+            margin-bottom: 4px;
+        }
+        .eqp-kpi-value {
+            font-size: 27px;
+            line-height: 1.05;
+            color: #0f172a;
+            font-weight: 850;
+        }
+        .eqp-kpi-note {
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 650;
+        }
+        .eqp-section-title {
+            color: #0f172a;
+            font-size: 17px;
+            line-height: 1.2;
+            font-weight: 850;
+            margin: 22px 0 8px 0;
+        }
+        .eqp-panel-title {
+            color: #0f172a;
+            font-size: 15px;
+            line-height: 1.2;
+            font-weight: 850;
+            margin: 0 0 15px 0;
+        }
+        .eqp-analysis-spacer {
+            height: 34px !important;
+            min-height: 34px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .eqp-panel-note {
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 650;
+            margin: -2px 0 7px 0;
         }
         </style>
         """,
@@ -4348,6 +4412,7 @@ def pagina_equipos(equipos_f):
             "Estado", opciones_estado, key="filtro_estado_pagina_equipos"
         )
 
+    # Filtros estructurales. Se aplican a KPI y análisis.
     if filtro_equipo != "Todos los equipos" and "Tipo_Equipo" in equipos_vista.columns:
         equipos_vista = equipos_vista[
             equipos_vista["Tipo_Equipo"].fillna("").astype(str).str.strip().str.casefold()
@@ -4366,35 +4431,280 @@ def pagina_equipos(equipos_f):
             == str(filtro_modelo).strip().casefold()
         ].copy()
 
-    # Los KPI reflejan la flota resultante de Equipo/Contrato/Modelo.
-    # El filtro Estado se usa para acotar el detalle de la tabla, evitando
-    # que seleccionar "Disponible" fuerce artificialmente el KPI a 100%.
-    resumen_disp = _resumen_disponibilidad_equipos(equipos_vista)
-    disponibilidad_txt = (
-        f"{resumen_disp['porcentaje']:.1f}".replace(".", ",") + "%"
+    # Base del análisis antes de aplicar el filtro Estado. Esto evita que al
+    # seleccionar "Operativo" el KPI de disponibilidad se fuerce a 100%.
+    equipos_analisis = equipos_vista.copy()
+
+    resumen_disp = _resumen_disponibilidad_equipos(equipos_analisis)
+    disponibilidad_txt = f"{resumen_disp['porcentaje']:.1f}".replace(".", ",") + "%"
+
+    # Antigüedad promedio de flota a partir de la columna Año.
+    anio_actual = datetime.now().year
+    edad_promedio = None
+    if "Año" in equipos_analisis.columns:
+        anios_validos = equipos_analisis["Año"].apply(limpiar_numero)
+        anios_validos = anios_validos[(anios_validos >= 1950) & (anios_validos <= anio_actual)]
+        if not anios_validos.empty:
+            edad_promedio = float((anio_actual - anios_validos).mean())
+
+    edad_promedio_txt = (
+        f"{edad_promedio:.1f}".replace(".", ",") + " años"
+        if edad_promedio is not None
+        else "Sin dato"
     )
 
-    if filtro_estado != "Todos los estados":
-        equipos_vista = equipos_vista[
-            equipos_vista["Disponibilidad"] == filtro_estado
+    def _kpi_equipo(label, value, note="", accent="#2563eb"):
+        html = (
+            f'<div class="eqp-kpi" style="--eqp-accent:{accent};">'
+            f'<div class="eqp-kpi-label">{escape_html(label)}</div>'
+            f'<div class="eqp-kpi-value">{escape_html(value)}</div>'
+            f'<div class="eqp-kpi-note">{escape_html(note)}</div>'
+            '</div>'
+        )
+        st.markdown(html, unsafe_allow_html=True)
+
+    k_total, k_oper, k_no_oper, k_pct, k_edad = st.columns(5, gap="small")
+    with k_total:
+        _kpi_equipo("Total equipos", str(resumen_disp["total"]), "Flota filtrada", "#2563eb")
+    with k_oper:
+        _kpi_equipo("Operativos", str(resumen_disp["disponibles"]), "Equipos en servicio", "#16a34a")
+    with k_no_oper:
+        _kpi_equipo("No operativos", str(resumen_disp["no_disponibles"]), "Requieren atención", "#dc2626")
+    with k_pct:
+        _kpi_equipo("Disponibilidad", disponibilidad_txt, "Operativos / total", "#0f766e")
+    with k_edad:
+        _kpi_equipo("Antigüedad promedio", edad_promedio_txt, "Según año de fabricación", "#7c3aed")
+
+    # Separación visual entre las tarjetas KPI y los títulos/gráficos inferiores.
+    st.markdown('<div class="eqp-analysis-spacer"></div>', unsafe_allow_html=True)
+
+    # -----------------------------------------------------
+    # Análisis visual de flota
+    # -----------------------------------------------------
+    col_disp, col_tipo = st.columns([1.15, 0.85], gap="large")
+
+    with col_disp:
+        st.markdown('<div class="eqp-panel-title">Disponibilidad por contrato</div>', unsafe_allow_html=True)
+
+        resumen_contrato = _disponibilidad_por_contrato(equipos_analisis)
+        if resumen_contrato.empty:
+            st.info("Sin información de contratos para graficar.")
+        else:
+            # Ordena de mayor a menor según el total de equipos del contrato,
+            # igual que el gráfico de composición de flota. En empates, prioriza
+            # el contrato con más equipos operativos y luego orden alfabético.
+            resumen_contrato = resumen_contrato.sort_values(
+                ["Total", "Disponibles", "Contrato"],
+                ascending=[False, False, True],
+            ).reset_index(drop=True)
+            fig_disp = go.Figure()
+            fig_disp.add_trace(
+                go.Bar(
+                    y=resumen_contrato["Contrato"],
+                    x=resumen_contrato["Disponibles"],
+                    name="Operativos",
+                    orientation="h",
+                    marker_color="#22c55e",
+                    text=resumen_contrato["Disponibles"],
+                    textposition="inside",
+                    insidetextanchor="middle",
+                    customdata=resumen_contrato[["Total", "Disponibilidad_%"]],
+                    hovertemplate=(
+                        "<b>%{y}</b><br>Operativos: %{x}<br>"
+                        "Total: %{customdata[0]}<br>Disponibilidad: %{customdata[1]:.1f}%<extra></extra>"
+                    ),
+                )
+            )
+            fig_disp.add_trace(
+                go.Bar(
+                    y=resumen_contrato["Contrato"],
+                    x=resumen_contrato["No disponibles"],
+                    name="No operativos",
+                    orientation="h",
+                    marker_color="#ef4444",
+                    text=resumen_contrato["No disponibles"].where(resumen_contrato["No disponibles"] > 0, ""),
+                    textposition="inside",
+                    hovertemplate="<b>%{y}</b><br>No operativos: %{x}<extra></extra>",
+                )
+            )
+            if int(resumen_contrato["Sin estado"].sum()) > 0:
+                fig_disp.add_trace(
+                    go.Bar(
+                        y=resumen_contrato["Contrato"],
+                        x=resumen_contrato["Sin estado"],
+                        name="Sin estado",
+                        orientation="h",
+                        marker_color="#94a3b8",
+                        text=resumen_contrato["Sin estado"].where(resumen_contrato["Sin estado"] > 0, ""),
+                        textposition="inside",
+                        hovertemplate="<b>%{y}</b><br>Sin estado: %{x}<extra></extra>",
+                    )
+                )
+
+            altura_disp = max(285, min(470, 68 + len(resumen_contrato) * 31))
+            aplicar_formato_grafico(fig_disp, altura_disp)
+            fig_disp.update_layout(
+                barmode="stack",
+                title_text="",
+                margin=dict(l=10, r=15, t=42, b=25),
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    xanchor="left",
+                    x=0,
+                ),
+            )
+            fig_disp.update_xaxes(dtick=1, rangemode="tozero")
+            # Plotly dibuja las barras horizontales desde abajo hacia arriba por
+            # defecto. Se invierte el eje Y para mantener el mayor total arriba.
+            fig_disp.update_yaxes(
+                categoryorder="array",
+                categoryarray=resumen_contrato["Contrato"].tolist(),
+                autorange="reversed",
+            )
+            fig_disp.update_yaxes(automargin=True)
+            st.plotly_chart(fig_disp, use_container_width=True, config={"displayModeBar": False})
+
+    with col_tipo:
+        st.markdown('<div class="eqp-panel-title">Composición de la flota</div>', unsafe_allow_html=True)
+
+        if "Tipo_Equipo" not in equipos_analisis.columns or equipos_analisis.empty:
+            st.info("Sin información de tipos de equipo para graficar.")
+        else:
+            tipos = (
+                equipos_analisis["Tipo_Equipo"]
+                .fillna("")
+                .astype(str)
+                .str.strip()
+            )
+            tipos = tipos[~tipos.str.lower().isin(["", "nan", "none", "nat"])]
+            conteo_tipos = tipos.value_counts().rename_axis("Tipo").reset_index(name="Cantidad")
+            conteo_tipos = conteo_tipos.sort_values(["Cantidad", "Tipo"], ascending=[True, True])
+
+            fig_tipos = go.Figure(
+                go.Bar(
+                    y=conteo_tipos["Tipo"],
+                    x=conteo_tipos["Cantidad"],
+                    orientation="h",
+                    marker_color="#2563eb",
+                    text=conteo_tipos["Cantidad"],
+                    textposition="outside",
+                    cliponaxis=False,
+                    hovertemplate="<b>%{y}</b><br>Equipos: %{x}<extra></extra>",
+                )
+            )
+            altura_tipos = max(285, min(470, 68 + len(conteo_tipos) * 29))
+            aplicar_formato_grafico(fig_tipos, altura_tipos)
+            fig_tipos.update_layout(
+                title_text="",
+                showlegend=False,
+                margin=dict(l=10, r=28, t=15, b=25),
+            )
+            fig_tipos.update_xaxes(dtick=1, rangemode="tozero")
+            fig_tipos.update_yaxes(automargin=True)
+            st.plotly_chart(fig_tipos, use_container_width=True, config={"displayModeBar": False})
+
+    # -----------------------------------------------------
+    # Antigüedad + equipos que requieren atención operativa
+    # -----------------------------------------------------
+    col_ant, col_atencion = st.columns([0.78, 1.22], gap="large")
+
+    with col_ant:
+        st.markdown('<div class="eqp-panel-title">Antigüedad de la flota</div>', unsafe_allow_html=True)
+
+        if "Año" not in equipos_analisis.columns or equipos_analisis.empty:
+            st.info("Sin información de año para analizar antigüedad.")
+        else:
+            anios = equipos_analisis["Año"].apply(limpiar_numero)
+            edades = pd.Series(index=equipos_analisis.index, dtype="float64")
+            mascara_anio = (anios >= 1950) & (anios <= anio_actual)
+            edades.loc[mascara_anio] = anio_actual - anios.loc[mascara_anio]
+
+            orden_antiguedad = ["0–3 años", "4–7 años", "8–10 años", "Más de 10 años", "Sin año"]
+            categoria = pd.Series("Sin año", index=equipos_analisis.index, dtype="object")
+            categoria.loc[mascara_anio & (edades <= 3)] = "0–3 años"
+            categoria.loc[mascara_anio & (edades >= 4) & (edades <= 7)] = "4–7 años"
+            categoria.loc[mascara_anio & (edades >= 8) & (edades <= 10)] = "8–10 años"
+            categoria.loc[mascara_anio & (edades > 10)] = "Más de 10 años"
+
+            conteo_ant = categoria.value_counts().reindex(orden_antiguedad, fill_value=0)
+            conteo_ant = conteo_ant[conteo_ant > 0]
+
+            fig_ant = go.Figure(
+                go.Bar(
+                    x=conteo_ant.index.tolist(),
+                    y=conteo_ant.values.tolist(),
+                    marker_color="#0f766e",
+                    text=conteo_ant.values.tolist(),
+                    textposition="outside",
+                    cliponaxis=False,
+                    hovertemplate="<b>%{x}</b><br>Equipos: %{y}<extra></extra>",
+                )
+            )
+            aplicar_formato_grafico(fig_ant, 285)
+            fig_ant.update_layout(
+                title_text="",
+                showlegend=False,
+                margin=dict(l=10, r=12, t=18, b=40),
+            )
+            fig_ant.update_yaxes(dtick=5, rangemode="tozero")
+            fig_ant.update_xaxes(tickangle=0)
+            st.plotly_chart(fig_ant, use_container_width=True, config={"displayModeBar": False})
+
+    with col_atencion:
+        st.markdown('<div class="eqp-panel-title">Equipos que requieren atención</div>', unsafe_allow_html=True)
+
+        no_operativos = equipos_analisis[
+            equipos_analisis["Disponibilidad"] == "No disponible"
         ].copy()
 
-    k_total, k_disp, k_no_disp, k_pct = st.columns(4, gap="medium")
-    with k_total:
-        st.metric("Total equipos", resumen_disp["total"])
-    with k_disp:
-        st.metric("Disponibles", resumen_disp["disponibles"])
-    with k_no_disp:
-        st.metric("No disponibles", resumen_disp["no_disponibles"])
-    with k_pct:
-        st.metric("Disponibilidad", disponibilidad_txt)
+        if no_operativos.empty:
+            st.success("No existen equipos no operativos para los filtros seleccionados.")
+        else:
+            columnas_atencion = [
+                "Tipo_Equipo", "Marca", "Modelo", "Contrato", "Patente_Codigo", "Año"
+            ]
+            columnas_atencion = [c for c in columnas_atencion if c in no_operativos.columns]
+            atencion = no_operativos[columnas_atencion].copy()
+            if "Año" in atencion.columns:
+                atencion["Año"] = atencion["Año"].apply(
+                    lambda v: "" if limpiar_numero(v) <= 0 else str(int(limpiar_numero(v)))
+                )
+            atencion = atencion.rename(
+                columns={
+                    "Tipo_Equipo": "Tipo de vehículo",
+                    "Marca": "Marca",
+                    "Modelo": "Modelo",
+                    "Contrato": "Contrato",
+                    "Patente_Codigo": "Patente",
+                    "Año": "Año",
+                }
+            )
+            mostrar_tabla_clara(atencion, height=min(315, 80 + len(atencion) * 42))
+
+    # -----------------------------------------------------
+    # El filtro Estado se aplica solo al registro detallado.
+    # -----------------------------------------------------
+    mapa_estado_filtro = {
+        "Operativo": "Disponible",
+        "No operativo": "No disponible",
+        "Sin estado": "Sin estado",
+    }
+    if filtro_estado != "Todos los estados":
+        equipos_vista = equipos_vista[
+            equipos_vista["Disponibilidad"] == mapa_estado_filtro.get(filtro_estado, filtro_estado)
+        ].copy()
 
     st.markdown(
-        f'<div class="panel-title">Registro de Equipos <span style="font-size:0.84rem;font-weight:500;">({len(equipos_vista)} equipos)</span></div>',
+        f'<div class="panel-title" style="margin-top:24px;">Registro de Equipos '
+        f'<span style="font-size:0.84rem;font-weight:500;">({len(equipos_vista)} equipos)</span></div>',
         unsafe_allow_html=True,
     )
 
-    # Mismo orden visual de la planilla Excel mostrada por el usuario.
+    # Mismo orden visual de la planilla base. Las columnas documentales se
+    # conservan únicamente como dato de registro; este módulo no realiza
+    # análisis de vencimientos ni control documental.
     columnas_tabla_equipos = [
         "Tipo_Equipo",
         "Marca",
@@ -4414,7 +4724,7 @@ def pagina_equipos(equipos_f):
     columnas_tabla_equipos = [c for c in columnas_tabla_equipos if c in equipos_vista.columns]
     equipos_mostrar = equipos_vista[columnas_tabla_equipos].copy()
 
-    # Oculta columnas opcionales completamente vacías para que la tabla no quede con espacios inútiles.
+    # Oculta columnas opcionales completamente vacías.
     columnas_con_datos = []
     for col in equipos_mostrar.columns:
         serie = equipos_mostrar[col]
@@ -4432,12 +4742,22 @@ def pagina_equipos(equipos_f):
             lambda v: "" if limpiar_numero(v) <= 0 else str(int(limpiar_numero(v)))
         )
 
+    # La tabla utiliza la misma terminología OPERATIVO / NO OPERATIVO de la hoja.
+    if "Disponibilidad" in equipos_mostrar.columns:
+        equipos_mostrar["Disponibilidad"] = equipos_mostrar["Disponibilidad"].map(
+            {
+                "Disponible": "Operativo",
+                "No disponible": "No operativo",
+                "Sin estado": "Sin estado",
+            }
+        ).fillna(equipos_mostrar["Disponibilidad"])
+
     equipos_mostrar = equipos_mostrar.rename(
         columns={
             "Tipo_Equipo": "Tipo de vehículo",
             "Marca": "Marca",
             "Contrato": "Contrato",
-            "Disponibilidad": "Disponibilidad",
+            "Disponibilidad": "Estado",
             "Modelo": "Modelo",
             "Numero_Chasis": "Número de chasis",
             "Patente_Codigo": "Patente",
@@ -4450,8 +4770,7 @@ def pagina_equipos(equipos_f):
         }
     )
 
-    mostrar_tabla_clara(equipos_mostrar, height=620)
-
+    mostrar_tabla_clara(equipos_mostrar, height=560)
 
 def pagina_mantenciones(mant_f):
     st.markdown('<div class="section-head"><div class="panel-title page-section-title">Historial de Mantenciones</div></div>', unsafe_allow_html=True)
@@ -8820,7 +9139,7 @@ def aplicar_ajustes_finales_ui():
     colapsado = _menu_colapsado()
     menu_w = 86 if colapsado else 276
     inner_w = 58 if colapsado else 244
-    logo_w = 168
+    logo_w = 336
 
     css_extra_colapsado = ""
     if colapsado:
@@ -9022,6 +9341,16 @@ div[data-testid="stMainBlockContainer"] {{
     display: flex !important;
     align-items: flex-end !important;
     justify-content: space-between !important;
+}}
+
+.main-fixed-logo,
+.header-logo-box {{
+    position: absolute !important;
+    right: 12px !important;
+    top: -25px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 20 !important;
 }}
 
 .main-fixed-logo img,
@@ -16191,6 +16520,28 @@ html body section[data-testid="stSidebar"] .menu-footer-box .menu-info * {
     -webkit-text-fill-color: #93c5fd !important;
     padding: 0 !important;
     margin: 0 !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
+# AJUSTE FINAL - LOGO SUPERIOR SAIVAM
+# - Fuerza el tamaño final después de todos los overrides anteriores.
+# - En escritorio queda al doble del ancho base de 116 px.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (min-width: 1101px) {
+    html body .main-fixed-logo img,
+    html body .header-logo-box img {
+        width: 232px !important;
+        min-width: 232px !important;
+        max-width: 232px !important;
+        height: auto !important;
+    }
 }
 </style>
     """,
