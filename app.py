@@ -16828,6 +16828,149 @@ div[class*="st-key-saivam_mobile_topnav"] {
     unsafe_allow_html=True,
 )
 
+
+# =========================================================
+# MÓVIL V11.1 - AJUSTE FINO CABECERA + MENÚ HORIZONTAL
+# - SOLO teléfono.
+# - Elimina el espacio superior acumulado por los bloques CSS previos.
+# - Convierte la navegación superior en una tira compacta y desplazable,
+#   similar a una barra de pestañas de aplicación móvil.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
+
+    /*
+       En este archivo existen varios bloques <style> creados antes del contenido
+       visible. Streamlit conserva el gap vertical entre esos elementos aunque
+       visualmente estén vacíos. Este margen negativo compensa únicamente en
+       teléfono ese espacio acumulado y deja la cabecera casi pegada arriba.
+    */
+    html body .st-key-saivam_mobile_topnav,
+    html body div[class*="st-key-saivam_mobile_topnav"] {
+        margin-top: -168px !important;
+        margin-bottom: 9px !important;
+    }
+
+    /* Mantiene un margen mínimo real respecto del borde superior del teléfono. */
+    html body div[data-testid="stMainBlockContainer"],
+    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
+    html body section[data-testid="stMain"] .block-container,
+    html body div[data-testid="stMain"] .block-container {
+        padding-top: calc(7px + env(safe-area-inset-top)) !important;
+    }
+
+    /*
+       Barra móvil tipo pestañas: botones pequeños, una sola fila y scroll
+       horizontal con el dedo. Se usa stColumn (nombre actual de Streamlit),
+       además del selector antiguo por compatibilidad.
+    */
+    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
+    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        gap: 6px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 1px 3px 1px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior-x: contain !important;
+        scroll-snap-type: x proximity !important;
+        scrollbar-width: none !important;
+        touch-action: pan-x !important;
+    }
+
+    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"]::-webkit-scrollbar,
+    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],
+    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],
+    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="column"],
+    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+        flex: 0 0 88px !important;
+        width: 88px !important;
+        min-width: 88px !important;
+        max-width: 88px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        scroll-snap-align: start !important;
+    }
+
+    html body .st-key-saivam_mobile_topnav div[data-testid="stButton"],
+    html body div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stButton"] {
+        width: 88px !important;
+        min-width: 88px !important;
+        max-width: 88px !important;
+        height: 34px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    html body .st-key-saivam_mobile_topnav button,
+    html body div[class*="st-key-saivam_mobile_topnav"] button {
+        width: 88px !important;
+        min-width: 88px !important;
+        max-width: 88px !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        margin: 0 !important;
+        padding: 0 7px !important;
+        border-radius: 8px !important;
+        font-size: 10px !important;
+        line-height: 1 !important;
+        font-weight: 800 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        box-shadow: 0 3px 8px rgba(15,23,42,.14) !important;
+    }
+
+    html body .st-key-saivam_mobile_topnav button p,
+    html body .st-key-saivam_mobile_topnav button span,
+    html body div[class*="st-key-saivam_mobile_topnav"] button p,
+    html body div[class*="st-key-saivam_mobile_topnav"] button span {
+        font-size: 10px !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+    }
+
+    /* La tarjeta superior conserva el diseño, pero queda levemente más compacta. */
+    html body .mobile-app-hero {
+        min-height: 66px !important;
+        padding: 13px 12px 11px 12px !important;
+        margin-bottom: 7px !important;
+        border-radius: 11px !important;
+    }
+
+    html body .mobile-app-title {
+        font-size: 13px !important;
+        line-height: 1.12 !important;
+    }
+
+    html body .mobile-app-subtitle {
+        margin-top: 7px !important;
+        font-size: 8.5px !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # =========================================================
 # EJECUCIÓN FINAL
 # Se deja deliberadamente al final del archivo para que todo el CSS esté
