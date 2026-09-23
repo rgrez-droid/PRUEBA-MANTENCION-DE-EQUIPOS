@@ -17195,6 +17195,56 @@ st.markdown(
 )
 
 # =========================================================
+# MÓVIL V11.5 - SEPARACIÓN FINAL CABECERA / PESTAÑAS
+# - SOLO teléfono.
+# - Baja físicamente los 4 botones respecto de la tarjeta azul.
+# - Deja un espacio mínimo visible y conserva compacto el contenido inferior.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
+
+    /* Reserva espacio REAL debajo de la tarjeta azul en su wrapper Streamlit. */
+    html body .st-key-saivam_mobile_topnav div[data-testid="stElementContainer"]:has(.mobile-app-hero),
+    html body div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stElementContainer"]:has(.mobile-app-hero) {
+        position: relative !important;
+        margin: 0 !important;
+        padding: 0 0 7px 0 !important;
+        overflow: visible !important;
+    }
+
+    html body .mobile-app-hero {
+        position: relative !important;
+        margin: 0 !important;
+        transform: none !important;
+    }
+
+    /* Los 4 botones quedan físicamente debajo, con solo un pequeño aire. */
+    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
+    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+        position: relative !important;
+        top: auto !important;
+        transform: none !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 5px !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* No vuelve a agregar espacio hacia los filtros/tarjetas inferiores. */
+    html body .st-key-saivam_mobile_topnav,
+    html body div[class*="st-key-saivam_mobile_topnav"] {
+        padding-bottom: 0 !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================================================
 # EJECUCIÓN FINAL
 # Se deja deliberadamente al final del archivo para que todo el CSS esté
 # cargado antes de dibujar el dashboard. Evita el efecto de "acomodarse"
