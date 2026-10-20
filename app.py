@@ -44,9 +44,7 @@ st.set_page_config(
 st.markdown(
     """
 <style>
-/* Variables finales bloqueadas desde el primer frame. La mayor especificidad
-   de html:root evita que overrides antiguos vuelvan a ensanchar el menú. */
-html:root {
+html:root{
     --menu-panel-width: 230px !important;
     --menu-inner-width: 204px !important;
     --menu-panel-width-final: 230px !important;
@@ -58,48 +56,11 @@ html:root {
     --main-edge-gap: 16px !important;
     --content-padding-x: 16px !important;
 }
-
-/* No animar anchos/posiciones durante el arranque. */
-html body section[data-testid="stSidebar"],
-html body section[data-testid="stSidebar"] *,
-html body section[data-testid="stMain"],
-html body div[data-testid="stMain"] {
+html body section[data-testid="stSidebar"],html body section[data-testid="stMain"],html body div[data-testid="stMain"]{transition: none !important;}
+html body section[data-testid="stSidebar"] *{
     transition: none !important;
 }
-
-@media screen and (min-width: 1101px) {
-    /* Sidebar: geometría definitiva desde el primer render. */
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] {
-        position: fixed !important;
-        inset: 0 auto 0 0 !important;
-        width: 230px !important;
-        min-width: 230px !important;
-        max-width: 230px !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        overflow-y: hidden !important;
-        z-index: 10000 !important;
-    }
-
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] > div,
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-        width: 230px !important;
-        min-width: 230px !important;
-        max-width: 230px !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
-        margin: 0 !important;
-        padding: 12px 13px 18px 13px !important;
-        box-sizing: border-box !important;
-        overflow: hidden !important;
-    }
-
-    /* Cabecera del menú y espacio previo a los botones, iguales al estado final. */
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-panel-content {
+@media  screen and (min-width: 1101px) {html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-panel-content{
         position: fixed !important;
         top: 12px !important;
         left: 17px !important;
@@ -112,31 +73,20 @@ html body div[data-testid="stMain"] {
         transform: none !important;
         z-index: 10020 !important;
     }
-
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-top-gap {
+html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-top-gap{
         display: block !important;
         height: 118px !important;
         min-height: 118px !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    /* Navegación compacta desde el inicio. */
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-brand,
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-line,
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"],
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-active-item {
+html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-brand,html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-line,html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"],html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] > button,html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] button,html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-active-item{
         width: 204px !important;
         min-width: 204px !important;
         max-width: 204px !important;
         box-sizing: border-box !important;
     }
-
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-    html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-active-item {
+html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] > button,html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] div[data-testid="stButton"] button,html body [data-testid="stAppViewContainer"] section[data-testid="stSidebar"] .menu-active-item{
         min-height: 43px !important;
         height: 43px !important;
         padding: 8px 9px !important;
@@ -145,44 +95,7 @@ html body div[data-testid="stMain"] {
         border-radius: 12px !important;
         white-space: nowrap !important;
     }
-
-    /* El panel principal se DESPLAZA completo; no basta con añadir padding,
-       porque Plotly, columnas y otros bloques podrían quedar detrás del menú. */
-    html body [data-testid="stAppViewContainer"] section[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] div[data-testid="stMain"] {
-        position: relative !important;
-        left: 230px !important;
-        right: auto !important;
-        margin: 0 !important;
-        padding-left: 0 !important;
-        width: calc(100vw - 230px) !important;
-        min-width: 0 !important;
-        max-width: calc(100vw - 230px) !important;
-        flex: 0 0 calc(100vw - 230px) !important;
-        box-sizing: border-box !important;
-        transform: none !important;
-        overflow-x: hidden !important;
-    }
-
-    html body [data-testid="stAppViewContainer"] div[data-testid="stMainBlockContainer"],
-    html body [data-testid="stAppViewContainer"] section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
-    html body [data-testid="stAppViewContainer"] section[data-testid="stMain"] .block-container,
-    html body [data-testid="stAppViewContainer"] div[data-testid="stMain"] .block-container {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        margin-top: -62px !important;
-        padding-top: 0 !important;
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-    }
-
-    /* Cabecera principal estable desde el primer render. */
-    html body .main-fixed-header {
+html body .main-fixed-header{
         min-height: 58px !important;
         height: 58px !important;
         margin-top: 0 !important;
@@ -190,21 +103,16 @@ html body div[data-testid="stMain"] {
         padding-top: 8px !important;
         align-items: flex-end !important;
     }
-
-    html body .main-fixed-title,
-    html body .title-main {
+html body .main-fixed-title,html body .title-main{
         font-size: clamp(28px, 2.1vw, 37px) !important;
         line-height: 1.03 !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    html body .main-fixed-logo img,
-    html body .header-logo-box img {
+html body .main-fixed-logo img,html body .header-logo-box img{
         width: 116px !important;
         max-width: 116px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -1562,115 +1470,39 @@ def aplicar_estilo():
     st.markdown(
         """
 <style>
-
-
-
-/* =========================================================
-   CORRECCIÓN 3.5: SIDEBAR FIJO, VISIBLE Y SIN DESORDEN
-   ========================================================= */
-:root {
+:root{
     --menu-panel-width: 290px !important;
     --menu-inner-width: 260px !important;
 }
-
-section[data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-    height: 100vh !important;
-    transform: translateX(0px) !important;
-    background: #020617 !important;
-    z-index: 9999 !important;
-    border-right: 1px solid rgba(147, 197, 253, 0.34) !important;
-    box-shadow: 10px 0 24px rgba(15, 23, 42, 0.32) !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-    min-height: 100vh !important;
-    background: #020617 !important;
-    padding: 12px 14px 18px 14px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}
-
-[data-testid="stAppViewContainer"] > .main,
-section.main,
-main {
-    margin-left: var(--menu-panel-width) !important;
-    width: calc(100vw - var(--menu-panel-width)) !important;
-    max-width: calc(100vw - var(--menu-panel-width)) !important;
-}
-
-.main .block-container,
-.block-container {
-    padding-top: 0rem !important;
-    padding-left: 1.25rem !important;
-    padding-right: 1.25rem !important;
-    max-width: none !important;
-    min-width: 1120px !important;
-    overflow-x: visible !important;
-}
-
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="collapsedControl"],
-button[kind="header"],
-header[data-testid="stHeader"] {
+section[data-testid="stSidebar"]{visibility: visible !important;opacity: 1 !important;background: #020617 !important;border-right: 1px solid rgba(147, 197, 253, 0.34) !important;box-shadow: 10px 0 24px rgba(15, 23, 42, 0.32) !important;}
+section[data-testid="stSidebar"] > div,section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"]{visibility: visible !important;opacity: 1 !important;background: #020617 !important;}
+[data-testid="stSidebarCollapsedControl"],[data-testid="collapsedControl"],button[kind="header"],header[data-testid="stHeader"]{
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
 }
-
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-brand{
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
     width: var(--menu-inner-width) !important;
     margin: 0 0 18px 0 !important;
 }
-
-section[data-testid="stSidebar"] .menu-icon {
+section[data-testid="stSidebar"] .menu-icon{
     flex: 0 0 52px !important;
 }
-
-section[data-testid="stSidebar"] .menu-title,
-section[data-testid="stSidebar"] .menu-title *,
-section[data-testid="stSidebar"] .menu-subtitle,
-section[data-testid="stSidebar"] .menu-subtitle * {
+section[data-testid="stSidebar"] .menu-title,section[data-testid="stSidebar"] .menu-title *,section[data-testid="stSidebar"] .menu-subtitle,section[data-testid="stSidebar"] .menu-subtitle *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     width: var(--menu-inner-width) !important;
     min-height: 48px !important;
     display: flex !important;
@@ -1689,13 +1521,11 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button {
     white-space: normal !important;
     text-shadow: 0 2px 4px rgba(0,0,0,0.85) !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover{
     background: rgba(37, 99, 235, 0.62) !important;
     border-color: rgba(191, 219, 254, 0.80) !important;
 }
-
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     box-sizing: border-box !important;
@@ -1713,47 +1543,34 @@ section[data-testid="stSidebar"] .menu-active-item {
     margin-bottom: 7px !important;
     white-space: normal !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label * {
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label *{
     color: #dbeafe !important;
     -webkit-text-fill-color: #dbeafe !important;
     opacity: 1 !important;
     font-weight: 950 !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     background: #ffffff !important;
     border-radius: 12px !important;
     min-height: 44px !important;
     border: 1px solid rgba(255,255,255,0.45) !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"] * {
+section[data-testid="stSidebar"] [data-baseweb="select"] *{
     color: #0f172a !important;
     -webkit-text-fill-color: #0f172a !important;
     font-weight: 800 !important;
 }
-
-.title-main {
+.title-main{
     white-space: nowrap !important;
     overflow: visible !important;
 }
-
-.kpi-card {
+.kpi-card{
     min-width: 205px !important;
 }
-
-[data-testid="stHorizontalBlock"] {
-    flex-wrap: nowrap !important;
-}
-
-[data-testid="stDataFrame"],
-[data-testid="stPlotlyChart"] {
+[data-testid="stDataFrame"],[data-testid="stPlotlyChart"]{
     max-width: 100% !important;
     overflow: hidden !important;
 }
-
 </style>
         """,
         unsafe_allow_html=True,
@@ -1762,16 +1579,7 @@ section[data-testid="stSidebar"] [data-baseweb="select"] * {
     st.markdown(
         """
 <style>
-
-header[data-testid="stHeader"],
-[data-testid="stToolbar"],
-[data-testid="stDecoration"],
-[data-testid="stStatusWidget"],
-[data-testid="stDeployButton"],
-#MainMenu,
-footer,
-[data-testid="collapsedControl"],
-button[kind="header"] {
+header[data-testid="stHeader"],[data-testid="stToolbar"],[data-testid="stDecoration"],[data-testid="stStatusWidget"],[data-testid="stDeployButton"],#MainMenu,footer,[data-testid="collapsedControl"],button[kind="header"]{
     display: none !important;
     visibility: hidden !important;
     height: 0px !important;
@@ -1780,52 +1588,16 @@ button[kind="header"] {
     opacity: 0 !important;
     pointer-events: none !important;
 }
-
-html,
-body,
-.stApp,
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewContainer"] > .main,
-section.main,
-main {
-    background: #eef3f9 !important;
-    color: #0f172a !important;
-    padding-top: 0px !important;
-    margin-top: 0px !important;
-}
-
-.main .block-container,
-.block-container,
-section.main > div {
-    padding-top: 0rem !important;
-    margin-top: 0rem !important;
-    padding-bottom: 2rem !important;
-    padding-left: 0rem !important;
-    padding-right: 0.75rem !important;
-    max-width: 100% !important;
-}
-
-div[data-testid="stVerticalBlock"] {
-    gap: 0.45rem !important;
-}
-
-.stMarkdown h1 a,
-.stMarkdown h2 a,
-.stMarkdown h3 a {
+html,body,.stApp,[data-testid="stAppViewContainer"],[data-testid="stAppViewContainer"] > .main,section.main,main{background: #eef3f9 !important;color: #0f172a !important;}
+div[data-testid="stVerticalBlock"]{gap: 0.45rem !important;}
+.stMarkdown h1 a,.stMarkdown h2 a,.stMarkdown h3 a{
     display: none !important;
     visibility: hidden !important;
 }
-
-/* =========================================================
-   PANEL IZQUIERDO OSCURO COMPLETO
-   ========================================================= */
-
-.menu-marker {
+.menu-marker{
     display: none;
 }
-
-/* Fondo fijo real del panel izquierdo completo */
-.menu-bg {
+.menu-bg{
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -1836,11 +1608,7 @@ div[data-testid="stVerticalBlock"] {
     border-right: 1px solid rgba(147, 197, 253, 0.28) !important;
     box-shadow: 10px 0 24px rgba(15, 23, 42, 0.35) !important;
 }
-
-/* Columna izquierda sobre el fondo oscuro */
-div[data-testid="column"]:has(.menu-marker),
-div[data-testid="column"]:has(.menu-brand),
-div[data-testid="column"]:has(.menu-bg) {
+div[data-testid="column"]:has(.menu-marker),div[data-testid="column"]:has(.menu-brand),div[data-testid="column"]:has(.menu-bg){
     background: transparent !important;
     min-height: 100vh !important;
     height: 100vh !important;
@@ -1850,29 +1618,14 @@ div[data-testid="column"]:has(.menu-bg) {
     align-self: flex-start !important;
     z-index: 2 !important;
 }
-
-/* Todo el contenido interno del menú queda transparente */
-div[data-testid="column"]:has(.menu-marker) > div,
-div[data-testid="column"]:has(.menu-brand) > div,
-div[data-testid="column"]:has(.menu-bg) > div,
-div[data-testid="column"]:has(.menu-marker) div,
-div[data-testid="column"]:has(.menu-brand) div,
-div[data-testid="column"]:has(.menu-bg) div {
+div[data-testid="column"]:has(.menu-marker) > div,div[data-testid="column"]:has(.menu-brand) > div,div[data-testid="column"]:has(.menu-bg) > div,div[data-testid="column"]:has(.menu-marker) div,div[data-testid="column"]:has(.menu-brand) div,div[data-testid="column"]:has(.menu-bg) div{
     background-color: transparent !important;
 }
-
-/* Contenido del menú encima del fondo */
-.menu-panel-content,
-.menu-brand,
-.menu-line,
-.menu-footer-box,
-.menu-info {
+.menu-panel-content,.menu-brand,.menu-line,.menu-footer-box,.menu-info{
     position: relative !important;
     z-index: 3 !important;
 }
-
-/* Encabezado del panel izquierdo */
-.menu-brand {
+.menu-brand{
     display: flex !important;
     align-items: center !important;
     gap: 11px !important;
@@ -1880,8 +1633,7 @@ div[data-testid="column"]:has(.menu-bg) div {
     margin-bottom: 18px !important;
     background: transparent !important;
 }
-
-.menu-icon {
+.menu-icon{
     background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%) !important;
     width: 52px !important;
     height: 52px !important;
@@ -1892,8 +1644,7 @@ div[data-testid="column"]:has(.menu-bg) div {
     font-size: 27px !important;
     box-shadow: 0 10px 24px rgba(37, 99, 235, 0.40) !important;
 }
-
-.menu-icon-img {
+.menu-icon-img{
     width: 44px !important;
     height: 44px !important;
     min-width: 44px !important;
@@ -1907,8 +1658,7 @@ div[data-testid="column"]:has(.menu-bg) div {
     box-shadow: none !important;
     border: none !important;
 }
-
-.menu-icon-img img {
+.menu-icon-img img{
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
@@ -1920,12 +1670,10 @@ div[data-testid="column"]:has(.menu-bg) div {
     box-shadow: none !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] .menu-icon-img {
+section[data-testid="stSidebar"] .menu-icon-img{
     flex: 0 0 44px !important;
 }
-
-.menu-title {
+.menu-title{
     color: #ffffff !important;
     font-weight: 950 !important;
     font-size: 13.8px !important;
@@ -1933,8 +1681,7 @@ section[data-testid="stSidebar"] .menu-icon-img {
     letter-spacing: 0.45px !important;
     text-shadow: 0 2px 5px rgba(0,0,0,0.75) !important;
 }
-
-.menu-subtitle {
+.menu-subtitle{
     color: #bfdbfe !important;
     font-size: 11.5px !important;
     margin-top: 5px !important;
@@ -1942,24 +1689,18 @@ section[data-testid="stSidebar"] .menu-icon-img {
     letter-spacing: 0.30px !important;
     text-shadow: 0 2px 4px rgba(0,0,0,0.65) !important;
 }
-
-.menu-line {
+.menu-line{
     border: 0 !important;
     border-top: 1px solid rgba(191, 219, 254, 0.25) !important;
     margin: 14px 0 16px 0 !important;
 }
-
-/* Items del menú */
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"],
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] {
+div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"],div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"]{
     gap: 0.32rem !important;
     background: transparent !important;
     position: relative !important;
     z-index: 3 !important;
 }
-
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label,
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label {
+div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label,div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label{
     background: transparent !important;
     border-radius: 12px !important;
     padding: 8px 10px !important;
@@ -1967,92 +1708,57 @@ div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label {
     min-height: 38px !important;
     border: 1px solid transparent !important;
 }
-
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:hover,
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:hover {
+div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:hover,div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:hover{
     background: rgba(37, 99, 235, 0.25) !important;
     border: 1px solid rgba(147, 197, 253, 0.40) !important;
 }
-
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked),
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked) {
+div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked),div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked){
     background: rgba(37, 99, 235, 0.35) !important;
     border: 1px solid rgba(147, 197, 253, 0.55) !important;
     box-shadow: 0 8px 18px rgba(37, 99, 235, 0.28) !important;
 }
-
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label p,
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label p {
+div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label p,div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label p{
     color: #ffffff !important;
     font-size: 14px !important;
     line-height: 1.18 !important;
     font-weight: 850 !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.45) !important;
 }
-
-
-
-/* Refuerzo de legibilidad para textos del menú izquierdo */
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] *,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] * {
+div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] *,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] *{
     color: #ffffff !important;
     opacity: 1 !important;
     font-weight: 900 !important;
     text-shadow: 0 1px 3px rgba(0,0,0,0.75) !important;
 }
-
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label p,
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label span,
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label div,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label p,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label span,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label div {
+div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label p,div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label span,div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label div,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label p,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label span,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label div{
     color: #ffffff !important;
     opacity: 1 !important;
     font-size: 16px !important;
     font-weight: 900 !important;
     letter-spacing: 0.10px !important;
 }
-
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked) p,
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked) span,
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked) div,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked) p,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked) span,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked) div {
+div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked) p,div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked) span,div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked) div,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked) p,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked) span,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked) div{
     color: #ffffff !important;
     opacity: 1 !important;
     font-weight: 950 !important;
 }
-
-/* Texto Equipo, Año, Mes */
-div[data-testid="column"]:has(.menu-marker) label,
-div[data-testid="column"]:has(.menu-bg) label {
+div[data-testid="column"]:has(.menu-marker) label,div[data-testid="column"]:has(.menu-bg) label{
     color: #e0f2fe !important;
     font-weight: 900 !important;
     font-size: 13px !important;
 }
-
-/* Selectbox dentro del panel */
-div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] > div,
-div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] > div {
+div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] > div,div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] > div{
     background: #ffffff !important;
     border-radius: 12px !important;
     min-height: 42px !important;
     height: 42px !important;
     border: 1px solid rgba(255,255,255,0.45) !important;
 }
-
-div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] span,
-div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] input,
-div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] span,
-div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
+div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] span,div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] input,div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] span,div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input{
     color: #0f172a !important;
     font-size: 13px !important;
 }
-
-/* Caja inferior */
-.menu-footer-box {
+.menu-footer-box{
     border: 1px solid rgba(147,197,253,0.35) !important;
     background: rgba(2, 6, 23, 0.96) !important;
     border-radius: 16px !important;
@@ -2062,25 +1768,18 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     position: relative !important;
     z-index: 3 !important;
 }
-
-.menu-info {
+.menu-info{
     color: #ffffff !important;
     font-size: 12.5px !important;
     line-height: 1.68 !important;
     margin-top: 0px !important;
     font-weight: 850 !important;
 }
-
-.menu-info b {
+.menu-info b{
     color: #93c5fd !important;
     font-weight: 950 !important;
 }
-
-/* =========================================================
-   CONTENIDO PRINCIPAL
-   ========================================================= */
-
-.title-main {
+.title-main{
     font-size: 42px;
     font-weight: 950;
     color: #0f172a;
@@ -2090,8 +1789,7 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     padding-bottom: 0px !important;
     line-height: 1.05;
 }
-
-.header-logo-box {
+.header-logo-box{
     background: transparent !important;
     border: none !important;
     border-radius: 0 !important;
@@ -2100,19 +1798,16 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     text-align: right !important;
     margin-top: 0px !important;
 }
-
-.header-logo-box img {
+.header-logo-box img{
     width: 170px !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
 }
-
-.header-separador {
+.header-separador{
     height: 20px;
 }
-
-.kpi-card {
+.kpi-card{
     background: white;
     border: 1px solid #dbe3ef;
     border-radius: 20px;
@@ -2120,8 +1815,7 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     min-height: 132px;
     box-shadow: 0 10px 26px rgba(15, 23, 42, 0.065);
 }
-
-.kpi-icon {
+.kpi-icon{
     width: 54px;
     height: 54px;
     border-radius: 18px;
@@ -2131,35 +1825,30 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     font-size: 26px;
     margin-bottom: 12px;
 }
-
-.kpi-title {
+.kpi-title{
     font-size: 13px;
     color: #475569;
     font-weight: 900;
 }
-
-.kpi-value {
+.kpi-value{
     font-size: 26px;
     font-weight: 950;
     color: #0f172a;
     margin-top: 7px;
 }
-
-.kpi-sub {
+.kpi-sub{
     font-size: 12px;
     color: #64748b;
     margin-top: 7px;
 }
-
-.panel-title {
+.panel-title{
     color: #0f172a;
     font-weight: 950;
     font-size: 19px;
     margin-top: 20px;
     margin-bottom: 10px;
 }
-
-.next-item {
+.next-item{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2167,22 +1856,19 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     padding: 6px 0;
     min-height: 44px;
 }
-
-.next-title {
+.next-title{
     font-weight: 950;
     color: #0f172a;
     font-size: 12px;
     line-height: 1.15;
 }
-
-.next-sub {
+.next-sub{
     color: #64748b;
     font-size: 10.5px;
     margin-top: 1px;
     line-height: 1.15;
 }
-
-.badge-days {
+.badge-days{
     background: #fff7ed;
     color: #f97316;
     border: 1px solid #fed7aa;
@@ -2192,8 +1878,7 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     font-size: 10px;
     white-space: nowrap;
 }
-
-.equipo-card {
+.equipo-card{
     background: #ffffff;
     border: 1px solid #dbe3ef;
     border-radius: 18px;
@@ -2203,8 +1888,7 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     box-sizing: border-box;
     overflow: hidden;
 }
-
-.equipo-img {
+.equipo-img{
     width: 100%;
     height: 132px;
     object-fit: cover;
@@ -2214,8 +1898,7 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     background: #f1f5f9;
     display: block;
 }
-
-.equipo-img-placeholder {
+.equipo-img-placeholder{
     width: 100%;
     height: 132px;
     border-radius: 14px;
@@ -2229,43 +1912,37 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     margin-bottom: 10px;
     box-sizing: border-box;
 }
-
-.equipo-nombre {
+.equipo-nombre{
     font-weight: 950;
     color: #0f172a;
     font-size: 16px;
     margin-bottom: 3px;
 }
-
-.equipo-sub {
+.equipo-sub{
     color: #64748b;
     font-size: 13px;
     margin-top: 4px;
     line-height: 1.25;
 }
-
-.estado-ok {
+.estado-ok{
     color: #22c55e;
     font-size: 12px;
     font-weight: 950;
     margin-top: 8px;
 }
-
-.estado-alerta {
+.estado-alerta{
     color: #f59e0b;
     font-size: 12px;
     font-weight: 950;
     margin-top: 8px;
 }
-
-.estado-rojo {
+.estado-rojo{
     color: #ef4444;
     font-size: 12px;
     font-weight: 950;
     margin-top: 8px;
 }
-
-.progress-bg {
+.progress-bg{
     width: 100%;
     height: 7px;
     background: #e2e8f0;
@@ -2273,104 +1950,60 @@ div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] input {
     margin-top: 9px;
     overflow: hidden;
 }
-
-.progress-fill {
+.progress-fill{
     height: 7px;
     border-radius: 999px;
     background-color: var(--barra-color, #94a3b8) !important;
 }
-
-[data-testid="stDataFrame"] {
+[data-testid="stDataFrame"]{
     border: 1px solid #dbe3ef;
     border-radius: 13px;
     overflow: hidden;
 }
-
-/* Selectbox global */
-div[data-baseweb="select"] > div {
+div[data-baseweb="select"] > div{
     background: white !important;
     border: 1px solid #dbe3ef !important;
     border-radius: 12px !important;
     min-height: 44px !important;
 }
-
-div[data-baseweb="select"] span,
-div[data-baseweb="select"] input {
+div[data-baseweb="select"] span,div[data-baseweb="select"] input{
     color: #0f172a !important;
 }
-
-label {
+label{
     color: #334155 !important;
     font-weight: 850 !important;
 }
-
-.stButton button {
+.stButton button{
     border-radius: 11px !important;
     font-weight: 850 !important;
     min-height: 44px !important;
 }
-
-
-/* =========================================================
-   AJUSTE FINAL: MENÚ IZQUIERDO MÁS LEGIBLE
-   ========================================================= */
-
-/* Fuerza los textos del menú a blanco, aunque Streamlit aplique estilos internos */
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label,
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label *,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label * {
+div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label,div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label *,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label *{
     color: #ffffff !important;
     opacity: 1 !important;
     font-weight: 900 !important;
     text-shadow: 0 1px 3px rgba(0,0,0,0.75) !important;
 }
-
-/* Opción seleccionada con fondo azul para que destaque */
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked),
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked) {
+div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] label:has(input:checked),div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] label:has(input:checked){
     background: rgba(37, 99, 235, 0.45) !important;
     border: 1px solid rgba(147, 197, 253, 0.65) !important;
 }
-
-/* Radio button más visible */
-div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] input,
-div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] input {
+div[data-testid="column"]:has(.menu-bg) div[role="radiogroup"] input,div[data-testid="column"]:has(.menu-marker) div[role="radiogroup"] input{
     accent-color: #38bdf8 !important;
 }
-
-/* Títulos de filtros Equipo / Año / Mes */
-div[data-testid="column"]:has(.menu-bg) label,
-div[data-testid="column"]:has(.menu-bg) label *,
-div[data-testid="column"]:has(.menu-marker) label,
-div[data-testid="column"]:has(.menu-marker) label * {
+div[data-testid="column"]:has(.menu-bg) label,div[data-testid="column"]:has(.menu-bg) label *,div[data-testid="column"]:has(.menu-marker) label,div[data-testid="column"]:has(.menu-marker) label *{
     color: #e0f2fe !important;
     opacity: 1 !important;
     font-weight: 900 !important;
 }
-
-
-/* =========================================================
-   CORRECCIÓN FINAL: TEXTO DEL MENÚ IZQUIERDO 100% LEGIBLE
-   Streamlit a veces aplica opacidad/color interno a los radios.
-   Este bloque fuerza blanco real en menú, filtros y estados.
-   ========================================================= */
-
-/* Radio menú: texto, emojis y contenedores internos */
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"],
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] *,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"],
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] * {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"],div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] *,div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"],div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
     filter: none !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.65) !important;
 }
-
-/* Cada opción del menú */
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label,div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
@@ -2378,33 +2011,18 @@ div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label {
     font-size: 15px !important;
     line-height: 1.25 !important;
 }
-
-/* Texto específico dentro de cada opción */
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label p,
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label span,
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label div,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label p,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label span,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label div {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label p,div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label span,div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label div,div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label p,div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label span,div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label div{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
     font-weight: 950 !important;
     font-size: 15px !important;
 }
-
-/* Opción seleccionada más marcada */
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label:has(input:checked),
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label:has(input:checked) {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stRadio"] label:has(input:checked),div[data-testid="column"]:has(.menu-marker) div[data-testid="stRadio"] label:has(input:checked){
     background: rgba(37, 99, 235, 0.42) !important;
     border: 1px solid rgba(147, 197, 253, 0.65) !important;
 }
-
-/* Etiquetas de filtros: Equipo, Año y Mes */
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stSelectbox"] label,
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stSelectbox"] label *,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"] label,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"] label * {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stSelectbox"] label,div[data-testid="column"]:has(.menu-bg) div[data-testid="stSelectbox"] label *,div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"] label,div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"] label *{
     color: #dbeafe !important;
     -webkit-text-fill-color: #dbeafe !important;
     opacity: 1 !important;
@@ -2412,23 +2030,13 @@ div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"] label
     font-size: 13.5px !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.55) !important;
 }
-
-/* Texto dentro de los filtros desplegables */
-div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] *,
-div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] * {
+div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] *,div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] *{
     color: #0f172a !important;
     -webkit-text-fill-color: #0f172a !important;
     opacity: 1 !important;
     font-weight: 800 !important;
 }
-
-
-
-/* =========================================================
-   MENÚ HTML PERSONALIZADO - LETRAS BLANCAS Y LEGIBLES
-   ========================================================= */
-
-.menu-nav {
+.menu-nav{
     display: flex !important;
     flex-direction: column !important;
     gap: 7px !important;
@@ -2437,10 +2045,7 @@ div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] * {
     position: relative !important;
     z-index: 20 !important;
 }
-
-.menu-nav-item,
-.menu-nav-item:link,
-.menu-nav-item:visited {
+.menu-nav-item,.menu-nav-item:link,.menu-nav-item:visited{
     display: block !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -2458,49 +2063,33 @@ div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] * {
     background: rgba(15, 23, 42, 0.30) !important;
     border: 1px solid rgba(147, 197, 253, 0.20) !important;
 }
-
-.menu-nav-item:hover {
+.menu-nav-item:hover{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     background: rgba(37, 99, 235, 0.40) !important;
     border: 1px solid rgba(147, 197, 253, 0.60) !important;
     text-decoration: none !important;
 }
-
-.menu-nav-item.active {
+.menu-nav-item.active{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(14, 165, 233, 0.78)) !important;
     border: 1px solid rgba(191, 219, 254, 0.85) !important;
     box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35) !important;
 }
-
-/* Refuerzo para que Streamlit no pinte los links del menú en gris */
-div[data-testid="column"] .menu-nav a,
-div[data-testid="column"] .menu-nav a *,
-.stApp .menu-nav a,
-.stApp .menu-nav a * {
+div[data-testid="column"] .menu-nav a,div[data-testid="column"] .menu-nav a *,.stApp .menu-nav a,.stApp .menu-nav a *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
 }
-
-
-/* =========================================================
-   MENÚ CON BOTONES STREAMLIT - NO ABRE PESTAÑAS NUEVAS
-   ========================================================= */
-.menu-botones-title {
+.menu-botones-title{
     display: none !important;
 }
-
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"],
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"],div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"]{
     width: 100% !important;
     margin: 0 0 7px 0 !important;
 }
-
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] > button,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] > button,div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button{
     width: 100% !important;
     min-height: 46px !important;
     height: 46px !important;
@@ -2519,18 +2108,13 @@ div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85) !important;
     box-shadow: none !important;
 }
-
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] > button:hover,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button:hover {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] > button:hover,div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button:hover{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     background: rgba(37, 99, 235, 0.40) !important;
     border: 1px solid rgba(147, 197, 253, 0.60) !important;
 }
-
-/* Botón deshabilitado = página actual seleccionada */
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] > button:disabled,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button:disabled {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] > button:disabled,div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button:disabled{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
@@ -2538,34 +2122,21 @@ div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button
     border: 1px solid rgba(191, 219, 254, 0.85) !important;
     box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35) !important;
 }
-
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] > button:disabled *,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button:disabled * {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] > button:disabled *,div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] > button:disabled *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
 }
-
-
-
-/* =========================================================
-   AJUSTE FINAL: MENÚ SIN SOBRESALIR DEL PANEL IZQUIERDO
-   ========================================================= */
-:root {
+:root{
     --menu-panel-width: 290px;
     --menu-inner-width: 260px;
 }
-
-.menu-bg {
+.menu-bg{
     width: var(--menu-panel-width) !important;
     max-width: var(--menu-panel-width) !important;
     overflow: hidden !important;
 }
-
-/* La columna izquierda queda limitada al ancho real del panel */
-div[data-testid="column"]:has(.menu-bg),
-div[data-testid="column"]:has(.menu-marker),
-div[data-testid="column"]:has(.menu-brand) {
+div[data-testid="column"]:has(.menu-bg),div[data-testid="column"]:has(.menu-marker),div[data-testid="column"]:has(.menu-brand){
     width: var(--menu-panel-width) !important;
     max-width: var(--menu-panel-width) !important;
     min-width: var(--menu-panel-width) !important;
@@ -2574,31 +2145,19 @@ div[data-testid="column"]:has(.menu-brand) {
     padding-left: 10px !important;
     padding-right: 10px !important;
 }
-
-.menu-panel-content,
-.menu-nav,
-.menu-line,
-.menu-footer-box,
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stSelectbox"],
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"] {
+.menu-panel-content,.menu-nav,.menu-line,.menu-footer-box,div[data-testid="column"]:has(.menu-bg) div[data-testid="stSelectbox"],div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"]{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
-
-.menu-nav {
+.menu-nav{
     padding-right: 0 !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
-
-.menu-nav-item,
-.menu-nav-item:link,
-.menu-nav-item:visited,
-.menu-nav-item:hover,
-.menu-nav-item.active {
+.menu-nav-item,.menu-nav-item:link,.menu-nav-item:visited,.menu-nav-item:hover,.menu-nav-item.active{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     min-width: 0 !important;
@@ -2609,59 +2168,34 @@ div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"] {
     padding-left: 12px !important;
     padding-right: 10px !important;
 }
-
-/* Selectores Equipo / Año / Mes dentro del ancho del panel */
-div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"],
-div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"],
-div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] > div,
-div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] > div {
+div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"],div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"],div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] > div,div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] > div{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
 }
-
-.menu-footer-box {
+.menu-footer-box{
     margin-right: 0 !important;
 }
-
-/* Evita que cualquier bloque interno del menú se salga hacia la página principal */
-div[data-testid="column"]:has(.menu-bg) *,
-div[data-testid="column"]:has(.menu-marker) * {
+div[data-testid="column"]:has(.menu-bg) *,div[data-testid="column"]:has(.menu-marker) *{
     max-width: 100% !important;
 }
-
-/* En móviles mantiene el panel fijo sin invadir el contenido */
-@media (max-width: 900px) {
-    :root {
+@media  (max-width: 900px) {:root{
         --menu-panel-width: 290px;
         --menu-inner-width: 260px;
-    }
-}
-
-
-
-/* =========================================================
-   CORRECCIÓN 3.3: MENÚ VISIBLE Y ESTRUCTURA FIJA
-   ========================================================= */
-:root {
+    }}
+:root{
     --menu-panel-width: 290px !important;
     --menu-inner-width: 260px !important;
     --content-gap: 18px !important;
 }
-
-/* Ancho fijo del panel izquierdo completo */
-.menu-bg {
+.menu-bg{
     width: var(--menu-panel-width) !important;
     max-width: var(--menu-panel-width) !important;
     min-width: var(--menu-panel-width) !important;
     z-index: 1 !important;
 }
-
-/* Columna izquierda fija: evita que el contenido se monte encima al hacer zoom */
-div[data-testid="column"]:has(.menu-bg),
-div[data-testid="column"]:has(.menu-marker),
-div[data-testid="column"]:has(.menu-brand) {
+div[data-testid="column"]:has(.menu-bg),div[data-testid="column"]:has(.menu-marker),div[data-testid="column"]:has(.menu-brand){
     flex: 0 0 var(--menu-panel-width) !important;
     width: var(--menu-panel-width) !important;
     min-width: var(--menu-panel-width) !important;
@@ -2671,11 +2205,7 @@ div[data-testid="column"]:has(.menu-brand) {
     overflow: hidden !important;
     z-index: 10 !important;
 }
-
-/* Columna derecha: queda separada del menú y no se mete debajo */
-div[data-testid="column"]:has(.menu-bg) + div[data-testid="column"],
-div[data-testid="column"]:has(.menu-marker) + div[data-testid="column"],
-div[data-testid="column"]:has(.menu-brand) + div[data-testid="column"] {
+div[data-testid="column"]:has(.menu-bg) + div[data-testid="column"],div[data-testid="column"]:has(.menu-marker) + div[data-testid="column"],div[data-testid="column"]:has(.menu-brand) + div[data-testid="column"]{
     flex: 1 1 auto !important;
     min-width: 980px !important;
     padding-left: var(--content-gap) !important;
@@ -2683,30 +2213,17 @@ div[data-testid="column"]:has(.menu-brand) + div[data-testid="column"] {
     position: relative !important;
     z-index: 2 !important;
 }
-
-/* Mantiene el tablero ordenado; si la ventana es muy angosta aparece scroll horizontal en vez de montar elementos */
-.main .block-container,
-.block-container {
-    min-width: 1360px !important;
-    overflow-x: auto !important;
-}
-
-/* Título más estable al cambiar zoom */
-.title-main {
+.title-main{
     font-size: clamp(30px, 2.25vw, 42px) !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-
-.header-logo-box img {
+.header-logo-box img{
     width: 150px !important;
     max-width: 150px !important;
 }
-
-/* Botones del menú: siempre oscuros, nunca blancos */
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] button,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] button {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] button,div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] button{
     width: 100% !important;
     min-height: 46px !important;
     height: auto !important;
@@ -2726,17 +2243,13 @@ div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] button {
     box-shadow: none !important;
     white-space: normal !important;
 }
-
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] button:hover,
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] button:hover {
+div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"] button:hover,div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] button:hover{
     background: rgba(37, 99, 235, 0.55) !important;
     border-color: rgba(191, 219, 254, 0.70) !important;
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
 }
-
-/* Item actualmente seleccionado: HTML propio, no botón deshabilitado */
-.menu-active-item {
+.menu-active-item{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     box-sizing: border-box !important;
@@ -2754,106 +2267,53 @@ div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"] button:h
     margin-bottom: 7px !important;
     white-space: normal !important;
 }
-
-.menu-active-item * {
+.menu-active-item *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
 }
-
-/* Anchos internos del menú */
-.menu-panel-content,
-.menu-nav,
-.menu-line,
-.menu-footer-box,
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"],
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"],
-div[data-testid="column"]:has(.menu-bg) div[data-testid="stSelectbox"],
-div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"] {
+.menu-panel-content,.menu-nav,.menu-line,.menu-footer-box,div[data-testid="column"]:has(.menu-bg) div[data-testid="stButton"],div[data-testid="column"]:has(.menu-marker) div[data-testid="stButton"],div[data-testid="column"]:has(.menu-bg) div[data-testid="stSelectbox"],div[data-testid="column"]:has(.menu-marker) div[data-testid="stSelectbox"]{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
 }
-
-/* Ajuste especial para textos largos del menú */
-.menu-brand {
+.menu-brand{
     width: var(--menu-inner-width) !important;
 }
-.menu-title {
+.menu-title{
     font-size: 13px !important;
 }
-.menu-subtitle {
+.menu-subtitle{
     font-size: 11px !important;
 }
-
-/* Selectores dentro del panel: no se salen */
-div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"],
-div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"],
-div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] > div,
-div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] > div {
+div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"],div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"],div[data-testid="column"]:has(.menu-bg) [data-baseweb="select"] > div,div[data-testid="column"]:has(.menu-marker) [data-baseweb="select"] > div{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
 }
-
-/* Tablas y gráficos contenidos dentro de su bloque */
-[data-testid="stDataFrame"],
-[data-testid="stPlotlyChart"] {
+[data-testid="stDataFrame"],[data-testid="stPlotlyChart"]{
     max-width: 100% !important;
     overflow: hidden !important;
 }
-
-
-
-/* =========================================================
-   CORRECCIÓN 3.4: MENÚ EN SIDEBAR FIJO Y RESPONSIVE
-   ========================================================= */
-:root {
+:root{
     --menu-panel-width: 290px !important;
     --menu-inner-width: 260px !important;
 }
-
-/* Sidebar oficial de Streamlit: estable al agrandar/achicar o usar zoom */
-section[data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-    background: #020617 !important;
-    border-right: 1px solid rgba(147, 197, 253, 0.28) !important;
-    box-shadow: 10px 0 24px rgba(15, 23, 42, 0.28) !important;
-    overflow: hidden !important;
-}
-
-section[data-testid="stSidebar"] > div {
-    background: #020617 !important;
-    width: var(--menu-panel-width) !important;
-    padding: 12px 14px 18px 14px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}
-
-section[data-testid="stSidebar"] .menu-bg {
+section[data-testid="stSidebar"]{visibility: visible !important;background: #020617 !important;border-right: 1px solid rgba(147, 197, 253, 0.28) !important;box-shadow: 10px 0 24px rgba(15, 23, 42, 0.28) !important;}
+section[data-testid="stSidebar"] > div{background: #020617 !important;}
+section[data-testid="stSidebar"] .menu-bg{
     display: none !important;
 }
-
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"]{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-brand{
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
     margin: 0 0 18px 0 !important;
     width: var(--menu-inner-width) !important;
 }
-
-section[data-testid="stSidebar"] .menu-title {
+section[data-testid="stSidebar"] .menu-title{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     font-size: 13px !important;
@@ -2862,23 +2322,19 @@ section[data-testid="stSidebar"] .menu-title {
     letter-spacing: 0.35px !important;
     text-shadow: 0 2px 5px rgba(0,0,0,0.75) !important;
 }
-
-section[data-testid="stSidebar"] .menu-subtitle {
+section[data-testid="stSidebar"] .menu-subtitle{
     color: #bfdbfe !important;
     -webkit-text-fill-color: #bfdbfe !important;
     font-size: 11px !important;
     margin-top: 6px !important;
     font-weight: 950 !important;
 }
-
-section[data-testid="stSidebar"] .menu-line {
+section[data-testid="stSidebar"] .menu-line{
     border: 0 !important;
     border-top: 1px solid rgba(191, 219, 254, 0.25) !important;
     margin: 14px 0 16px 0 !important;
 }
-
-/* Botones del menú: visibles y dentro del panel */
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     min-height: 48px !important;
@@ -2903,15 +2359,13 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button {
     white-space: normal !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover{
     background: rgba(37, 99, 235, 0.55) !important;
     border-color: rgba(191, 219, 254, 0.70) !important;
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
 }
-
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     box-sizing: border-box !important;
@@ -2929,10 +2383,7 @@ section[data-testid="stSidebar"] .menu-active-item {
     margin-bottom: 7px !important;
     white-space: normal !important;
 }
-
-/* Filtros visibles dentro del panel izquierdo */
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label * {
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label *{
     color: #dbeafe !important;
     -webkit-text-fill-color: #dbeafe !important;
     opacity: 1 !important;
@@ -2940,29 +2391,24 @@ section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label * {
     font-size: 13px !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.55) !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     background: #ffffff !important;
     border-radius: 12px !important;
     min-height: 44px !important;
     border: 1px solid rgba(255,255,255,0.45) !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"] * {
+section[data-testid="stSidebar"] [data-baseweb="select"] *{
     color: #0f172a !important;
     -webkit-text-fill-color: #0f172a !important;
     font-weight: 800 !important;
 }
-
-section[data-testid="stSidebar"] .menu-footer-box {
+section[data-testid="stSidebar"] .menu-footer-box{
     border: 1px solid rgba(147,197,253,0.35) !important;
     background: rgba(2, 6, 23, 0.96) !important;
     border-radius: 16px !important;
@@ -2970,45 +2416,24 @@ section[data-testid="stSidebar"] .menu-footer-box {
     margin-top: 18px !important;
     box-shadow: 0 10px 20px rgba(0,0,0,0.40) !important;
 }
-
-section[data-testid="stSidebar"] .menu-info,
-section[data-testid="stSidebar"] .menu-info * {
+section[data-testid="stSidebar"] .menu-info,section[data-testid="stSidebar"] .menu-info *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     font-size: 12.5px !important;
     line-height: 1.68 !important;
     font-weight: 850 !important;
 }
-
-section[data-testid="stSidebar"] .menu-info b {
+section[data-testid="stSidebar"] .menu-info b{
     color: #93c5fd !important;
     -webkit-text-fill-color: #93c5fd !important;
     font-weight: 950 !important;
 }
-
-/* Contenido principal estable: no se monta sobre el menú */
-.main .block-container,
-.block-container {
-    padding-top: 0rem !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    max-width: none !important;
-    min-width: 1180px !important;
-    overflow-x: auto !important;
-}
-
-/* Mantiene las tarjetas y gráficos en orden cuando se cambia zoom */
-div[data-testid="stHorizontalBlock"] {
-    flex-wrap: nowrap !important;
-}
-
-.title-main {
+.title-main{
     font-size: clamp(30px, 2.2vw, 42px) !important;
     white-space: nowrap !important;
     text-align: center !important;
 }
-
-.header-logo-box {
+.header-logo-box{
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
@@ -3016,21 +2441,14 @@ div[data-testid="stHorizontalBlock"] {
     padding: 0 !important;
     text-align: right !important;
 }
-
-.header-logo-box img {
+.header-logo-box img{
     width: 170px !important;
     max-width: 170px !important;
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
 }
-
-
-
-/* =========================================================
-   AJUSTE 5.1: ENCABEZADO SUPERIOR FIJO Y PRÓXIMAS MANTENCIONES COMPACTO
-   ========================================================= */
-.main-fixed-header {
+.main-fixed-header{
     position: sticky !important;
     top: 0 !important;
     z-index: 5000 !important;
@@ -3048,8 +2466,7 @@ div[data-testid="stHorizontalBlock"] {
     box-shadow: 0 7px 18px rgba(15, 23, 42, 0.055) !important;
     box-sizing: border-box !important;
 }
-
-.main-fixed-title {
+.main-fixed-title{
     color: #0f172a !important;
     font-size: clamp(31px, 2.35vw, 43px) !important;
     font-weight: 950 !important;
@@ -3059,15 +2476,13 @@ div[data-testid="stHorizontalBlock"] {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-
-.main-fixed-logo {
+.main-fixed-logo{
     flex: 0 0 auto !important;
     display: flex !important;
     align-items: center !important;
     justify-content: flex-end !important;
 }
-
-.main-fixed-logo img {
+.main-fixed-logo img{
     width: 170px !important;
     max-width: 170px !important;
     height: auto !important;
@@ -3076,27 +2491,23 @@ div[data-testid="stHorizontalBlock"] {
     background: transparent !important;
     box-shadow: none !important;
 }
-
-.main-fixed-header-spacer {
+.main-fixed-header-spacer{
     height: 10px !important;
 }
-
-.proximas-box {
+.proximas-box{
     width: 100% !important;
     max-width: none !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
 }
-
-.proximas-box .panel-title {
+.proximas-box .panel-title{
     margin-top: 20px !important;
     margin-bottom: 8px !important;
     font-size: 18px !important;
     white-space: nowrap !important;
     text-align: center !important;
 }
-
-.proximas-box .next-item {
+.proximas-box .next-item{
     width: 100% !important;
     max-width: none !important;
     display: grid !important;
@@ -3107,51 +2518,34 @@ div[data-testid="stHorizontalBlock"] {
     padding: 5px 0 !important;
     min-height: 42px !important;
 }
-
-.proximas-box .next-title {
+.proximas-box .next-title{
     font-size: 11.7px !important;
     line-height: 1.12 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-
-.proximas-box .next-sub {
+.proximas-box .next-sub{
     font-size: 10px !important;
     line-height: 1.10 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-
-.proximas-box .badge-days {
+.proximas-box .badge-days{
     justify-self: end !important;
     padding: 4px 6px !important;
     font-size: 9.6px !important;
     min-width: 46px !important;
     text-align: center !important;
 }
-
-.proximas-box .badge-days.badge-overdue {
+.proximas-box .badge-days.badge-overdue{
     background: #fef2f2 !important;
     color: #dc2626 !important;
     border: 1px solid #fca5a5 !important;
     font-weight: 950 !important;
 }
-
-/* =========================================================
-   AJUSTE 5.2: TÍTULO SUPERIOR SIN FRANJA DE FONDO
-   - Se sube hacia la parte superior.
-   - Se elimina caja, sombra, borde y blur detrás del título.
-   ========================================================= */
-.main .block-container,
-.block-container,
-section.main > div {
-    padding-top: 0px !important;
-    margin-top: 0px !important;
-}
-
-.main-fixed-header {
+.main-fixed-header{
     position: sticky !important;
     top: 0px !important;
     z-index: 5000 !important;
@@ -3167,8 +2561,7 @@ section.main > div {
     border-bottom: 0 !important;
     box-shadow: none !important;
 }
-
-.main-fixed-title {
+.main-fixed-title{
     background: transparent !important;
     background-color: transparent !important;
     color: #0f172a !important;
@@ -3177,24 +2570,20 @@ section.main > div {
     line-height: 1 !important;
     text-shadow: none !important;
 }
-
-.main-fixed-logo {
+.main-fixed-logo{
     background: transparent !important;
     background-color: transparent !important;
 }
-
-.main-fixed-logo img {
+.main-fixed-logo img{
     width: 170px !important;
     max-width: 170px !important;
     background: transparent !important;
     background-color: transparent !important;
     box-shadow: none !important;
 }
-
-.main-fixed-header-spacer {
+.main-fixed-header-spacer{
     height: 0px !important;
 }
-
 </style>
         """,
         unsafe_allow_html=True,
@@ -4320,15 +3709,15 @@ def pagina_equipos(equipos_f):
     st.markdown(
         """
         <style>
-        div[data-testid="stMain"] div[data-testid="stSelectbox"] label p {
+div[data-testid="stMain"] div[data-testid="stSelectbox"] label p{
             font-size: 13px !important;
             font-weight: 700 !important;
         }
-        div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] > div{
             min-height: 38px !important;
             height: 38px !important;
         }
-        .eqp-kpi {
+.eqp-kpi{
             min-height: 86px;
             background: rgba(255,255,255,.90);
             border: 1px solid rgba(148,163,184,.30);
@@ -4338,7 +3727,7 @@ def pagina_equipos(equipos_f):
             position: relative;
             overflow: hidden;
         }
-        .eqp-kpi::before {
+.eqp-kpi::before{
             content: "";
             position: absolute;
             left: 0;
@@ -4347,52 +3736,52 @@ def pagina_equipos(equipos_f):
             width: 4px;
             background: var(--eqp-accent, #2563eb);
         }
-        .eqp-kpi-label {
+.eqp-kpi-label{
             font-size: 11px;
             color: #64748b;
             font-weight: 800;
             letter-spacing: .015em;
             margin-bottom: 4px;
         }
-        .eqp-kpi-value {
+.eqp-kpi-value{
             font-size: 27px;
             line-height: 1.05;
             color: #0f172a;
             font-weight: 850;
         }
-        .eqp-kpi-note {
+.eqp-kpi-note{
             margin-top: 4px;
             color: #64748b;
             font-size: 10px;
             font-weight: 650;
         }
-        .eqp-section-title {
+.eqp-section-title{
             color: #0f172a;
             font-size: 17px;
             line-height: 1.2;
             font-weight: 850;
             margin: 22px 0 8px 0;
         }
-        .eqp-panel-title {
+.eqp-panel-title{
             color: #0f172a;
             font-size: 15px;
             line-height: 1.2;
             font-weight: 850;
             margin: 0 0 15px 0;
         }
-        .eqp-analysis-spacer {
+.eqp-analysis-spacer{
             height: 34px !important;
             min-height: 34px !important;
             margin: 0 !important;
             padding: 0 !important;
         }
-        .eqp-panel-note {
+.eqp-panel-note{
             color: #64748b;
             font-size: 10px;
             font-weight: 650;
             margin: -2px 0 7px 0;
         }
-        </style>
+</style>
         """,
         unsafe_allow_html=True,
     )
@@ -5403,118 +4792,33 @@ def aplicar_estilo():
 
     css_final = """
 <style>
-:root {
+:root{
     --menu-panel-width-final: 330px;
     --menu-inner-width-final: 286px;
 }
-
-/* Sidebar fijo y siempre visible */
-section[data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    width: var(--menu-panel-width-final) !important;
-    min-width: var(--menu-panel-width-final) !important;
-    max-width: var(--menu-panel-width-final) !important;
-    height: 100vh !important;
-    background: #020617 !important;
-    border-right: 1px solid rgba(147, 197, 253, 0.34) !important;
-    z-index: 1000 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    transform: none !important;
-}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: var(--menu-panel-width-final) !important;
-    min-width: var(--menu-panel-width-final) !important;
-    max-width: var(--menu-panel-width-final) !important;
-    background: #020617 !important;
-    padding: 18px 18px 24px 18px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}
-
-/* Oculta controles de colapso para que el menú no desaparezca */
-[data-testid="stSidebarCollapseButton"],
-[data-testid="collapsedControl"],
-[data-testid="stSidebarCollapsedControl"],
-button[title="Collapse sidebar"],
-button[title="Close sidebar"],
-button[aria-label="Close sidebar"],
-button[aria-label="Collapse sidebar"] {
+section[data-testid="stSidebar"]{visibility: visible !important;opacity: 1 !important;background: #020617 !important;border-right: 1px solid rgba(147, 197, 253, 0.34) !important;}
+section[data-testid="stSidebar"] > div,section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"]{background: #020617 !important;}
+[data-testid="stSidebarCollapseButton"],[data-testid="collapsedControl"],[data-testid="stSidebarCollapsedControl"],button[title="Collapse sidebar"],button[title="Close sidebar"],button[aria-label="Close sidebar"],button[aria-label="Collapse sidebar"]{
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
 }
-
-/* El contenido principal parte después del menú: evita que se monte encima */
-div[data-testid="stMain"],
-main,
-section.main,
-[data-testid="stAppViewContainer"] > .main {
-    margin-left: var(--menu-panel-width-final) !important;
-    width: calc(100vw - var(--menu-panel-width-final)) !important;
-    max-width: calc(100vw - var(--menu-panel-width-final)) !important;
-    min-width: 1320px !important;
-    box-sizing: border-box !important;
-    overflow-x: visible !important;
-}
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {
-    max-width: none !important;
-    min-width: 1320px !important;
-    padding-left: 26px !important;
-    padding-right: 26px !important;
-    padding-top: 0px !important;
-    box-sizing: border-box !important;
-}
-
-[data-testid="stAppViewContainer"],
-.stApp {
-    overflow-x: auto !important;
-    background: #eef3f9 !important;
-}
-
-/* Mantiene las columnas en orden al agrandar/achicar o usar zoom */
-[data-testid="stHorizontalBlock"] {
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-}
-
-.kpi-card {
+[data-testid="stAppViewContainer"],.stApp{background: #eef3f9 !important;}
+.kpi-card{
     min-width: 215px !important;
 }
-
-.title-main {
+.title-main{
     white-space: nowrap !important;
     overflow: visible !important;
     line-height: 1.05 !important;
 }
-
-/* Menú: botones completos dentro del panel */
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-width-final) !important;
     max-width: var(--menu-inner-width-final) !important;
     min-width: var(--menu-inner-width-final) !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     width: var(--menu-inner-width-final) !important;
     max-width: var(--menu-inner-width-final) !important;
     min-height: 50px !important;
@@ -5531,8 +4835,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button {
     overflow: visible !important;
     text-shadow: 0 2px 4px rgba(0,0,0,0.85) !important;
 }
-
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-active-item{
     min-height: 50px !important;
     padding: 12px 12px !important;
     display: flex !important;
@@ -5549,35 +4852,26 @@ section[data-testid="stSidebar"] .menu-active-item {
     text-shadow: 0 2px 4px rgba(0,0,0,0.70) !important;
     white-space: normal !important;
 }
-
-/* Selectores de filtros dentro del menú */
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label * {
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label *{
     color: #dbeafe !important;
     -webkit-text-fill-color: #dbeafe !important;
     opacity: 1 !important;
     font-weight: 950 !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     background: #ffffff !important;
     border-radius: 12px !important;
     min-height: 44px !important;
     overflow: hidden !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"] * {
+section[data-testid="stSidebar"] [data-baseweb="select"] *{
     color: #0f172a !important;
     -webkit-text-fill-color: #0f172a !important;
     font-weight: 800 !important;
 }
-
-/* Montos y textos fuertes */
-.kpi-value,
-[data-testid="stDataFrame"] {
+.kpi-value,[data-testid="stDataFrame"]{
     font-variant-numeric: tabular-nums !important;
 }
-
 </style>
 """
     st.markdown(css_final, unsafe_allow_html=True)
@@ -5615,125 +4909,31 @@ def aplicar_estilo():
 
     css_v38 = """
 <style>
-:root {
+:root{
     --menu-width-v38: 318px;
     --menu-inner-v38: 278px;
     --content-min-v38: 1320px;
 }
-
-/* Página base con scroll horizontal solo si la ventana queda muy angosta */
-html,
-body,
-.stApp,
-[data-testid="stAppViewContainer"] {
-    background: #eef3f9 !important;
-    overflow-x: auto !important;
-}
-
-/* Sidebar separado del contenido principal: NO queda encima */
-section[data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: sticky !important;
-    top: 0 !important;
-    left: 0 !important;
-    flex: 0 0 var(--menu-width-v38) !important;
-    width: var(--menu-width-v38) !important;
-    min-width: var(--menu-width-v38) !important;
-    max-width: var(--menu-width-v38) !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
-    background: #020617 !important;
-    border-right: 1px solid rgba(147, 197, 253, 0.34) !important;
-    box-shadow: none !important;
-    z-index: 20 !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    transform: none !important;
-    box-sizing: border-box !important;
-}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: var(--menu-width-v38) !important;
-    min-width: var(--menu-width-v38) !important;
-    max-width: var(--menu-width-v38) !important;
-    background: #020617 !important;
-    padding: 8px 14px 16px 14px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}
-
-/* Evita controles de colapso que achican el menú */
-[data-testid="stSidebarCollapseButton"],
-[data-testid="collapsedControl"],
-[data-testid="stSidebarCollapsedControl"],
-button[title="Collapse sidebar"],
-button[title="Close sidebar"],
-button[aria-label="Close sidebar"],
-button[aria-label="Collapse sidebar"] {
+html,body,.stApp,[data-testid="stAppViewContainer"]{background: #eef3f9 !important;}
+section[data-testid="stSidebar"]{visibility: visible !important;opacity: 1 !important;background: #020617 !important;border-right: 1px solid rgba(147, 197, 253, 0.34) !important;box-shadow: none !important;}
+section[data-testid="stSidebar"] > div,section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"]{background: #020617 !important;}
+[data-testid="stSidebarCollapseButton"],[data-testid="collapsedControl"],[data-testid="stSidebarCollapsedControl"],button[title="Collapse sidebar"],button[title="Close sidebar"],button[aria-label="Close sidebar"],button[aria-label="Collapse sidebar"]{
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
 }
-
-/* Contenido principal: queda al lado del menú, nunca debajo */
-[data-testid="stAppViewContainer"] {
-    display: flex !important;
-    align-items: stretch !important;
-}
-
-[data-testid="stAppViewContainer"] > .main,
-div[data-testid="stMain"],
-main,
-section.main {
-    position: relative !important;
-    margin-left: 0 !important;
-    flex: 1 0 auto !important;
-    width: auto !important;
-    min-width: var(--content-min-v38) !important;
-    max-width: none !important;
-    box-sizing: border-box !important;
-    overflow: visible !important;
-    background: #eef3f9 !important;
-    z-index: 2 !important;
-}
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {
-    max-width: none !important;
-    min-width: var(--content-min-v38) !important;
-    padding-top: 0px !important;
-    padding-left: 28px !important;
-    padding-right: 28px !important;
-    padding-bottom: 26px !important;
-    box-sizing: border-box !important;
-}
-
-/* Menú más arriba y con ancho completo dentro del panel */
-section[data-testid="stSidebar"] .menu-brand {
+[data-testid="stAppViewContainer"] > .main,div[data-testid="stMain"],main,section.main{background: #eef3f9 !important;}
+section[data-testid="stSidebar"] .menu-brand{
     margin-top: 0px !important;
     margin-bottom: 12px !important;
 }
-
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-v38) !important;
     max-width: var(--menu-inner-v38) !important;
     min-width: var(--menu-inner-v38) !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-v38) !important;
     min-height: 46px !important;
     padding: 9px 12px !important;
@@ -5745,22 +4945,13 @@ section[data-testid="stSidebar"] .menu-active-item {
     line-height: 1.20 !important;
     box-sizing: border-box !important;
 }
-
-/* Mantiene columnas y tarjetas sin romper orden visual */
-[data-testid="stHorizontalBlock"] {
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-}
-
-.kpi-card {
+.kpi-card{
     min-width: 215px !important;
 }
-
-.title-main {
+.title-main{
     white-space: nowrap !important;
     overflow: visible !important;
 }
-
 </style>
 """
     st.markdown(css_v38, unsafe_allow_html=True)
@@ -5850,96 +5041,25 @@ def aplicar_estilo():
     st.markdown(
         """
 <style>
-:root {
+:root{
     --menu-width-v39: 370px;
     --menu-inner-v39: 320px;
     --content-min-v39: 1320px;
 }
-
-/* Sidebar más ancho, fijo y separado del contenido */
-section[data-testid="stSidebar"] {
-    width: var(--menu-width-v39) !important;
-    min-width: var(--menu-width-v39) !important;
-    max-width: var(--menu-width-v39) !important;
-    flex: 0 0 var(--menu-width-v39) !important;
-    position: sticky !important;
-    top: 0 !important;
-    left: 0 !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
-    background: #020617 !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    z-index: 30 !important;
-    box-sizing: border-box !important;
-}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: var(--menu-width-v39) !important;
-    min-width: var(--menu-width-v39) !important;
-    max-width: var(--menu-width-v39) !important;
-    padding: 8px 24px 18px 24px !important;
-    background: #020617 !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}
-
-/* El contenido principal queda al lado del menú, no debajo */
-[data-testid="stAppViewContainer"] {
-    display: flex !important;
-    align-items: stretch !important;
-    overflow-x: auto !important;
-}
-
-[data-testid="stAppViewContainer"] > .main,
-div[data-testid="stMain"],
-main,
-section.main {
-    margin-left: 0 !important;
-    flex: 1 0 auto !important;
-    min-width: var(--content-min-v39) !important;
-    width: auto !important;
-    max-width: none !important;
-    position: relative !important;
-    z-index: 2 !important;
-    background: #eef3f9 !important;
-    box-sizing: border-box !important;
-}
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {
-    max-width: none !important;
-    min-width: var(--content-min-v39) !important;
-    padding-top: 0px !important;
-    padding-left: 30px !important;
-    padding-right: 30px !important;
-    box-sizing: border-box !important;
-}
-
-/* Menú más arriba y con ancho suficiente */
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"]{background: #020617 !important;}
+section[data-testid="stSidebar"] > div,section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"]{background: #020617 !important;}
+[data-testid="stAppViewContainer"] > .main,div[data-testid="stMain"],main,section.main{background: #eef3f9 !important;}
+section[data-testid="stSidebar"] .menu-brand{
     margin-top: 0px !important;
     margin-bottom: 10px !important;
 }
-
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-v39) !important;
     min-width: var(--menu-inner-v39) !important;
     max-width: var(--menu-inner-v39) !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-v39) !important;
     min-width: var(--menu-inner-v39) !important;
     max-width: var(--menu-inner-v39) !important;
@@ -5954,25 +5074,15 @@ section[data-testid="stSidebar"] .menu-active-item {
     text-overflow: clip !important;
     box-sizing: border-box !important;
 }
-
-/* Selectores de filtro completos */
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     min-height: 48px !important;
     height: 48px !important;
     border-radius: 12px !important;
 }
-
-/* Evita que la cabecera o tarjetas se monten al cambiar zoom */
-[data-testid="stHorizontalBlock"] {
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-}
-
-.kpi-card {
+.kpi-card{
     min-width: 215px !important;
 }
-
-.title-main {
+.title-main{
     white-space: nowrap !important;
     text-align: center !important;
 }
@@ -6087,47 +5197,14 @@ def aplicar_estilo():
     st.markdown(
         """
 <style>
-:root {
+:root{
     --menu-width-v40: 390px;
     --menu-inner-v40: 360px;
     --content-min-v40: 1320px;
 }
-
-/* Panel izquierdo fijo, más ancho y separado de la página principal */
-section[data-testid="stSidebar"] {
-    width: var(--menu-width-v40) !important;
-    min-width: var(--menu-width-v40) !important;
-    max-width: var(--menu-width-v40) !important;
-    flex: 0 0 var(--menu-width-v40) !important;
-    position: sticky !important;
-    top: 0 !important;
-    left: 0 !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
-    background: #020617 !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    z-index: 30 !important;
-    box-sizing: border-box !important;
-    border-right: 1px solid rgba(147, 197, 253, 0.35) !important;
-}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: var(--menu-width-v40) !important;
-    min-width: var(--menu-width-v40) !important;
-    max-width: var(--menu-width-v40) !important;
-    padding: 6px 12px 18px 12px !important;
-    margin: 0 !important;
-    background: #020617 !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}
-
-/* Quita márgenes internos de Streamlit que desplazaban los enunciados hacia el centro */
-section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"],
-section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] > div,
-section[data-testid="stSidebar"] div[data-testid="element-container"] {
+section[data-testid="stSidebar"]{background: #020617 !important;border-right: 1px solid rgba(147, 197, 253, 0.35) !important;}
+section[data-testid="stSidebar"] > div,section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"]{background: #020617 !important;}
+section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"],section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] > div,section[data-testid="stSidebar"] div[data-testid="element-container"]{
     margin-left: 0 !important;
     margin-right: 0 !important;
     padding-left: 0 !important;
@@ -6136,50 +5213,8 @@ section[data-testid="stSidebar"] div[data-testid="element-container"] {
     max-width: var(--menu-inner-v40) !important;
     box-sizing: border-box !important;
 }
-
-/* Contenido principal al lado del menú, no debajo */
-[data-testid="stAppViewContainer"] {
-    display: flex !important;
-    align-items: stretch !important;
-    overflow-x: auto !important;
-}
-
-[data-testid="stAppViewContainer"] > .main,
-div[data-testid="stMain"],
-main,
-section.main {
-    margin-left: 0 !important;
-    flex: 1 0 auto !important;
-    min-width: var(--content-min-v40) !important;
-    width: auto !important;
-    max-width: none !important;
-    position: relative !important;
-    z-index: 2 !important;
-    background: #eef3f9 !important;
-    box-sizing: border-box !important;
-}
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {
-    max-width: none !important;
-    min-width: var(--content-min-v40) !important;
-    padding-top: 0 !important;
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-    box-sizing: border-box !important;
-}
-
-/* Encabezado del menú más arriba y alineado a la izquierda */
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-brand,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item {
+[data-testid="stAppViewContainer"] > .main,div[data-testid="stMain"],main,section.main{background: #eef3f9 !important;}
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-brand,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-v40) !important;
     min-width: var(--menu-inner-v40) !important;
     max-width: var(--menu-inner-v40) !important;
@@ -6188,17 +5223,13 @@ section[data-testid="stSidebar"] .menu-active-item {
     margin-right: auto !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-brand{
     margin-top: 0 !important;
     margin-bottom: 10px !important;
     padding-left: 0 !important;
     justify-content: flex-start !important;
 }
-
-/* Ítems del menú: enunciados más a la izquierda */
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-v40) !important;
     min-width: var(--menu-inner-v40) !important;
     max-width: var(--menu-inner-v40) !important;
@@ -6217,11 +5248,7 @@ section[data-testid="stSidebar"] .menu-active-item {
     justify-content: flex-start !important;
     text-align: left !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button *,
-section[data-testid="stSidebar"] div[data-testid="stButton"] button p,
-section[data-testid="stSidebar"] .menu-active-item,
-section[data-testid="stSidebar"] .menu-active-item * {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button *,section[data-testid="stSidebar"] div[data-testid="stButton"] button p,section[data-testid="stSidebar"] .menu-active-item,section[data-testid="stSidebar"] .menu-active-item *{
     text-align: left !important;
     justify-content: flex-start !important;
     align-items: center !important;
@@ -6231,86 +5258,51 @@ section[data-testid="stSidebar"] .menu-active-item * {
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
 }
-
-/* Filtros completos y alineados */
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     min-height: 48px !important;
     height: 48px !important;
     border-radius: 12px !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label * {
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label *{
     text-align: left !important;
     margin-left: 0 !important;
 }
-
-/* Reafirma que los montos de tarjetas no queden invertidos visualmente */
-.kpi-value {
+.kpi-value{
     direction: ltr !important;
     unicode-bidi: isolate !important;
     text-align: left !important;
 }
-
-/* Mantiene estructura al cambiar zoom */
-div[data-testid="stHorizontalBlock"] {
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-}
-
-.title-main {
+.title-main{
     white-space: nowrap !important;
     text-align: center !important;
 }
-
-/* AJUSTE FINAL V4.1: menú compacto y sin barra vertical visible. */
-section[data-testid="stSidebar"],
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    overflow-y: hidden !important;
-    overflow-x: hidden !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-}
-
-section[data-testid="stSidebar"]::-webkit-scrollbar,
-section[data-testid="stSidebar"] *::-webkit-scrollbar {
+section[data-testid="stSidebar"],section[data-testid="stSidebar"] > div,section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"]{scrollbar-width: none !important;-ms-overflow-style: none !important;}
+section[data-testid="stSidebar"]::-webkit-scrollbar,section[data-testid="stSidebar"] *::-webkit-scrollbar{
     width: 0px !important;
     height: 0px !important;
     display: none !important;
     background: transparent !important;
 }
-
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    padding-top: 0px !important;
-    padding-bottom: 10px !important;
-}
-
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-brand{
     margin-top: 0px !important;
     margin-bottom: 8px !important;
 }
-
-section[data-testid="stSidebar"] .menu-line {
+section[data-testid="stSidebar"] .menu-line{
     margin-top: 8px !important;
     margin-bottom: 10px !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{
     min-height: 46px !important;
     height: 46px !important;
     margin-bottom: 5px !important;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     min-height: 44px !important;
     height: 44px !important;
 }
-
-section[data-testid="stSidebar"] .menu-footer-box {
+section[data-testid="stSidebar"] .menu-footer-box{
     margin-top: 10px !important;
     padding: 12px !important;
 }
@@ -6335,17 +5327,8 @@ def aplicar_estilo():
     st.markdown(
         """
 <style>
-section[data-testid="stSidebar"],
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    overflow-y: hidden !important;
-    overflow-x: hidden !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-}
-
-section[data-testid="stSidebar"]::-webkit-scrollbar,
-section[data-testid="stSidebar"] *::-webkit-scrollbar {
+section[data-testid="stSidebar"],section[data-testid="stSidebar"] > div,section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"]{scrollbar-width: none !important;-ms-overflow-style: none !important;}
+section[data-testid="stSidebar"]::-webkit-scrollbar,section[data-testid="stSidebar"] *::-webkit-scrollbar{
     width: 0 !important;
     height: 0 !important;
     display: none !important;
@@ -6462,10 +5445,7 @@ def aplicar_estilo():
     st.markdown(
         """
 <style>
-/* =========================================================
-   AJUSTE FINAL V5.0: MENÚ MÁS ANGOSTO Y MÁS ARRIBA
-   ========================================================= */
-:root {
+:root{
     --menu-panel-width-final: 300px !important;
     --menu-inner-width-final: 262px !important;
     --menu-width-v38: 300px !important;
@@ -6473,65 +5453,31 @@ def aplicar_estilo():
     --menu-panel-width: 300px !important;
     --menu-inner-width: 262px !important;
 }
-
-section[data-testid="stSidebar"] {
-    width: 300px !important;
-    min-width: 300px !important;
-    max-width: 300px !important;
-    padding-top: 0px !important;
-    overflow-y: hidden !important;
-    overflow-x: hidden !important;
-}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: 300px !important;
-    min-width: 300px !important;
-    max-width: 300px !important;
-    padding: 8px 12px 12px 12px !important;
-    overflow-y: hidden !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-}
-
-/* Sube cabecera y nombres del menú */
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-brand{
     width: 262px !important;
     max-width: 262px !important;
     margin-top: 0px !important;
     margin-bottom: 8px !important;
     padding-top: 0px !important;
 }
-
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-brand{
     transform: translateY(-6px) !important;
 }
-
-section[data-testid="stSidebar"] .menu-line {
+section[data-testid="stSidebar"] .menu-line{
     width: 262px !important;
     max-width: 262px !important;
     margin: 6px 0 8px 0 !important;
 }
-
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item{
     width: 262px !important;
     max-width: 262px !important;
     min-width: 262px !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] {
+section[data-testid="stSidebar"] div[data-testid="stButton"]{
     margin-bottom: 2px !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{
     width: 262px !important;
     max-width: 262px !important;
     min-width: 262px !important;
@@ -6548,61 +5494,23 @@ section[data-testid="stSidebar"] .menu-active-item {
     font-size: 14px !important;
     line-height: 1.1 !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"]{
     margin-top: 0px !important;
     margin-bottom: 4px !important;
 }
-
-section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     min-height: 40px !important;
     height: 40px !important;
 }
-
-section[data-testid="stSidebar"] .menu-footer-box {
+section[data-testid="stSidebar"] .menu-footer-box{
     margin-top: 8px !important;
     padding: 10px 12px !important;
 }
-
-section[data-testid="stSidebar"] .menu-info {
+section[data-testid="stSidebar"] .menu-info{
     font-size: 11.4px !important;
     line-height: 1.45 !important;
 }
-
-/* Contenido principal separado según el nuevo ancho del menú */
-[data-testid="stAppViewContainer"] > .main,
-div[data-testid="stMain"],
-section.main,
-main {
-    margin-left: 300px !important;
-    width: calc(100vw - 300px) !important;
-    max-width: calc(100vw - 300px) !important;
-}
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-}
-
-
-@media (max-width: 1100px) {
-    section[data-testid="stSidebar"] {
-        width: 300px !important;
-        min-width: 300px !important;
-        max-width: 300px !important;
-    }
-
-    [data-testid="stAppViewContainer"] > .main,
-    div[data-testid="stMain"],
-    section.main,
-    main {
-        margin-left: 300px !important;
-        width: calc(100vw - 300px) !important;
-        max-width: calc(100vw - 300px) !important;
-    }
-}
+@media  (max-width: 1100px) {}
 </style>
         """,
         unsafe_allow_html=True,
@@ -6622,35 +5530,16 @@ aplicar_estilo()
 st.markdown(
     """
 <style>
-/* Elimina el espacio superior del sidebar sin modificar su ancho */
-section[data-testid="stSidebar"] {
-    top: 0px !important;
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"],section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div,section[data-testid="stSidebar"] div[data-testid="element-container"]{
     padding-top: 0px !important;
     margin-top: 0px !important;
 }
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    padding-top: 4px !important;
-    margin-top: 0px !important;
-}
-
-/* Quita márgenes internos que Streamlit deja arriba */
-section[data-testid="stSidebar"] [data-testid="stVerticalBlock"],
-section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div,
-section[data-testid="stSidebar"] div[data-testid="element-container"] {
-    padding-top: 0px !important;
-    margin-top: 0px !important;
-}
-
-/* Título del menú claro y sin corte */
-section[data-testid="stSidebar"] .menu-panel-content {
+section[data-testid="stSidebar"] .menu-panel-content{
     margin-top: 0px !important;
     padding-top: 0px !important;
     overflow: visible !important;
 }
-
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-brand{
     transform: none !important;
     margin-top: 4px !important;
     margin-bottom: 10px !important;
@@ -6659,16 +5548,14 @@ section[data-testid="stSidebar"] .menu-brand {
     overflow: visible !important;
     align-items: center !important;
 }
-
-section[data-testid="stSidebar"] .menu-icon {
+section[data-testid="stSidebar"] .menu-icon{
     width: 48px !important;
     height: 48px !important;
     min-width: 48px !important;
     flex: 0 0 48px !important;
     font-size: 25px !important;
 }
-
-section[data-testid="stSidebar"] .menu-icon-img {
+section[data-testid="stSidebar"] .menu-icon-img{
     width: 44px !important;
     height: 44px !important;
     min-width: 44px !important;
@@ -6679,8 +5566,7 @@ section[data-testid="stSidebar"] .menu-icon-img {
     border-radius: 16px !important;
     overflow: hidden !important;
 }
-
-section[data-testid="stSidebar"] .menu-icon-img img {
+section[data-testid="stSidebar"] .menu-icon-img img{
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
@@ -6690,9 +5576,7 @@ section[data-testid="stSidebar"] .menu-icon-img img {
     border: none !important;
     box-shadow: none !important;
 }
-
-section[data-testid="stSidebar"] .menu-title,
-section[data-testid="stSidebar"] .menu-title * {
+section[data-testid="stSidebar"] .menu-title,section[data-testid="stSidebar"] .menu-title *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     font-size: 12.6px !important;
@@ -6703,9 +5587,7 @@ section[data-testid="stSidebar"] .menu-title * {
     overflow: visible !important;
     text-overflow: clip !important;
 }
-
-section[data-testid="stSidebar"] .menu-subtitle,
-section[data-testid="stSidebar"] .menu-subtitle * {
+section[data-testid="stSidebar"] .menu-subtitle,section[data-testid="stSidebar"] .menu-subtitle *{
     color: #bfdbfe !important;
     -webkit-text-fill-color: #bfdbfe !important;
     font-size: 10.8px !important;
@@ -6715,15 +5597,11 @@ section[data-testid="stSidebar"] .menu-subtitle * {
     white-space: normal !important;
     overflow: visible !important;
 }
-
-/* Línea bajo título más ordenada */
-section[data-testid="stSidebar"] .menu-line {
+section[data-testid="stSidebar"] .menu-line{
     margin-top: 8px !important;
     margin-bottom: 12px !important;
 }
-
-/* Separación correcta entre Dashboard Ejecutivo y Equipos */
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-active-item{
     min-height: 43px !important;
     height: auto !important;
     display: flex !important;
@@ -6735,14 +5613,11 @@ section[data-testid="stSidebar"] .menu-active-item {
     line-height: 1.20 !important;
     overflow: hidden !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] {
+section[data-testid="stSidebar"] div[data-testid="stButton"]{
     margin-top: 0px !important;
     margin-bottom: 8px !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] > button,section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     min-height: 43px !important;
     height: auto !important;
     padding-top: 10px !important;
@@ -6751,12 +5626,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button {
     display: flex !important;
     align-items: center !important;
 }
-
-/* Mantiene todos los textos del menú legibles */
-section[data-testid="stSidebar"] .menu-active-item,
-section[data-testid="stSidebar"] .menu-active-item *,
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] div[data-testid="stButton"] button * {
+section[data-testid="stSidebar"] .menu-active-item,section[data-testid="stSidebar"] .menu-active-item *,section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] div[data-testid="stButton"] button *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
@@ -6776,37 +5646,16 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button * {
 st.markdown(
     """
 <style>
-/* 1) Sidebar pegado arriba */
-section[data-testid="stSidebar"] {
-    top: 0px !important;
-    margin-top: 0px !important;
-    padding-top: 0px !important;
-}
-
-/* 2) El contenedor interno de Streamlit a veces deja un espacio invisible arriba.
-      Este ajuste sube TODO el contenido del menú sin tocar el ancho. */
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    padding-top: 0px !important;
-    margin-top: 0px !important;
-    transform: none !important;
-}
-
-/* 3) Evita que el primer bloque agregue margen superior */
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] > div:first-child,
-section[data-testid="stSidebar"] [data-testid="stVerticalBlock"]:first-child,
-section[data-testid="stSidebar"] div[data-testid="element-container"]:first-child {
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"]:first-child,section[data-testid="stSidebar"] div[data-testid="element-container"]:first-child{
     padding-top: 0px !important;
     margin-top: 0px !important;
 }
-
-/* 4) Cabecera clara, visible y sin corte */
-section[data-testid="stSidebar"] .menu-panel-content {
+section[data-testid="stSidebar"] .menu-panel-content{
     margin-top: 0px !important;
     padding-top: 0px !important;
     overflow: visible !important;
 }
-
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-brand{
     margin-top: 0px !important;
     margin-bottom: 8px !important;
     padding-top: 0px !important;
@@ -6815,9 +5664,7 @@ section[data-testid="stSidebar"] .menu-brand {
     align-items: center !important;
     overflow: visible !important;
 }
-
-section[data-testid="stSidebar"] .menu-title,
-section[data-testid="stSidebar"] .menu-title * {
+section[data-testid="stSidebar"] .menu-title,section[data-testid="stSidebar"] .menu-title *{
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
@@ -6828,9 +5675,7 @@ section[data-testid="stSidebar"] .menu-title * {
     white-space: normal !important;
     overflow: visible !important;
 }
-
-section[data-testid="stSidebar"] .menu-subtitle,
-section[data-testid="stSidebar"] .menu-subtitle * {
+section[data-testid="stSidebar"] .menu-subtitle,section[data-testid="stSidebar"] .menu-subtitle *{
     color: #bfdbfe !important;
     -webkit-text-fill-color: #bfdbfe !important;
     opacity: 1 !important;
@@ -6841,14 +5686,11 @@ section[data-testid="stSidebar"] .menu-subtitle * {
     white-space: normal !important;
     overflow: visible !important;
 }
-
-/* 5) Línea y separación entre Dashboard Ejecutivo y Equipos */
-section[data-testid="stSidebar"] .menu-line {
+section[data-testid="stSidebar"] .menu-line{
     margin-top: 8px !important;
     margin-bottom: 12px !important;
 }
-
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-active-item{
     margin-top: 0px !important;
     margin-bottom: 10px !important;
     min-height: 43px !important;
@@ -6859,14 +5701,11 @@ section[data-testid="stSidebar"] .menu-active-item {
     align-items: center !important;
     line-height: 1.20 !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] {
+section[data-testid="stSidebar"] div[data-testid="stButton"]{
     margin-top: 0px !important;
     margin-bottom: 8px !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] > button,section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     min-height: 43px !important;
     height: auto !important;
     padding-top: 10px !important;
@@ -6874,11 +5713,6 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button {
     display: flex !important;
     align-items: center !important;
     line-height: 1.20 !important;
-}
-
-/* 6) En pantallas bajas, deja scroll vertical para que no se pierdan filtros inferiores */
-section[data-testid="stSidebar"] {
-    overflow-y: auto !important;
 }
 </style>
     """,
@@ -7270,8 +6104,7 @@ def pagina_documentos(documentos_f):
 st.markdown(
     """
 <style>
-.menu-icon-img,
-section[data-testid="stSidebar"] .menu-icon-img {
+.menu-icon-img,section[data-testid="stSidebar"] .menu-icon-img{
     width: 44px !important;
     height: 44px !important;
     min-width: 44px !important;
@@ -7281,9 +6114,7 @@ section[data-testid="stSidebar"] .menu-icon-img {
     box-shadow: none !important;
     border: none !important;
 }
-
-.menu-icon-img img,
-section[data-testid="stSidebar"] .menu-icon-img img {
+.menu-icon-img img,section[data-testid="stSidebar"] .menu-icon-img img{
     width: 44px !important;
     height: 44px !important;
     object-fit: contain !important;
@@ -7527,8 +6358,7 @@ def mostrar_tabla_clara(df, height=280):
 st.markdown(
     """
 <style>
-/* Tablas claras fijas para Streamlit Cloud: no dependen del tema oscuro del navegador/app. */
-.tabla-clara-wrap {
+.tabla-clara-wrap{
     width: 100% !important;
     overflow: auto !important;
     border: 1px solid #cbd5e1 !important;
@@ -7538,7 +6368,7 @@ st.markdown(
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
-.tabla-clara {
+.tabla-clara{
     width: 100% !important;
     border-collapse: collapse !important;
     background: rgba(255, 255, 255, 0.60) !important;
@@ -7546,7 +6376,7 @@ st.markdown(
     font-size: 13px !important;
     line-height: 1.35 !important;
 }
-.tabla-clara thead th {
+.tabla-clara thead th{
     position: sticky !important;
     top: 0 !important;
     z-index: 2 !important;
@@ -7560,7 +6390,7 @@ st.markdown(
     white-space: nowrap !important;
     text-align: center !important;
 }
-.tabla-clara tbody td {
+.tabla-clara tbody td{
     background: rgba(255, 255, 255, 0.38) !important;
     color: #0f172a !important;
     padding: 10px 12px !important;
@@ -7568,10 +6398,10 @@ st.markdown(
     border-right: 1px solid rgba(203, 213, 225, 0.62) !important;
     vertical-align: top !important;
 }
-.tabla-clara tbody tr:hover td {
+.tabla-clara tbody tr:hover td{
     background: rgba(239, 246, 255, 0.75) !important;
 }
-.tabla-clara a.link-documento {
+.tabla-clara a.link-documento{
     display: inline-block !important;
     padding: 5px 10px !important;
     border-radius: 999px !important;
@@ -7583,17 +6413,15 @@ st.markdown(
     white-space: nowrap !important;
     text-align: center !important;
 }
-.tabla-clara a.link-documento:hover {
+.tabla-clara a.link-documento:hover{
     background: #1d4ed8 !important;
     text-decoration: none !important;
 }
-.tabla-clara td.monto,
-.tabla-clara th:nth-last-child(2) {
+.tabla-clara td.monto,.tabla-clara th:nth-last-child(2){
     white-space: nowrap !important;
     font-variant-numeric: tabular-nums !important;
 }
-/* Refuerzo: si queda algún st.dataframe en otra página, se fuerza contenedor claro. */
-[data-testid="stDataFrame"] {
+[data-testid="stDataFrame"]{
     background: rgba(255, 255, 255, 0.72) !important;
     border: 1px solid #cbd5e1 !important;
     border-radius: 13px !important;
@@ -7611,23 +6439,7 @@ st.markdown(
 st.markdown(
     """
 <style>
-/* Evita que Streamlit Cloud corte la tarjeta inferior del menú. */
-section[data-testid="stSidebar"] {
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    height: auto !important;
-    min-height: 100vh !important;
-    padding: 10px 12px 28px 12px !important;
-    box-sizing: border-box !important;
-    overflow-y: visible !important;
-    overflow-x: hidden !important;
-}
-
-section[data-testid="stSidebar"] .menu-footer-box {
+section[data-testid="stSidebar"] .menu-footer-box{
     width: 262px !important;
     min-width: 262px !important;
     max-width: 262px !important;
@@ -7643,9 +6455,7 @@ section[data-testid="stSidebar"] .menu-footer-box {
     background: rgba(2, 6, 23, 0.98) !important;
     border: 1px solid rgba(147, 197, 253, 0.38) !important;
 }
-
-section[data-testid="stSidebar"] .menu-info,
-section[data-testid="stSidebar"] .menu-info * {
+section[data-testid="stSidebar"] .menu-info,section[data-testid="stSidebar"] .menu-info *{
     display: inline !important;
     height: auto !important;
     min-height: auto !important;
@@ -7659,13 +6469,11 @@ section[data-testid="stSidebar"] .menu-info * {
     -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
 }
-
-section[data-testid="stSidebar"] .menu-info {
+section[data-testid="stSidebar"] .menu-info{
     display: block !important;
     width: 100% !important;
 }
-
-section[data-testid="stSidebar"] .menu-info b {
+section[data-testid="stSidebar"] .menu-info b{
     color: #93c5fd !important;
     -webkit-text-fill-color: #93c5fd !important;
     font-weight: 950 !important;
@@ -7958,28 +6766,25 @@ def crear_donut_costos(costos_item):
 st.markdown(
     """
 <style>
-/* V5.2: mejor uso de espacios del Dashboard Ejecutivo */
-.panel-title {
+.panel-title{
     margin-top: 8px !important;
     margin-bottom: 5px !important;
 }
-[data-testid="stPlotlyChart"] {
+[data-testid="stPlotlyChart"]{
     margin-bottom: 0px !important;
 }
-.tabla-clara-wrap {
+.tabla-clara-wrap{
     margin-bottom: 4px !important;
 }
-.proximas-box {
+.proximas-box{
     margin-top: 0px !important;
 }
-/* Montos: alineados a la derecha y sin separación visual extra */
-.tabla-clara td.monto,
-.tabla-clara th.monto {
+.tabla-clara td.monto,.tabla-clara th.monto{
     text-align: left !important;
     white-space: nowrap !important;
     text-align: center !important;
 }
-.kpi-value {
+.kpi-value{
     white-space: nowrap !important;
     text-align: center !important;
 }
@@ -8087,37 +6892,29 @@ def celda_html_con_enlace(columna, valor):
 st.markdown(
     """
 <style>
-/* Compacta espacios entre tablas y bloques del dashboard */
-.panel-title {
+.panel-title{
     margin-top: 6px !important;
     margin-bottom: 4px !important;
 }
-[data-testid="stVerticalBlock"] {
-    gap: 0.26rem !important;
-}
-[data-testid="stHorizontalBlock"] {
-    gap: 0.65rem !important;
-}
-.tabla-clara-wrap {
+[data-testid="stVerticalBlock"]{gap: 0.26rem !important;}
+[data-testid="stHorizontalBlock"]{gap: 0.65rem !important;}
+.tabla-clara-wrap{
     margin-bottom: 2px !important;
 }
-[data-testid="stPlotlyChart"] {
+[data-testid="stPlotlyChart"]{
     margin-top: 0px !important;
     margin-bottom: 0px !important;
 }
-.proximas-box, .proxima-row, .next-item {
+.proximas-box,.proxima-row,.next-item{
     margin-top: 0px !important;
     margin-bottom: 1px !important;
 }
-
-/* Montos CLP: signo a la derecha y lectura uniforme */
-.tabla-clara td.monto,
-.tabla-clara th.monto {
+.tabla-clara td.monto,.tabla-clara th.monto{
     text-align: right !important;
     white-space: nowrap !important;
     text-align: center !important;
 }
-.kpi-value, .plotly .textpoint {
+.kpi-value,.plotly .textpoint{
     white-space: nowrap !important;
     text-align: center !important;
 }
@@ -8410,30 +7207,30 @@ def pagina_repuestos(gastos_f):
 st.markdown(
     """
 <style>
-.proximas-box {
+.proximas-box{
     width: 100% !important;
     max-width: none !important;
 }
-.proximas-box .panel-title {
+.proximas-box .panel-title{
     font-size: 18px !important;
     margin-bottom: 8px !important;
 }
-.proximas-box .next-item {
+.proximas-box .next-item{
     width: 100% !important;
     max-width: none !important;
     min-height: 39px !important;
     grid-template-columns: minmax(0, 1fr) auto !important;
     column-gap: 10px !important;
 }
-.proximas-box .next-title {
+.proximas-box .next-title{
     font-size: 12px !important;
     line-height: 1.12 !important;
 }
-.proximas-box .next-sub {
+.proximas-box .next-sub{
     font-size: 10.3px !important;
     line-height: 1.10 !important;
 }
-.proximas-box .badge-days {
+.proximas-box .badge-days{
     min-width: 62px !important;
     font-size: 9.5px !important;
     padding: 5px 7px !important;
@@ -8635,72 +7432,54 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
 st.markdown(
     """
 <style>
-/* V5.6: sube el encabezado principal y aprovecha el espacio superior */
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {
-    padding-top: 0px !important;
-}
-.main-fixed-header {
+.main-fixed-header{
     min-height: 42px !important;
     margin-top: -34px !important;
     margin-bottom: -4px !important;
     padding-top: 0px !important;
     align-items: flex-end !important;
 }
-.main-fixed-title,
-.title-main {
+.main-fixed-title,.title-main{
     font-size: clamp(28px, 2.15vw, 37px) !important;
     line-height: 1.0 !important;
     margin: 0 !important;
     padding: 0 !important;
 }
-.main-fixed-logo,
-.header-logo-box {
+.main-fixed-logo,.header-logo-box{
     margin-top: 0px !important;
     padding-top: 0px !important;
 }
-.main-fixed-logo img,
-.header-logo-box img {
+.main-fixed-logo img,.header-logo-box img{
     width: 118px !important;
     max-width: 118px !important;
 }
-.main-fixed-header-spacer,
-.header-separador {
+.main-fixed-header-spacer,.header-separador{
     height: 2px !important;
     min-height: 2px !important;
 }
-
-/* V5.6: tabla de Gastos Adicionales más compacta y sin barra horizontal */
-.tabla-clara-wrap {
+.tabla-clara-wrap{
     overflow-x: hidden !important;
     overflow-y: auto !important;
 }
-.tabla-clara {
+.tabla-clara{
     table-layout: fixed !important;
     width: 100% !important;
     min-width: 0 !important;
     font-size: 11.4px !important;
 }
-.tabla-clara thead th,
-.tabla-clara tbody td {
+.tabla-clara thead th,.tabla-clara tbody td{
     padding: 7px 8px !important;
     white-space: normal !important;
     word-break: normal !important;
     overflow-wrap: anywhere !important;
     line-height: 1.22 !important;
 }
-.tabla-clara td.monto,
-.tabla-clara th.monto,
-.tabla-clara td:last-child,
-.tabla-clara th:last-child {
+.tabla-clara td.monto,.tabla-clara th.monto,.tabla-clara td:last-child,.tabla-clara th:last-child{
     white-space: nowrap !important;
     overflow-wrap: normal !important;
     text-align: right !important;
 }
-
-/* V5.6: botón de actualización más corto */
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     font-size: 13.6px !important;
 }
 </style>
@@ -8976,39 +7755,13 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
 st.markdown(
     """
 <style>
-/* V5.9 aplicado antes de cargar la pantalla */
-:root {
+:root{
     --menu-panel-width: 345px !important;
     --menu-inner-width: 304px !important;
     --menu-panel-width-final: 345px !important;
     --menu-inner-width-final: 304px !important;
 }
-
-section[data-testid="stSidebar"] {
-    width: 345px !important;
-    min-width: 345px !important;
-    max-width: 345px !important;
-}
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: 345px !important;
-    min-width: 345px !important;
-    max-width: 345px !important;
-}
-[data-testid="stAppViewContainer"] > .main,
-section.main,
-main {
-    margin-left: 345px !important;
-    width: calc(100vw - 345px) !important;
-    max-width: calc(100vw - 345px) !important;
-}
-
-/* Vuelve visible el botón nativo para minimizar/expandir el menú */
-[data-testid="collapsedControl"],
-button[title="Collapse sidebar"],
-button[title="Close sidebar"],
-button[aria-label="Collapse sidebar"],
-button[aria-label="Close sidebar"] {
+[data-testid="collapsedControl"],button[title="Collapse sidebar"],button[title="Close sidebar"],button[aria-label="Collapse sidebar"],button[aria-label="Close sidebar"]{
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -9019,15 +7772,7 @@ button[aria-label="Close sidebar"] {
     min-width: 34px !important;
     z-index: 10050 !important;
 }
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"],
-section.main > div {
-    margin-top: -62px !important;
-    padding-top: 0px !important;
-}
-.main-fixed-header {
+.main-fixed-header{
     min-height: 58px !important;
     height: 58px !important;
     margin-top: 0px !important;
@@ -9035,45 +7780,36 @@ section.main > div {
     padding-top: 8px !important;
     align-items: flex-end !important;
 }
-.main-fixed-title,
-.title-main {
+.main-fixed-title,.title-main{
     font-size: clamp(28px, 2.1vw, 37px) !important;
     line-height: 1.03 !important;
     margin: 0 !important;
     padding: 0 !important;
 }
-.main-fixed-logo img,
-.header-logo-box img {
+.main-fixed-logo img,.header-logo-box img{
     width: 116px !important;
     max-width: 116px !important;
 }
-.main-fixed-header-spacer,
-.header-separador {
+.main-fixed-header-spacer,.header-separador{
     height: 8px !important;
     min-height: 8px !important;
 }
-
-.panel-title {
+.panel-title{
     margin-top: 7px !important;
     margin-bottom: 5px !important;
 }
-.chart-title {
+.chart-title{
     margin-bottom: 2px !important;
 }
-
-/* Gráficos dentro del marco */
-[data-testid="stPlotlyChart"] {
+[data-testid="stPlotlyChart"]{
     overflow: hidden !important;
     border-radius: 12px !important;
     margin-bottom: 0px !important;
 }
-[data-testid="stPlotlyChart"] > div {
+[data-testid="stPlotlyChart"] > div{
     max-height: 310px !important;
 }
-
-/* Próximas mantenciones del Dashboard: compacto, sin montarse */
-.dashboard-proximas .next-item,
-.proximas-box .next-item {
+.dashboard-proximas .next-item,.proximas-box .next-item{
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto !important;
     align-items: center !important;
@@ -9082,12 +7818,10 @@ section.main > div {
     padding: 2px 0 !important;
     border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
 }
-.dashboard-proximas .next-info,
-.proximas-box .next-info {
+.dashboard-proximas .next-info,.proximas-box .next-info{
     min-width: 0 !important;
 }
-.dashboard-proximas .next-title,
-.proximas-box .next-title {
+.dashboard-proximas .next-title,.proximas-box .next-title{
     font-size: 11.8px !important;
     line-height: 1.02 !important;
     margin-bottom: 1px !important;
@@ -9095,10 +7829,7 @@ section.main > div {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-.dashboard-proximas .next-sub-line,
-.proximas-box .next-sub-line,
-.dashboard-proximas .next-sub,
-.proximas-box .next-sub {
+.dashboard-proximas .next-sub-line,.proximas-box .next-sub-line,.dashboard-proximas .next-sub,.proximas-box .next-sub{
     display: block !important;
     font-size: 9.2px !important;
     line-height: 1.05 !important;
@@ -9107,8 +7838,7 @@ section.main > div {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-.dashboard-proximas .badge-days,
-.proximas-box .badge-days {
+.dashboard-proximas .badge-days,.proximas-box .badge-days{
     min-width: 76px !important;
     max-width: 86px !important;
     font-size: 8.7px !important;
@@ -9226,54 +7956,21 @@ section[data-testid="stSidebar"] .menu-active-item * {{
     st.markdown(
         f"""
 <style>
-:root {{
+:root{{
     --menu-panel-width: {menu_w}px !important;
     --menu-inner-width: {inner_w}px !important;
     --menu-panel-width-final: {menu_w}px !important;
     --menu-inner-width-final: {inner_w}px !important;
     --content-padding-x: 14px !important;
 }}
-
-section[data-testid="stSidebar"] {{
-    width: {menu_w}px !important;
-    min-width: {menu_w}px !important;
-    max-width: {menu_w}px !important;
-    top: 0 !important;
-    left: 0 !important;
-    background: #020617 !important;
-    transition: width .20s ease, min-width .20s ease, max-width .20s ease !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    z-index: 99999 !important;
-}}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {{
-    width: {menu_w}px !important;
-    min-width: {menu_w}px !important;
-    max-width: {menu_w}px !important;
-    padding: 9px 12px 13px 12px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}}
-
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-brand,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item {{
+section[data-testid="stSidebar"]{{background: #020617 !important;transition: width .20s ease, min-width .20s ease, max-width .20s ease !important;}}
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-brand,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item{{
     width: {inner_w}px !important;
     min-width: {inner_w}px !important;
     max-width: {inner_w}px !important;
     box-sizing: border-box !important;
 }}
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {{
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{{
     width: {inner_w}px !important;
     min-width: {inner_w}px !important;
     max-width: {inner_w}px !important;
@@ -9286,17 +7983,13 @@ section[data-testid="stSidebar"] .menu-active-item {{
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }}
-
-section[data-testid="stSidebar"] .menu-toggle-wrap,
-section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],
-section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {{
+section[data-testid="stSidebar"] .menu-toggle-wrap,section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button{{
     width: 48px !important;
     min-width: 48px !important;
     max-width: 48px !important;
     box-sizing: border-box !important;
 }}
-
-section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {{
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button{{
     height: 42px !important;
     min-height: 42px !important;
     padding: 0 !important;
@@ -9312,31 +8005,10 @@ section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] b
     font-weight: 950 !important;
     box-shadow: 0 8px 20px rgba(37,99,235,.35) !important;
 }}
-
-section[data-testid="stSidebar"] .menu-toggle-wrap {{
+section[data-testid="stSidebar"] .menu-toggle-wrap{{
     margin: 0 0 10px 0 !important;
 }}
-
-[data-testid="stAppViewContainer"] > .main,
-div[data-testid="stMain"],
-section.main,
-main {{
-    margin-left: {menu_w}px !important;
-    width: calc(100vw - {menu_w}px) !important;
-    max-width: calc(100vw - {menu_w}px) !important;
-}}
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {{
-    padding-left: 14px !important;
-    padding-right: 14px !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-}}
-
-
-.main-fixed-header {{
+.main-fixed-header{{
     min-height: 58px !important;
     height: 58px !important;
     margin-bottom: 8px !important;
@@ -9345,9 +8017,7 @@ div[data-testid="stMainBlockContainer"] {{
     align-items: flex-end !important;
     justify-content: space-between !important;
 }}
-
-.main-fixed-logo,
-.header-logo-box {{
+.main-fixed-logo,.header-logo-box{{
     position: absolute !important;
     right: 12px !important;
     top: -25px !important;
@@ -9355,35 +8025,24 @@ div[data-testid="stMainBlockContainer"] {{
     padding: 0 !important;
     z-index: 20 !important;
 }}
-
-.main-fixed-logo img,
-.header-logo-box img {{
-    width: {logo_w}px !important;
-    max-width: {logo_w}px !important;
+.main-fixed-logo img,.header-logo-box img{{
+    width: {{logo_w}}px !important;
+    max-width: {{logo_w}}px !important;
     height: auto !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     object-fit: contain !important;
 }}
-
-.main-fixed-title,
-.title-main {{
+.main-fixed-title,.title-main{{
     font-size: clamp(30px, 2.15vw, 40px) !important;
     line-height: 1.03 !important;
     margin: 0 !important;
     padding: 0 !important;
 }}
-
-div[data-testid="stVerticalBlock"] {{
-    gap: 0.22rem !important;
-}}
-
-div[data-testid="stHorizontalBlock"] {{
-    gap: 0.78rem !important;
-}}
-
-.panel-title {{
+div[data-testid="stVerticalBlock"]{{gap: 0.22rem !important;}}
+div[data-testid="stHorizontalBlock"]{{gap: 0.78rem !important;}}
+.panel-title{{
     display: block !important;
     clear: both !important;
     position: relative !important;
@@ -9398,8 +8057,7 @@ div[data-testid="stHorizontalBlock"] {{
     padding: 2px 0 6px 0 !important;
     overflow: visible !important;
 }}
-
-.section-head {{
+.section-head{{
     display: block !important;
     clear: both !important;
     position: relative !important;
@@ -9409,16 +8067,13 @@ div[data-testid="stHorizontalBlock"] {{
     padding: 0 0 2px 0 !important;
     overflow: visible !important;
 }}
-
-.section-head .panel-title,
-.page-section-title {{
+.section-head .panel-title,.page-section-title{{
     margin-top: 0 !important;
     margin-bottom: 4px !important;
     padding: 0 !important;
     min-height: 26px !important;
 }}
-
-.panel-subtitle {{
+.panel-subtitle{{
     display: block !important;
     clear: both !important;
     color: #334155 !important;
@@ -9430,39 +8085,28 @@ div[data-testid="stHorizontalBlock"] {{
     position: relative !important;
     z-index: 6 !important;
 }}
-
-[data-testid="stMarkdownContainer"]:has(.panel-title),
-[data-testid="stMarkdownContainer"]:has(.section-head) {{
+[data-testid="stMarkdownContainer"]:has(.panel-title),[data-testid="stMarkdownContainer"]:has(.section-head){{
     overflow: visible !important;
 }}
-
-.tabla-clara-wrap {{
+.tabla-clara-wrap{{
     margin-top: 8px !important;
 }}
-
-.dashboard-proximas .panel-title,
-.proximas-box .panel-title,
-.chart-title,
-.panel-title.chart-title {{
+.dashboard-proximas .panel-title,.proximas-box .panel-title,.chart-title,.panel-title.chart-title{{
     margin-top: 0 !important;
     margin-bottom: 8px !important;
     min-height: 24px !important;
     padding-bottom: 4px !important;
 }}
-
-.kpi-card {{
+.kpi-card{{
     min-height: 118px !important;
     padding: 15px 17px !important;
 }}
-
-.kpi-icon {{
+.kpi-icon{{
     width: 44px !important;
     height: 44px !important;
     margin-bottom: 7px !important;
 }}
-
-.dashboard-proximas,
-.proximas-box {{
+.dashboard-proximas,.proximas-box{{
     background: rgba(255,255,255,.72) !important;
     border: 1px solid rgba(203,213,225,.72) !important;
     border-radius: 16px !important;
@@ -9470,9 +8114,7 @@ div[data-testid="stHorizontalBlock"] {{
     margin-top: 0 !important;
     box-shadow: 0 10px 24px rgba(15,23,42,.045) !important;
 }}
-
-.dashboard-proximas .next-item,
-.proximas-box .next-item {{
+.dashboard-proximas .next-item,.proximas-box .next-item{{
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) 96px !important;
     align-items: center !important;
@@ -9481,14 +8123,10 @@ div[data-testid="stHorizontalBlock"] {{
     padding: 7px 0 !important;
     border-bottom: 1px solid rgba(148,163,184,.28) !important;
 }}
-
-.dashboard-proximas .next-item:last-child,
-.proximas-box .next-item:last-child {{
+.dashboard-proximas .next-item:last-child,.proximas-box .next-item:last-child{{
     border-bottom: 0 !important;
 }}
-
-.dashboard-proximas .next-title,
-.proximas-box .next-title {{
+.dashboard-proximas .next-title,.proximas-box .next-title{{
     font-size: 13.2px !important;
     line-height: 1.14 !important;
     font-weight: 950 !important;
@@ -9497,11 +8135,7 @@ div[data-testid="stHorizontalBlock"] {{
     white-space: normal !important;
     overflow: visible !important;
 }}
-
-.dashboard-proximas .next-sub,
-.dashboard-proximas .next-sub-line,
-.proximas-box .next-sub,
-.proximas-box .next-sub-line {{
+.dashboard-proximas .next-sub,.dashboard-proximas .next-sub-line,.proximas-box .next-sub,.proximas-box .next-sub-line{{
     font-size: 11.3px !important;
     line-height: 1.18 !important;
     font-weight: 750 !important;
@@ -9510,17 +8144,13 @@ div[data-testid="stHorizontalBlock"] {{
     white-space: normal !important;
     overflow: visible !important;
 }}
-
-.dashboard-proximas .next-meta,
-.proximas-box .next-meta {{
+.dashboard-proximas .next-meta,.proximas-box .next-meta{{
     display: flex !important;
     gap: 8px !important;
     flex-wrap: wrap !important;
     margin-top: 2px !important;
 }}
-
-.dashboard-proximas .badge-days,
-.proximas-box .badge-days {{
+.dashboard-proximas .badge-days,.proximas-box .badge-days{{
     width: 96px !important;
     min-width: 96px !important;
     max-width: 96px !important;
@@ -9532,29 +8162,19 @@ div[data-testid="stHorizontalBlock"] {{
     text-align: center !important;
     border-radius: 999px !important;
 }}
-
-.dashboard-compact-table [data-testid="stDataFrame"] {{
+.dashboard-compact-table [data-testid="stDataFrame"]{{
     margin-top: 0 !important;
 }}
-
-div[data-testid="stPlotlyChart"] {{
+div[data-testid="stPlotlyChart"]{{
     margin-top: 0 !important;
 }}
-
-{css_extra_colapsado}
-
-@media (max-width: 1400px) {{
-    .main-fixed-logo img,
-    .header-logo-box img {{
+@media  (max-width: 1400px) {{.main-fixed-logo img,.header-logo-box img{{
         width: 148px !important;
         max-width: 148px !important;
     }}
-
-    .main-fixed-title,
-    .title-main {{
+.main-fixed-title,.title-main{{
         font-size: clamp(27px, 2vw, 36px) !important;
-    }}
-}}
+    }}}}
 </style>
         """,
         unsafe_allow_html=True,
@@ -10470,16 +9090,13 @@ def aplicar_correcciones_visuales_v80():
     st.markdown(
         """
 <style>
-/* Todos los elementos del menú conservan exactamente la misma caja. */
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     min-height: 46px !important;
     height: 46px !important;
     margin: 0 0 7px 0 !important;
@@ -10493,9 +9110,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-
-/* El botón activo sigue siendo un botón nativo; solo cambia su apariencia. */
-section[data-testid="stSidebar"] div[data-testid="stButton"] button:disabled {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:disabled{
     opacity: 1 !important;
     cursor: default !important;
     color: #ffffff !important;
@@ -10504,8 +9119,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button:disabled {
     border: 1px solid rgba(219, 234, 254, .95) !important;
     box-shadow: 0 8px 18px rgba(37, 99, 235, .34) !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button:disabled * {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:disabled *{
     opacity: 1 !important;
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -11275,15 +9889,15 @@ def pagina_mantenciones(mant_f, equipos_ref=None):
     st.markdown(
         """
         <style>
-        div[data-testid="stMain"] div[data-testid="stSelectbox"] label p {
+div[data-testid="stMain"] div[data-testid="stSelectbox"] label p{
             font-size: 13px !important;
             font-weight: 700 !important;
         }
-        div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] > div{
             min-height: 38px !important;
             height: 38px !important;
         }
-        </style>
+</style>
         """,
         unsafe_allow_html=True,
     )
@@ -12202,22 +10816,19 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     st.markdown(
         """
 <style>
-/* =========================================================
-   Resumen Ejecutivo V9.0
-   ========================================================= */
-.exec9-subtitle {
+.exec9-subtitle{
     margin: 0 0 14px 0 !important;
     color: #64748b !important;
     font-size: 12px !important;
     font-weight: 650 !important;
 }
-.exec9-filter-label {
+.exec9-filter-label{
     color: #475569 !important;
     font-size: 11px !important;
     font-weight: 800 !important;
     margin-bottom: 3px !important;
 }
-.exec9-kpi {
+.exec9-kpi{
     min-height: 112px;
     background: rgba(255,255,255,.90);
     border: 1px solid rgba(148,163,184,.30);
@@ -12227,7 +10838,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     position: relative;
     overflow: hidden;
 }
-.exec9-kpi::before {
+.exec9-kpi::before{
     content: "";
     position: absolute;
     left: 0;
@@ -12236,27 +10847,27 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     width: 4px;
     background: var(--accent, #2563eb);
 }
-.exec9-kpi-title {
+.exec9-kpi-title{
     font-size: 11px;
     color: #64748b;
     font-weight: 800;
     letter-spacing: .02em;
     margin-bottom: 7px;
 }
-.exec9-kpi-value {
+.exec9-kpi-value{
     color: #0f172a;
     font-size: 24px;
     line-height: 1.08;
     font-weight: 900;
     margin-bottom: 7px;
 }
-.exec9-kpi-note {
+.exec9-kpi-note{
     color: #64748b;
     font-size: 10.5px;
     font-weight: 650;
     line-height: 1.25;
 }
-.exec9-panel {
+.exec9-panel{
     background: rgba(255,255,255,.86);
     border: 1px solid rgba(148,163,184,.30);
     border-radius: 16px;
@@ -12264,31 +10875,31 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     box-shadow: 0 8px 24px rgba(15,23,42,.045);
     min-height: 100%;
 }
-.exec9-panel-title {
+.exec9-panel-title{
     color: #0f172a;
     font-size: 15px;
     font-weight: 900;
     margin: 0 0 2px 0;
 }
-.exec9-panel-title-spaced {
+.exec9-panel-title-spaced{
     margin: 8px 0 18px 0 !important;
 }
-.exec9-panel-title-contract {
+.exec9-panel-title-contract{
     margin: 8px 0 26px 0 !important;
 }
-.exec9-panel-subtitle {
+.exec9-panel-subtitle{
     color: #64748b;
     font-size: 10.5px;
     font-weight: 650;
     margin: 0 0 8px 0;
 }
-.exec9-section-gap {
+.exec9-section-gap{
     height: 18px;
 }
-.exec9-cost-row {
+.exec9-cost-row{
     margin: 14px 1px 16px 1px;
 }
-.exec9-cost-head {
+.exec9-cost-head{
     display: flex;
     justify-content: space-between;
     gap: 12px;
@@ -12297,17 +10908,17 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     font-weight: 800;
     margin-bottom: 7px;
 }
-.exec9-progress-track {
+.exec9-progress-track{
     height: 7px;
     background: #e2e8f0;
     border-radius: 999px;
     overflow: hidden;
 }
-.exec9-progress-fill {
+.exec9-progress-fill{
     height: 100%;
     border-radius: 999px;
 }
-.exec9-mini-insight {
+.exec9-mini-insight{
     margin-top: 10px;
     padding: 9px 11px;
     border-radius: 11px;
@@ -12317,10 +10928,10 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     font-size: 10.5px;
     font-weight: 650;
 }
-.exec9-availability-wrap {
+.exec9-availability-wrap{
     padding: 18px 2px 8px 2px;
 }
-.exec9-availability-head {
+.exec9-availability-head{
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -12330,25 +10941,25 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     font-weight: 800;
     margin-bottom: 11px;
 }
-.exec9-availability-pct {
+.exec9-availability-pct{
     color: #0f172a;
     font-size: 24px;
     line-height: 1;
     font-weight: 900;
 }
-.exec9-availability-track {
+.exec9-availability-track{
     width: 100%;
     height: 10px;
     background: #e2e8f0;
     border-radius: 999px;
     overflow: hidden;
 }
-.exec9-availability-fill {
+.exec9-availability-fill{
     height: 100%;
     border-radius: 999px;
     background: #16a34a;
 }
-.exec9-availability-scale {
+.exec9-availability-scale{
     display: flex;
     justify-content: space-between;
     color: #94a3b8;
@@ -12356,7 +10967,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     font-weight: 700;
     margin-top: 5px;
 }
-.exec9-availability-note {
+.exec9-availability-note{
     margin-top: 17px;
     padding: 9px 11px;
     border-radius: 10px;
@@ -12367,7 +10978,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     font-weight: 700;
     line-height: 1.35;
 }
-.exec9-availability-empty {
+.exec9-availability-empty{
     margin-top: 18px;
     padding: 14px;
     border-radius: 10px;
@@ -12377,29 +10988,28 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     font-size: 11px;
     font-weight: 700;
 }
-
-.exec9-contract-availability-section {
+.exec9-contract-availability-section{
     margin-top: 16px;
     padding-top: 14px;
     border-top: 1px solid rgba(148,163,184,.28);
 }
-.exec9-contract-availability-title {
+.exec9-contract-availability-title{
     color: #334155;
     font-size: 11.5px;
     font-weight: 900;
     margin: 0 0 11px 0;
 }
-.exec9-contract-availability-row {
+.exec9-contract-availability-row{
     margin: 0 0 11px 0;
 }
-.exec9-contract-availability-head {
+.exec9-contract-availability-head{
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 5px;
 }
-.exec9-contract-availability-name {
+.exec9-contract-availability-name{
     min-width: 0;
     color: #334155;
     font-size: 10.5px;
@@ -12408,56 +11018,54 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.exec9-contract-availability-pct {
+.exec9-contract-availability-pct{
     flex: 0 0 auto;
     color: #0f172a;
     font-size: 11px;
     font-weight: 900;
 }
-.exec9-contract-availability-track {
+.exec9-contract-availability-track{
     width: 100%;
     height: 6px;
     background: #e2e8f0;
     border-radius: 999px;
     overflow: hidden;
 }
-.exec9-contract-availability-fill {
+.exec9-contract-availability-fill{
     height: 100%;
     border-radius: 999px;
     background: #16a34a;
 }
-.exec9-contract-availability-detail {
+.exec9-contract-availability-detail{
     margin-top: 4px;
     color: #64748b;
     font-size: 9px;
     font-weight: 650;
     line-height: 1.25;
 }
-/* Selectores del dashboard */
-div[data-testid="stMain"] div[data-testid="stSelectbox"] {
+div[data-testid="stMain"] div[data-testid="stSelectbox"]{
     margin-bottom: 0 !important;
 }
-div[data-testid="stMain"] div[data-testid="stSelectbox"] label {
+div[data-testid="stMain"] div[data-testid="stSelectbox"] label{
     margin-bottom: 1px !important;
 }
-div[data-testid="stMain"] div[data-testid="stSelectbox"] label p {
+div[data-testid="stMain"] div[data-testid="stSelectbox"] label p{
     font-size: 10.5px !important;
     line-height: 1.05 !important;
     font-weight: 800 !important;
     color: #475569 !important;
 }
-div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] > div{
     min-height: 32px !important;
     height: 32px !important;
     border-radius: 9px !important;
     font-size: 13px !important;
 }
-div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] input {
+div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"] input{
     min-height: 30px !important;
     height: 30px !important;
 }
-/* Dataframes del resumen */
-div[data-testid="stDataFrame"] {
+div[data-testid="stDataFrame"]{
     border: 1px solid rgba(148,163,184,.30) !important;
     border-radius: 12px !important;
     overflow: hidden !important;
@@ -12818,49 +11426,20 @@ def mostrar_panel():
 st.markdown(
     """
 <style>
-:root {
+:root{
     --menu-panel-width: 280px !important;
     --menu-inner-width: 248px !important;
     --menu-panel-width-final: 280px !important;
     --menu-inner-width-final: 248px !important;
     --content-padding-x: 18px !important;
 }
-
-/* Menú izquierdo más compacto */
-section[data-testid="stSidebar"] {
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-    overflow-x: hidden !important;
-}
-
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-    padding: 8px 10px 12px 10px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}
-
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-brand,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-brand,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-width) !important;
     min-width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     box-sizing: border-box !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{
     width: var(--menu-inner-width) !important;
     min-width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
@@ -12873,68 +11452,27 @@ section[data-testid="stSidebar"] .menu-active-item {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-
-section[data-testid="stSidebar"] .menu-title {
+section[data-testid="stSidebar"] .menu-title{
     font-size: 12.2px !important;
     line-height: 1.1 !important;
 }
-
-section[data-testid="stSidebar"] .menu-subtitle {
+section[data-testid="stSidebar"] .menu-subtitle{
     font-size: 10.4px !important;
     line-height: 1.1 !important;
 }
-
-section[data-testid="stSidebar"] .menu-icon-img {
+section[data-testid="stSidebar"] .menu-icon-img{
     width: 42px !important;
     height: 42px !important;
     min-width: 42px !important;
     max-width: 42px !important;
 }
-
-/* Contenido principal: parte justo después del menú y usa todo el ancho disponible */
-[data-testid="stAppViewContainer"] > .main,
-div[data-testid="stMain"],
-section.main,
-main {
-    margin-left: var(--menu-panel-width) !important;
-    width: calc(100vw - var(--menu-panel-width)) !important;
-    max-width: calc(100vw - var(--menu-panel-width)) !important;
-    min-width: 0 !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-}
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    padding-left: var(--content-padding-x) !important;
-    padding-right: var(--content-padding-x) !important;
-    padding-top: 0px !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-}
-
-/* Elimina anchos mínimos antiguos que provocaban corte horizontal */
-[data-testid="stHorizontalBlock"],
-[data-testid="stVerticalBlock"],
-[data-testid="stElementContainer"],
-[data-testid="column"] {
+[data-testid="stElementContainer"]{
     min-width: 0 !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
 }
-
-[data-testid="stHorizontalBlock"] {
-    gap: 0.75rem !important;
-}
-
-/* Título y logo ajustados para no salirse al 100% */
-.title-main {
+[data-testid="stHorizontalBlock"]{gap: 0.75rem !important;}
+.title-main{
     font-size: clamp(28px, 2.15vw, 38px) !important;
     line-height: 1.05 !important;
     white-space: normal !important;
@@ -12943,56 +11481,41 @@ div[data-testid="stMainBlockContainer"] {
     max-width: 100% !important;
     margin-left: 0 !important;
 }
-
-.header-logo-box img {
+.header-logo-box img{
     width: 132px !important;
     max-width: 132px !important;
 }
-
-/* Tarjetas KPI más compactas */
-.kpi-card {
+.kpi-card{
     min-width: 0 !important;
     width: 100% !important;
     padding: 16px !important;
     min-height: 118px !important;
 }
-
-.kpi-icon {
+.kpi-icon{
     width: 46px !important;
     height: 46px !important;
     border-radius: 15px !important;
     font-size: 22px !important;
     margin-bottom: 9px !important;
 }
-
-.kpi-title {
+.kpi-title{
     font-size: 12px !important;
 }
-
-.kpi-value {
+.kpi-value{
     font-size: clamp(20px, 1.55vw, 25px) !important;
     line-height: 1.05 !important;
 }
-
-.kpi-sub {
+.kpi-sub{
     font-size: 11px !important;
     line-height: 1.25 !important;
 }
-
-/* Tablas y gráficos contenidos dentro de la pantalla */
-[data-testid="stDataFrame"],
-[data-testid="stTable"],
-[data-testid="stPlotlyChart"],
-.js-plotly-plot,
-.plot-container,
-.svg-container {
+[data-testid="stDataFrame"],[data-testid="stTable"],[data-testid="stPlotlyChart"],.js-plotly-plot,.plot-container,.svg-container{
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     overflow-x: hidden !important;
     box-sizing: border-box !important;
 }
-
 </style>
     """,
     unsafe_allow_html=True,
@@ -13005,116 +11528,71 @@ div[data-testid="stMainBlockContainer"] {
 st.markdown(
     """
 <style>
-/* Mantiene visible el Dashboard Ejecutivo a zoom 100% */
-:root {
+:root{
     --menu-panel-width: 250px !important;
     --menu-inner-width: 218px !important;
     --content-padding-x: 14px !important;
 }
-section[data-testid="stSidebar"] {
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-}
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-    padding: 10px 10px 14px 10px !important;
-}
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-brand,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item,
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-brand,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item,section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     width: var(--menu-inner-width) !important;
     min-width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
 }
-[data-testid="stAppViewContainer"] > .main,
-section.main,
-main {
-    margin-left: var(--menu-panel-width) !important;
-    width: calc(100vw - var(--menu-panel-width)) !important;
-    max-width: calc(100vw - var(--menu-panel-width)) !important;
-}
-.main .block-container,
-.block-container {
-    padding-top: 0.15rem !important;
-    padding-left: var(--content-padding-x) !important;
-    padding-right: var(--content-padding-x) !important;
-    padding-bottom: 1rem !important;
-    max-width: none !important;
-    min-width: 0 !important;
-}
-.main-fixed-header {
+.main-fixed-header{
     min-height: 58px !important;
     margin-bottom: 8px !important;
 }
-.main-fixed-title,
-.title-main {
+.main-fixed-title,.title-main{
     font-size: clamp(28px, 2.2vw, 38px) !important;
     line-height: 1.05 !important;
     white-space: normal !important;
 }
-.main-fixed-logo img,
-.header-logo-box img {
+.main-fixed-logo img,.header-logo-box img{
     width: 125px !important;
     max-width: 125px !important;
 }
-.main-fixed-header-spacer,
-.header-separador {
+.main-fixed-header-spacer,.header-separador{
     height: 6px !important;
     min-height: 6px !important;
 }
-.kpi-card {
+.kpi-card{
     min-height: 104px !important;
     padding: 12px 14px !important;
     border-radius: 16px !important;
 }
-.kpi-icon {
+.kpi-icon{
     width: 40px !important;
     height: 40px !important;
     font-size: 20px !important;
     margin-bottom: 7px !important;
 }
-.kpi-title { font-size: 11.2px !important; }
-.kpi-value { font-size: clamp(19px, 1.35vw, 24px) !important; }
-.kpi-sub { font-size: 10.5px !important; line-height: 1.2 !important; }
-.panel-title {
+.kpi-title{ font-size: 11.2px !important; }
+.kpi-value{ font-size: clamp(19px, 1.35vw, 24px) !important; }
+.kpi-sub{ font-size: 10.5px !important; line-height: 1.2 !important; }
+.panel-title{
     font-size: 17px !important;
     margin-top: 12px !important;
     margin-bottom: 7px !important;
 }
-[data-testid="stHorizontalBlock"] {
-    gap: 0.65rem !important;
-    align-items: stretch !important;
-}
-.next-item {
+[data-testid="stHorizontalBlock"]{gap: 0.65rem !important;}
+.next-item{
     min-height: 34px !important;
     padding: 4px 0 !important;
 }
-.next-title { font-size: 11px !important; }
-.next-sub { font-size: 9.6px !important; }
-.badge-days { font-size: 9px !important; padding: 4px 6px !important; }
-.equipo-card {
+.next-title{ font-size: 11px !important; }
+.next-sub{ font-size: 9.6px !important; }
+.badge-days{ font-size: 9px !important; padding: 4px 6px !important; }
+.equipo-card{
     padding: 10px !important;
     border-radius: 16px !important;
 }
-.equipo-img {
+.equipo-img{
     height: 88px !important;
     min-height: 88px !important;
 }
-.equipo-nombre { font-size: 15px !important; }
-.equipo-sub { font-size: 11px !important; }
-/* Refuerzo de montos con $ a la derecha en tablas HTML */
-td, th { white-space: normal !important; }
+.equipo-nombre{ font-size: 15px !important; }
+.equipo-sub{ font-size: 11px !important; }
+td,th{ white-space: normal !important; }
 </style>
     """,
     unsafe_allow_html=True,
@@ -13129,28 +11607,7 @@ td, th { white-space: normal !important; }
 st.markdown(
     """
 <style>
-/* Quita márgenes/paddings superiores acumulados de Streamlit */
-html, body, .stApp,
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewContainer"] > .main,
-div[data-testid="stMain"],
-section.main,
-main {
-    padding-top: 0px !important;
-    margin-top: 0px !important;
-}
-
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"],
-section.main > div {
-    padding-top: 0px !important;
-    margin-top: -92px !important;
-    padding-bottom: 0.8rem !important;
-}
-
-/* Encabezado común de todas las páginas */
-.main-fixed-header {
+.main-fixed-header{
     position: relative !important;
     top: auto !important;
     min-height: 42px !important;
@@ -13167,81 +11624,51 @@ section.main > div {
     align-items: flex-end !important;
     justify-content: space-between !important;
 }
-
-.main-fixed-title,
-.title-main {
+.main-fixed-title,.title-main{
     font-size: clamp(27px, 2.05vw, 36px) !important;
     line-height: 0.98 !important;
     margin: 0px !important;
     padding: 0px !important;
     white-space: normal !important;
 }
-
-.main-fixed-logo,
-.header-logo-box {
+.main-fixed-logo,.header-logo-box{
     margin: 0px !important;
     padding: 0px !important;
     align-self: flex-end !important;
 }
-
-.main-fixed-logo img,
-.header-logo-box img {
+.main-fixed-logo img,.header-logo-box img{
     width: 112px !important;
     max-width: 112px !important;
     height: auto !important;
     margin: 0px !important;
     padding: 0px !important;
 }
-
-.main-fixed-header-spacer,
-.header-separador {
+.main-fixed-header-spacer,.header-separador{
     height: 0px !important;
     min-height: 0px !important;
     max-height: 0px !important;
     margin: 0px !important;
     padding: 0px !important;
 }
-
-/* Reduce espacios verticales generales entre bloques */
-div[data-testid="stVerticalBlock"] {
-    gap: 0.32rem !important;
-}
-
-.panel-title {
+div[data-testid="stVerticalBlock"]{gap: 0.32rem !important;}
+.panel-title{
     margin-top: 8px !important;
     margin-bottom: 5px !important;
 }
-
-/* Dashboard: acerca KPI al título */
-.kpi-card {
+.kpi-card{
     margin-top: 0px !important;
 }
-
-/* En pantallas más bajas, sube un poco más */
-@media (max-height: 850px) {
-    .main .block-container,
-    .block-container,
-    div[data-testid="stMainBlockContainer"],
-    section.main > div {
-        margin-top: -112px !important;
-    }
-
-    .main-fixed-header {
+@media  (max-height: 850px) {.main-fixed-header{
         min-height: 38px !important;
         height: 38px !important;
     }
-
-    .main-fixed-title,
-    .title-main {
+.main-fixed-title,.title-main{
         font-size: clamp(25px, 1.95vw, 34px) !important;
     }
-
-    .main-fixed-logo img,
-    .header-logo-box img {
+.main-fixed-logo img,.header-logo-box img{
         width: 104px !important;
         max-width: 104px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -13257,17 +11684,7 @@ div[data-testid="stVerticalBlock"] {
 st.markdown(
     """
 <style>
-/* Baja levemente todas las páginas, sin volver a dejar el espacio superior excesivo */
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"],
-section.main > div {
-    margin-top: -72px !important;
-    padding-top: 0px !important;
-    padding-bottom: 0.65rem !important;
-}
-
-.main-fixed-header {
+.main-fixed-header{
     min-height: 50px !important;
     height: 50px !important;
     margin-top: 0px !important;
@@ -13276,117 +11693,77 @@ section.main > div {
     padding-right: 10px !important;
     align-items: flex-end !important;
 }
-
-.main-fixed-title,
-.title-main {
+.main-fixed-title,.title-main{
     line-height: 1.03 !important;
     margin: 0px !important;
     padding: 0px !important;
 }
-
-.main-fixed-logo,
-.header-logo-box {
+.main-fixed-logo,.header-logo-box{
     align-self: flex-end !important;
     margin-bottom: 2px !important;
 }
-
-.main-fixed-logo img,
-.header-logo-box img {
+.main-fixed-logo img,.header-logo-box img{
     width: 116px !important;
     max-width: 116px !important;
 }
-
-.main-fixed-header-spacer,
-.header-separador {
+.main-fixed-header-spacer,.header-separador{
     height: 4px !important;
     min-height: 4px !important;
     max-height: 4px !important;
 }
-
-/* Menos aire entre secciones del Dashboard */
-div[data-testid="stVerticalBlock"] {
-    gap: 0.24rem !important;
-}
-
-.panel-title {
+div[data-testid="stVerticalBlock"]{gap: 0.24rem !important;}
+.panel-title{
     margin-top: 5px !important;
     margin-bottom: 4px !important;
 }
-
-/* Tablas más compactas para que Gastos Adicionales se vea completo */
-.tabla-clara-wrap {
+.tabla-clara-wrap{
     overflow-x: hidden !important;
     overflow-y: auto !important;
 }
-
-.tabla-clara {
+.tabla-clara{
     font-size: 10.8px !important;
     table-layout: fixed !important;
     width: 100% !important;
 }
-
-.tabla-clara thead th,
-.tabla-clara tbody td {
+.tabla-clara thead th,.tabla-clara tbody td{
     padding: 5px 7px !important;
     line-height: 1.16 !important;
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-
-/* Montos siempre en una línea */
-.tabla-clara td.monto,
-.tabla-clara th.monto,
-.tabla-clara td:last-child,
-.tabla-clara th:last-child {
+.tabla-clara td.monto,.tabla-clara th.monto,.tabla-clara td:last-child,.tabla-clara th:last-child{
     white-space: nowrap !important;
     overflow-wrap: normal !important;
     word-break: normal !important;
     text-align: right !important;
 }
-
-/* Próximas Mantenciones más compactas verticalmente, pero legibles */
-.proximas-box .panel-title {
+.proximas-box .panel-title{
     margin-top: 0px !important;
 }
-
-.next-item {
+.next-item{
     min-height: 28px !important;
     padding: 2px 0 !important;
 }
-
-.next-title {
+.next-title{
     font-size: 10.8px !important;
     line-height: 1.05 !important;
 }
-
-.next-sub {
+.next-sub{
     font-size: 9px !important;
     line-height: 1.05 !important;
     margin-top: 0px !important;
 }
-
-.badge-days {
+.badge-days{
     font-size: 8.7px !important;
     padding: 3px 6px !important;
     min-width: 72px !important;
     text-align: center !important;
 }
-
-/* En pantallas bajas se conserva el aprovechamiento, pero sin cortar el título */
-@media (max-height: 850px) {
-    .main .block-container,
-    .block-container,
-    div[data-testid="stMainBlockContainer"],
-    section.main > div {
-        margin-top: -82px !important;
-    }
-
-    .main-fixed-header {
+@media  (max-height: 850px) {.main-fixed-header{
         min-height: 46px !important;
         height: 46px !important;
         margin-bottom: 7px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -13399,52 +11776,22 @@ div[data-testid="stVerticalBlock"] {
 st.markdown(
     """
 <style>
-:root {
+:root{
     --menu-panel-width: 345px !important;
     --menu-inner-width: 304px !important;
     --menu-panel-width-final: 345px !important;
     --menu-inner-width-final: 304px !important;
 }
-section[data-testid="stSidebar"] {
-    width: 345px !important;
-    min-width: 345px !important;
-    max-width: 345px !important;
-}
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: 345px !important;
-    min-width: 345px !important;
-    max-width: 345px !important;
-}
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-brand,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-brand,section[data-testid="stSidebar"] .menu-active-item{
     width: 304px !important;
     max-width: 304px !important;
 }
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     width: 304px !important;
     min-height: 52px !important;
     font-size: 15px !important;
 }
-[data-testid="stAppViewContainer"] > .main,
-section.main,
-main {
-    margin-left: 345px !important;
-    width: calc(100vw - 345px) !important;
-    max-width: calc(100vw - 345px) !important;
-}
-[data-testid="collapsedControl"],
-button[title="Collapse sidebar"],
-button[title="Close sidebar"],
-button[aria-label="Collapse sidebar"],
-button[aria-label="Close sidebar"] {
+[data-testid="collapsedControl"],button[title="Collapse sidebar"],button[title="Close sidebar"],button[aria-label="Collapse sidebar"],button[aria-label="Close sidebar"]{
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -13455,14 +11802,7 @@ button[aria-label="Close sidebar"] {
     min-width: 34px !important;
     z-index: 10050 !important;
 }
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"],
-section.main > div {
-    margin-top: -62px !important;
-    padding-top: 0px !important;
-}
-.main-fixed-header {
+.main-fixed-header{
     min-height: 58px !important;
     height: 58px !important;
     margin-top: 0px !important;
@@ -13470,33 +11810,29 @@ section.main > div {
     padding-top: 8px !important;
     align-items: flex-end !important;
 }
-.main-fixed-title,
-.title-main {
+.main-fixed-title,.title-main{
     font-size: clamp(28px, 2.1vw, 37px) !important;
     line-height: 1.03 !important;
     margin: 0 !important;
     padding: 0 !important;
 }
-.main-fixed-logo img,
-.header-logo-box img {
+.main-fixed-logo img,.header-logo-box img{
     width: 116px !important;
     max-width: 116px !important;
 }
-.main-fixed-header-spacer,
-.header-separador {
+.main-fixed-header-spacer,.header-separador{
     height: 8px !important;
     min-height: 8px !important;
 }
-.panel-title {
+.panel-title{
     margin-top: 7px !important;
     margin-bottom: 5px !important;
 }
-[data-testid="stPlotlyChart"] {
+[data-testid="stPlotlyChart"]{
     overflow: hidden !important;
     border-radius: 12px !important;
 }
-.dashboard-proximas .next-item,
-.proximas-box .next-item {
+.dashboard-proximas .next-item,.proximas-box .next-item{
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto !important;
     align-items: center !important;
@@ -13504,8 +11840,7 @@ section.main > div {
     min-height: 34px !important;
     padding: 2px 0 !important;
 }
-.dashboard-proximas .next-title,
-.proximas-box .next-title {
+.dashboard-proximas .next-title,.proximas-box .next-title{
     font-size: 11.8px !important;
     line-height: 1.02 !important;
     margin-bottom: 1px !important;
@@ -13513,10 +11848,7 @@ section.main > div {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-.dashboard-proximas .next-sub-line,
-.proximas-box .next-sub-line,
-.dashboard-proximas .next-sub,
-.proximas-box .next-sub {
+.dashboard-proximas .next-sub-line,.proximas-box .next-sub-line,.dashboard-proximas .next-sub,.proximas-box .next-sub{
     display: block !important;
     font-size: 9.2px !important;
     line-height: 1.05 !important;
@@ -13525,8 +11857,7 @@ section.main > div {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-.dashboard-proximas .badge-days,
-.proximas-box .badge-days {
+.dashboard-proximas .badge-days,.proximas-box .badge-days{
     min-width: 76px !important;
     max-width: 86px !important;
     font-size: 8.7px !important;
@@ -13549,78 +11880,28 @@ section.main > div {
 st.markdown(
     """
 <style>
-:root {
+:root{
     --menu-panel-width: 276px !important;
     --menu-inner-width: 244px !important;
     --menu-panel-width-final: 276px !important;
     --menu-inner-width-final: 244px !important;
     --content-padding-x: 16px !important;
 }
-
-/* 1. Menú izquierdo 20% más angosto */
-section[data-testid="stSidebar"] {
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-    transition: width .22s ease, min-width .22s ease, max-width .22s ease !important;
-}
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-    padding: 10px 12px 14px 12px !important;
-    box-sizing: border-box !important;
-}
-section[data-testid="stSidebar"] .menu-panel-content,
-section[data-testid="stSidebar"] .menu-brand,
-section[data-testid="stSidebar"] .menu-line,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] div[data-testid="stButton"],
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-section[data-testid="stSidebar"] [data-baseweb="select"],
-section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-section[data-testid="stSidebar"] .menu-active-item,
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"]{transition: width .22s ease, min-width .22s ease, max-width .22s ease !important;}
+section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSidebar"] .menu-brand,section[data-testid="stSidebar"] .menu-line,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stSelectbox"],section[data-testid="stSidebar"] [data-baseweb="select"],section[data-testid="stSidebar"] [data-baseweb="select"] > div,section[data-testid="stSidebar"] .menu-active-item,section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     width: var(--menu-inner-width) !important;
     min-width: var(--menu-inner-width) !important;
     max-width: var(--menu-inner-width) !important;
     box-sizing: border-box !important;
 }
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{
     min-height: 48px !important;
     height: 48px !important;
     font-size: 14px !important;
     padding: 9px 11px !important;
     border-radius: 14px !important;
 }
-[data-testid="stAppViewContainer"] > .main,
-div[data-testid="stMain"],
-section.main,
-main {
-    margin-left: var(--menu-panel-width) !important;
-    width: calc(100vw - var(--menu-panel-width)) !important;
-    max-width: calc(100vw - var(--menu-panel-width)) !important;
-}
-.main .block-container,
-.block-container,
-div[data-testid="stMainBlockContainer"] {
-    padding-left: var(--content-padding-x) !important;
-    padding-right: var(--content-padding-x) !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-}
-
-/* Botón claro para minimizar/agrandar menú */
-[data-testid="collapsedControl"],
-[data-testid="stSidebarCollapsedControl"],
-button[title="Collapse sidebar"],
-button[title="Close sidebar"],
-button[title="Open sidebar"],
-button[aria-label="Collapse sidebar"],
-button[aria-label="Close sidebar"],
-button[aria-label="Open sidebar"] {
+[data-testid="collapsedControl"],[data-testid="stSidebarCollapsedControl"],button[title="Collapse sidebar"],button[title="Close sidebar"],button[title="Open sidebar"],button[aria-label="Collapse sidebar"],button[aria-label="Close sidebar"],button[aria-label="Open sidebar"]{
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -13639,22 +11920,12 @@ button[aria-label="Open sidebar"] {
     box-shadow: 0 8px 20px rgba(15,23,42,.35) !important;
     z-index: 100000 !important;
 }
-[data-testid="collapsedControl"] svg,
-[data-testid="stSidebarCollapsedControl"] svg,
-button[title="Collapse sidebar"] svg,
-button[title="Close sidebar"] svg,
-button[title="Open sidebar"] svg,
-button[aria-label="Collapse sidebar"] svg,
-button[aria-label="Close sidebar"] svg,
-button[aria-label="Open sidebar"] svg {
+[data-testid="collapsedControl"] svg,[data-testid="stSidebarCollapsedControl"] svg,button[title="Collapse sidebar"] svg,button[title="Close sidebar"] svg,button[title="Open sidebar"] svg,button[aria-label="Collapse sidebar"] svg,button[aria-label="Close sidebar"] svg,button[aria-label="Open sidebar"] svg{
     color: #ffffff !important;
     fill: #ffffff !important;
     stroke: #ffffff !important;
 }
-
-/* 2. Títulos de distribución dentro de tarjeta blanca */
-.chart-title,
-.panel-title.chart-title {
+.chart-title,.panel-title.chart-title{
     display: block !important;
     width: 100% !important;
     background: rgba(255,255,255,.82) !important;
@@ -13665,8 +11936,7 @@ button[aria-label="Open sidebar"] svg {
     margin: 8px 0 -1px 0 !important;
     box-sizing: border-box !important;
 }
-.chart-title + div[data-testid="stPlotlyChart"],
-.panel-title.chart-title + div[data-testid="stPlotlyChart"] {
+.chart-title + div[data-testid="stPlotlyChart"],.panel-title.chart-title + div[data-testid="stPlotlyChart"]{
     background: rgba(255,255,255,.82) !important;
     border: 1px solid rgba(203,213,225,.75) !important;
     border-top: 0 !important;
@@ -13674,15 +11944,11 @@ button[aria-label="Open sidebar"] svg {
     padding: 4px 8px 8px 8px !important;
     box-sizing: border-box !important;
 }
-
-/* 3. Próximas Mantenciones más ordenadas */
-.dashboard-proximas,
-.proximas-box {
+.dashboard-proximas,.proximas-box{
     padding: 8px 10px !important;
     border-radius: 16px !important;
 }
-.dashboard-proximas .next-item,
-.proximas-box .next-item {
+.dashboard-proximas .next-item,.proximas-box .next-item{
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) 92px !important;
     align-items: center !important;
@@ -13691,12 +11957,10 @@ button[aria-label="Open sidebar"] svg {
     padding: 6px 0 !important;
     border-bottom: 1px solid rgba(148,163,184,.28) !important;
 }
-.dashboard-proximas .next-item:last-child,
-.proximas-box .next-item:last-child {
+.dashboard-proximas .next-item:last-child,.proximas-box .next-item:last-child{
     border-bottom: 0 !important;
 }
-.dashboard-proximas .next-title,
-.proximas-box .next-title {
+.dashboard-proximas .next-title,.proximas-box .next-title{
     font-size: 12.8px !important;
     line-height: 1.15 !important;
     font-weight: 950 !important;
@@ -13706,10 +11970,7 @@ button[aria-label="Open sidebar"] svg {
     overflow: visible !important;
     text-overflow: clip !important;
 }
-.dashboard-proximas .next-sub-line,
-.proximas-box .next-sub-line,
-.dashboard-proximas .next-sub,
-.proximas-box .next-sub {
+.dashboard-proximas .next-sub-line,.proximas-box .next-sub-line,.dashboard-proximas .next-sub,.proximas-box .next-sub{
     font-size: 12.3px !important;
     line-height: 1.18 !important;
     font-weight: 700 !important;
@@ -13719,8 +11980,7 @@ button[aria-label="Open sidebar"] svg {
     overflow: visible !important;
     text-overflow: clip !important;
 }
-.dashboard-proximas .badge-days,
-.proximas-box .badge-days {
+.dashboard-proximas .badge-days,.proximas-box .badge-days{
     width: 92px !important;
     min-width: 92px !important;
     max-width: 92px !important;
@@ -13732,48 +11992,31 @@ button[aria-label="Open sidebar"] svg {
     text-align: center !important;
     border-radius: 999px !important;
 }
-
-/* 4. Historial de Mantenciones: torta completa dentro de pantalla */
-div[data-testid="stPlotlyChart"] {
+div[data-testid="stPlotlyChart"]{
     max-width: 100% !important;
     overflow: hidden !important;
 }
-.js-plotly-plot,
-.plot-container,
-.svg-container {
+.js-plotly-plot,.plot-container,.svg-container{
     max-width: 100% !important;
     overflow: visible !important;
 }
-
-/* Ajuste responsivo */
-@media (max-width: 1400px) {
-    :root {
+@media  (max-width: 1400px) {:root{
         --menu-panel-width: 260px !important;
         --menu-inner-width: 228px !important;
         --content-padding-x: 12px !important;
     }
-    [data-testid="collapsedControl"],
-    [data-testid="stSidebarCollapsedControl"],
-    button[title="Collapse sidebar"],
-    button[title="Close sidebar"],
-    button[title="Open sidebar"],
-    button[aria-label="Collapse sidebar"],
-    button[aria-label="Close sidebar"],
-    button[aria-label="Open sidebar"] {
+[data-testid="collapsedControl"],[data-testid="stSidebarCollapsedControl"],button[title="Collapse sidebar"],button[title="Close sidebar"],button[title="Open sidebar"],button[aria-label="Collapse sidebar"],button[aria-label="Close sidebar"],button[aria-label="Open sidebar"]{
         left: calc(var(--menu-panel-width) - 17px) !important;
     }
-    .dashboard-proximas .next-item,
-    .proximas-box .next-item {
+.dashboard-proximas .next-item,.proximas-box .next-item{
         grid-template-columns: minmax(0, 1fr) 82px !important;
     }
-    .dashboard-proximas .badge-days,
-    .proximas-box .badge-days {
+.dashboard-proximas .badge-days,.proximas-box .badge-days{
         width: 82px !important;
         min-width: 82px !important;
         max-width: 82px !important;
         font-size: 9.5px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -13792,14 +12035,12 @@ aplicar_ajustes_finales_ui()
 st.markdown(
     """
 <style>
-section[data-testid="stSidebar"] .menu-toggle-wrap,
-section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],
-section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] .menu-toggle-wrap,section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button{
     width: 48px !important;
     min-width: 48px !important;
     max-width: 48px !important;
 }
-section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button{
     height: 42px !important;
     min-height: 42px !important;
     padding: 0 !important;
@@ -13810,7 +12051,7 @@ section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] b
     font-size: 21px !important;
     line-height: 1 !important;
 }
-.panel-title {
+.panel-title{
     display: block !important;
     clear: both !important;
     position: relative !important;
@@ -13825,7 +12066,7 @@ section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] b
     padding: 2px 0 7px 0 !important;
     overflow: visible !important;
 }
-.section-head {
+.section-head{
     display: block !important;
     clear: both !important;
     position: relative !important;
@@ -13835,14 +12076,13 @@ section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] b
     padding: 0 0 2px 0 !important;
     overflow: visible !important;
 }
-.section-head .panel-title,
-.page-section-title {
+.section-head .panel-title,.page-section-title{
     margin-top: 0 !important;
     margin-bottom: 5px !important;
     padding: 0 !important;
     min-height: 28px !important;
 }
-.panel-subtitle {
+.panel-subtitle{
     display: block !important;
     clear: both !important;
     color: #334155 !important;
@@ -13854,27 +12094,20 @@ section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] b
     position: relative !important;
     z-index: 21 !important;
 }
-.tabla-clara-wrap {
+.tabla-clara-wrap{
     margin-top: 10px !important;
 }
-.equipo-card,
-.kpi-card,
-.tabla-clara-wrap,
-[data-testid="stPlotlyChart"] {
+.equipo-card,.kpi-card,.tabla-clara-wrap,[data-testid="stPlotlyChart"]{
     position: relative !important;
     z-index: 2 !important;
 }
-.dashboard-proximas .panel-title,
-.proximas-box .panel-title,
-.chart-title,
-.panel-title.chart-title {
+.dashboard-proximas .panel-title,.proximas-box .panel-title,.chart-title,.panel-title.chart-title{
     margin-top: 0 !important;
     margin-bottom: 8px !important;
     min-height: 24px !important;
     padding-bottom: 4px !important;
 }
-[data-testid="stElementContainer"]:has(.section-head),
-[data-testid="stElementContainer"]:has(.panel-title) {
+[data-testid="stElementContainer"]:has(.section-head),[data-testid="stElementContainer"]:has(.panel-title){
     overflow: visible !important;
 }
 </style>
@@ -13890,26 +12123,18 @@ section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] b
 st.markdown(
     """
 <style>
-/* ===== Próximas Mantenciones: formato uniforme y con separación real ===== */
-.dashboard-proximas,
-.proximas-box {
+.dashboard-proximas,.proximas-box{
     padding: 12px 14px !important;
     border-radius: 17px !important;
     background: rgba(255,255,255,.74) !important;
 }
-
-.dashboard-proximas .panel-title,
-.proximas-box .panel-title {
+.dashboard-proximas .panel-title,.proximas-box .panel-title{
     margin: 0 0 9px 0 !important;
     padding: 0 0 6px 0 !important;
     min-height: 26px !important;
     line-height: 1.18 !important;
 }
-
-.dashboard-proximas .next-item,
-.proximas-box .next-item,
-.dashboard-proximas .next-row-pro,
-.proximas-box .next-row-pro {
+.dashboard-proximas .next-item,.proximas-box .next-item,.dashboard-proximas .next-row-pro,.proximas-box .next-row-pro{
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) 102px !important;
     align-items: center !important;
@@ -13920,29 +12145,21 @@ st.markdown(
     border-bottom: 1px solid rgba(100,116,139,.24) !important;
     box-sizing: border-box !important;
 }
-
-.dashboard-proximas .next-item:last-child,
-.proximas-box .next-item:last-child {
+.dashboard-proximas .next-item:last-child,.proximas-box .next-item:last-child{
     border-bottom: 0 !important;
 }
-
-.dashboard-proximas .next-info,
-.proximas-box .next-info {
+.dashboard-proximas .next-info,.proximas-box .next-info{
     min-width: 0 !important;
     width: 100% !important;
 }
-
-.dashboard-proximas .next-header-row,
-.proximas-box .next-header-row {
+.dashboard-proximas .next-header-row,.proximas-box .next-header-row{
     display: grid !important;
     grid-template-columns: minmax(120px, 0.95fr) minmax(120px, 1.05fr) !important;
     gap: 8px !important;
     align-items: end !important;
     margin-bottom: 5px !important;
 }
-
-.dashboard-proximas .next-title,
-.proximas-box .next-title {
+.dashboard-proximas .next-title,.proximas-box .next-title{
     font-size: 13.4px !important;
     line-height: 1.12 !important;
     font-weight: 950 !important;
@@ -13951,9 +12168,7 @@ st.markdown(
     padding: 0 !important;
     white-space: normal !important;
 }
-
-.dashboard-proximas .next-frequency,
-.proximas-box .next-frequency {
+.dashboard-proximas .next-frequency,.proximas-box .next-frequency{
     font-size: 10.7px !important;
     line-height: 1.1 !important;
     font-weight: 850 !important;
@@ -13962,16 +12177,12 @@ st.markdown(
     padding: 0 !important;
     text-align: left !important;
 }
-
-.dashboard-proximas .next-values-grid,
-.proximas-box .next-values-grid {
+.dashboard-proximas .next-values-grid,.proximas-box .next-values-grid{
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 6px !important;
 }
-
-.dashboard-proximas .next-value-box,
-.proximas-box .next-value-box {
+.dashboard-proximas .next-value-box,.proximas-box .next-value-box{
     display: grid !important;
     grid-template-columns: 48px minmax(0, 1fr) !important;
     align-items: center !important;
@@ -13983,9 +12194,7 @@ st.markdown(
     min-height: 25px !important;
     box-sizing: border-box !important;
 }
-
-.dashboard-proximas .next-label,
-.proximas-box .next-label {
+.dashboard-proximas .next-label,.proximas-box .next-label{
     color: #475569 !important;
     font-size: 10.1px !important;
     line-height: 1 !important;
@@ -13993,9 +12202,7 @@ st.markdown(
     text-transform: uppercase !important;
     letter-spacing: .15px !important;
 }
-
-.dashboard-proximas .next-value,
-.proximas-box .next-value {
+.dashboard-proximas .next-value,.proximas-box .next-value{
     color: #0f172a !important;
     font-size: 11.5px !important;
     line-height: 1.08 !important;
@@ -14003,9 +12210,7 @@ st.markdown(
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-
-.dashboard-proximas .badge-days,
-.proximas-box .badge-days {
+.dashboard-proximas .badge-days,.proximas-box .badge-days{
     width: 102px !important;
     min-width: 102px !important;
     max-width: 102px !important;
@@ -14022,31 +12227,17 @@ st.markdown(
     white-space: normal !important;
     box-sizing: border-box !important;
 }
-
-/* ===== Menú minimizado: botones e íconos centrados ===== */
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] {
-    text-align: center !important;
-}
-
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-panel-content,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-brand,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-line,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"],
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap {
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"]{text-align: center !important;}
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-panel-content,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-brand,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-line,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"],body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap{
     margin-left: auto !important;
     margin-right: auto !important;
 }
-
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"],
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item {
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"],body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item{
     width: 58px !important;
     min-width: 58px !important;
     max-width: 58px !important;
 }
-
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item {
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item{
     width: 58px !important;
     min-width: 58px !important;
     max-width: 58px !important;
@@ -14060,13 +12251,7 @@ body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-it
     font-size: 21px !important;
     line-height: 1 !important;
 }
-
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button > div,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button p,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button span,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item > div,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item p,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item span {
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button > div,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button p,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] div[data-testid="stButton"] button span,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item > div,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item p,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-item span{
     width: 100% !important;
     margin: 0 auto !important;
     padding: 0 !important;
@@ -14075,45 +12260,33 @@ body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-active-it
     justify-content: center !important;
     text-align: center !important;
 }
-
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap,
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],
-body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button {
+body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap,body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button{
     width: 58px !important;
     min-width: 58px !important;
     max-width: 58px !important;
     height: 48px !important;
     min-height: 48px !important;
 }
-
-@media (max-width: 1500px) {
-    .dashboard-proximas .next-item,
-    .proximas-box .next-item,
-    .dashboard-proximas .next-row-pro,
-    .proximas-box .next-row-pro {
+@media  (max-width: 1500px) {.dashboard-proximas .next-item,.proximas-box .next-item,.dashboard-proximas .next-row-pro,.proximas-box .next-row-pro{
         grid-template-columns: minmax(0, 1fr) 94px !important;
         column-gap: 9px !important;
         min-height: 60px !important;
     }
-    .dashboard-proximas .next-header-row,
-    .proximas-box .next-header-row {
+.dashboard-proximas .next-header-row,.proximas-box .next-header-row{
         grid-template-columns: 1fr !important;
         gap: 2px !important;
         margin-bottom: 4px !important;
     }
-    .dashboard-proximas .next-values-grid,
-    .proximas-box .next-values-grid {
+.dashboard-proximas .next-values-grid,.proximas-box .next-values-grid{
         grid-template-columns: 1fr !important;
         gap: 4px !important;
     }
-    .dashboard-proximas .badge-days,
-    .proximas-box .badge-days {
+.dashboard-proximas .badge-days,.proximas-box .badge-days{
         width: 94px !important;
         min-width: 94px !important;
         max-width: 94px !important;
         font-size: 9.7px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -14128,42 +12301,31 @@ body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wr
 st.markdown(
     """
 <style>
-/* Baja el bloque Distribución de Costos para que no se monte sobre los KPI */
-.dashboard-costos-spacer {
+.dashboard-costos-spacer{
     height: 18px !important;
     display: block !important;
 }
-.dashboard-costos-title,
-.panel-title.chart-title.dashboard-costos-title {
+.dashboard-costos-title,.panel-title.chart-title.dashboard-costos-title{
     margin-top: 4px !important;
     margin-bottom: 12px !important;
     line-height: 1.18 !important;
     position: relative !important;
     z-index: 30 !important;
 }
-
-/* Contenedor de Próximas Mantenciones del Dashboard */
-.dashboard-proximas,
-.proximas-box {
+.dashboard-proximas,.proximas-box{
     padding: 14px 16px !important;
     border-radius: 18px !important;
     background: rgba(255,255,255,.70) !important;
     overflow: visible !important;
 }
-.dashboard-proximas .panel-title,
-.proximas-box .panel-title {
+.dashboard-proximas .panel-title,.proximas-box .panel-title{
     margin: 0 0 10px 0 !important;
     padding: 0 0 6px 0 !important;
     min-height: 28px !important;
     line-height: 1.18 !important;
     clear: both !important;
 }
-
-/* Fila por equipo: equipo | actual | próxima | saldo */
-.dashboard-proximas .next-row-v65,
-.proximas-box .next-row-v65,
-.dashboard-proximas .next-item.next-row-v65,
-.proximas-box .next-item.next-row-v65 {
+.dashboard-proximas .next-row-v65,.proximas-box .next-row-v65,.dashboard-proximas .next-item.next-row-v65,.proximas-box .next-item.next-row-v65{
     display: grid !important;
     grid-template-columns: minmax(118px, .95fr) minmax(120px, 1fr) minmax(128px, 1fr) 104px !important;
     align-items: center !important;
@@ -14174,17 +12336,14 @@ st.markdown(
     border-bottom: 1px solid rgba(100,116,139,.22) !important;
     box-sizing: border-box !important;
 }
-.dashboard-proximas .next-row-v65:last-child,
-.proximas-box .next-row-v65:last-child {
+.dashboard-proximas .next-row-v65:last-child,.proximas-box .next-row-v65:last-child{
     border-bottom: 0 !important;
 }
-.dashboard-proximas .next-equipo-block,
-.proximas-box .next-equipo-block {
+.dashboard-proximas .next-equipo-block,.proximas-box .next-equipo-block{
     min-width: 0 !important;
     overflow: hidden !important;
 }
-.dashboard-proximas .next-row-v65 .next-title,
-.proximas-box .next-row-v65 .next-title {
+.dashboard-proximas .next-row-v65 .next-title,.proximas-box .next-row-v65 .next-title{
     font-size: 12.9px !important;
     line-height: 1.08 !important;
     font-weight: 950 !important;
@@ -14194,8 +12353,7 @@ st.markdown(
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-.dashboard-proximas .next-row-v65 .next-frequency,
-.proximas-box .next-row-v65 .next-frequency {
+.dashboard-proximas .next-row-v65 .next-frequency,.proximas-box .next-row-v65 .next-frequency{
     font-size: 10.2px !important;
     line-height: 1.05 !important;
     font-weight: 800 !important;
@@ -14205,8 +12363,7 @@ st.markdown(
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-.dashboard-proximas .next-metric-box,
-.proximas-box .next-metric-box {
+.dashboard-proximas .next-metric-box,.proximas-box .next-metric-box{
     display: grid !important;
     grid-template-columns: 42px minmax(0, 1fr) !important;
     align-items: center !important;
@@ -14218,8 +12375,7 @@ st.markdown(
     min-height: 30px !important;
     box-sizing: border-box !important;
 }
-.dashboard-proximas .next-row-v65 .next-label,
-.proximas-box .next-row-v65 .next-label {
+.dashboard-proximas .next-row-v65 .next-label,.proximas-box .next-row-v65 .next-label{
     color: #475569 !important;
     font-size: 9.7px !important;
     line-height: 1 !important;
@@ -14227,8 +12383,7 @@ st.markdown(
     text-transform: uppercase !important;
     letter-spacing: .10px !important;
 }
-.dashboard-proximas .next-row-v65 .next-value,
-.proximas-box .next-row-v65 .next-value {
+.dashboard-proximas .next-row-v65 .next-value,.proximas-box .next-row-v65 .next-value{
     color: #0f172a !important;
     font-size: 11.2px !important;
     line-height: 1.05 !important;
@@ -14236,8 +12391,7 @@ st.markdown(
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-.dashboard-proximas .next-row-v65 .badge-days,
-.proximas-box .next-row-v65 .badge-days {
+.dashboard-proximas .next-row-v65 .badge-days,.proximas-box .next-row-v65 .badge-days{
     width: 104px !important;
     min-width: 104px !important;
     max-width: 104px !important;
@@ -14254,34 +12408,25 @@ st.markdown(
     white-space: normal !important;
     box-sizing: border-box !important;
 }
-
-@media (max-width: 1500px) {
-    .dashboard-proximas .next-row-v65,
-    .proximas-box .next-row-v65,
-    .dashboard-proximas .next-item.next-row-v65,
-    .proximas-box .next-item.next-row-v65 {
+@media  (max-width: 1500px) {.dashboard-proximas .next-row-v65,.proximas-box .next-row-v65,.dashboard-proximas .next-item.next-row-v65,.proximas-box .next-item.next-row-v65{
         grid-template-columns: minmax(105px, .9fr) minmax(96px, 1fr) minmax(102px, 1fr) 92px !important;
         column-gap: 6px !important;
         min-height: 48px !important;
         padding: 7px 0 !important;
     }
-    .dashboard-proximas .next-metric-box,
-    .proximas-box .next-metric-box {
+.dashboard-proximas .next-metric-box,.proximas-box .next-metric-box{
         grid-template-columns: 36px minmax(0, 1fr) !important;
         padding: 4px 5px !important;
     }
-    .dashboard-proximas .next-row-v65 .next-value,
-    .proximas-box .next-row-v65 .next-value {
+.dashboard-proximas .next-row-v65 .next-value,.proximas-box .next-row-v65 .next-value{
         font-size: 10.4px !important;
     }
-    .dashboard-proximas .next-row-v65 .badge-days,
-    .proximas-box .next-row-v65 .badge-days {
+.dashboard-proximas .next-row-v65 .badge-days,.proximas-box .next-row-v65 .badge-days{
         width: 92px !important;
         min-width: 92px !important;
         max-width: 92px !important;
         font-size: 9.3px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -14296,36 +12441,27 @@ st.markdown(
 st.markdown(
     """
 <style>
-/* Más separación entre KPI superiores y Distribución de Costos */
-.dashboard-costos-spacer {
+.dashboard-costos-spacer{
     height: 42px !important;
     min-height: 42px !important;
     display: block !important;
 }
-.dashboard-costos-title,
-.panel-title.chart-title.dashboard-costos-title {
+.dashboard-costos-title,.panel-title.chart-title.dashboard-costos-title{
     margin-top: 12px !important;
     margin-bottom: 12px !important;
     padding-top: 0 !important;
     line-height: 1.20 !important;
 }
-
-/* Próximas Mantenciones Dashboard: fila final ordenada */
-.dashboard-proximas,
-.proximas-box {
+.dashboard-proximas,.proximas-box{
     padding: 12px 14px !important;
     overflow: visible !important;
 }
-.dashboard-proximas .panel-title,
-.proximas-box .panel-title {
+.dashboard-proximas .panel-title,.proximas-box .panel-title{
     margin: 0 0 12px 0 !important;
     padding: 0 0 6px 0 !important;
     min-height: 28px !important;
 }
-.dashboard-proximas .next-row-v66,
-.proximas-box .next-row-v66,
-.dashboard-proximas .next-item.next-row-v66,
-.proximas-box .next-item.next-row-v66 {
+.dashboard-proximas .next-row-v66,.proximas-box .next-row-v66,.dashboard-proximas .next-item.next-row-v66,.proximas-box .next-item.next-row-v66{
     display: grid !important;
     grid-template-columns: minmax(110px, 0.72fr) minmax(145px, 1fr) 108px !important;
     align-items: center !important;
@@ -14336,19 +12472,14 @@ st.markdown(
     border-bottom: 1px solid rgba(100,116,139,.24) !important;
     box-sizing: border-box !important;
 }
-.dashboard-proximas .next-row-v66:last-child,
-.proximas-box .next-row-v66:last-child {
+.dashboard-proximas .next-row-v66:last-child,.proximas-box .next-row-v66:last-child{
     border-bottom: 0 !important;
 }
-.dashboard-proximas .next-equipo-v66,
-.proximas-box .next-equipo-v66,
-.dashboard-proximas .next-data-v66,
-.proximas-box .next-data-v66 {
+.dashboard-proximas .next-equipo-v66,.proximas-box .next-equipo-v66,.dashboard-proximas .next-data-v66,.proximas-box .next-data-v66{
     min-width: 0 !important;
     overflow: hidden !important;
 }
-.dashboard-proximas .next-row-v66 .next-title,
-.proximas-box .next-row-v66 .next-title {
+.dashboard-proximas .next-row-v66 .next-title,.proximas-box .next-row-v66 .next-title{
     font-size: 12.8px !important;
     line-height: 1.08 !important;
     font-weight: 950 !important;
@@ -14358,8 +12489,7 @@ st.markdown(
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-.dashboard-proximas .next-row-v66 .next-frequency,
-.proximas-box .next-row-v66 .next-frequency {
+.dashboard-proximas .next-row-v66 .next-frequency,.proximas-box .next-row-v66 .next-frequency{
     font-size: 10.3px !important;
     line-height: 1.08 !important;
     font-weight: 800 !important;
@@ -14369,8 +12499,7 @@ st.markdown(
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-.dashboard-proximas .next-data-v66,
-.proximas-box .next-data-v66 {
+.dashboard-proximas .next-data-v66,.proximas-box .next-data-v66{
     display: grid !important;
     grid-template-columns: 1fr !important;
     row-gap: 4px !important;
@@ -14380,8 +12509,7 @@ st.markdown(
     padding: 6px 8px !important;
     box-sizing: border-box !important;
 }
-.dashboard-proximas .next-kv-v66,
-.proximas-box .next-kv-v66 {
+.dashboard-proximas .next-kv-v66,.proximas-box .next-kv-v66{
     color: #0f172a !important;
     font-size: 11.4px !important;
     line-height: 1.08 !important;
@@ -14390,15 +12518,11 @@ st.markdown(
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-.dashboard-proximas .next-kv-v66 span,
-.proximas-box .next-kv-v66 span {
+.dashboard-proximas .next-kv-v66 span,.proximas-box .next-kv-v66 span{
     color: #334155 !important;
     font-weight: 950 !important;
 }
-.dashboard-proximas .next-badge-v66,
-.proximas-box .next-badge-v66,
-.dashboard-proximas .next-row-v66 .badge-days,
-.proximas-box .next-row-v66 .badge-days {
+.dashboard-proximas .next-badge-v66,.proximas-box .next-badge-v66,.dashboard-proximas .next-row-v66 .badge-days,.proximas-box .next-row-v66 .badge-days{
     width: 108px !important;
     min-width: 108px !important;
     max-width: 108px !important;
@@ -14415,49 +12539,36 @@ st.markdown(
     white-space: normal !important;
     box-sizing: border-box !important;
 }
-
-@media (max-width: 1500px) {
-    .dashboard-costos-spacer {
+@media  (max-width: 1500px) {.dashboard-costos-spacer{
         height: 48px !important;
         min-height: 48px !important;
     }
-    .dashboard-proximas .next-row-v66,
-    .proximas-box .next-row-v66,
-    .dashboard-proximas .next-item.next-row-v66,
-    .proximas-box .next-item.next-row-v66 {
+.dashboard-proximas .next-row-v66,.proximas-box .next-row-v66,.dashboard-proximas .next-item.next-row-v66,.proximas-box .next-item.next-row-v66{
         grid-template-columns: minmax(92px, 0.68fr) minmax(130px, 1fr) 92px !important;
         column-gap: 7px !important;
         min-height: 56px !important;
         padding: 8px 0 !important;
     }
-    .dashboard-proximas .next-row-v66 .next-title,
-    .proximas-box .next-row-v66 .next-title {
+.dashboard-proximas .next-row-v66 .next-title,.proximas-box .next-row-v66 .next-title{
         font-size: 11.8px !important;
     }
-    .dashboard-proximas .next-row-v66 .next-frequency,
-    .proximas-box .next-row-v66 .next-frequency {
+.dashboard-proximas .next-row-v66 .next-frequency,.proximas-box .next-row-v66 .next-frequency{
         font-size: 9.6px !important;
     }
-    .dashboard-proximas .next-data-v66,
-    .proximas-box .next-data-v66 {
+.dashboard-proximas .next-data-v66,.proximas-box .next-data-v66{
         padding: 5px 6px !important;
         row-gap: 3px !important;
     }
-    .dashboard-proximas .next-kv-v66,
-    .proximas-box .next-kv-v66 {
+.dashboard-proximas .next-kv-v66,.proximas-box .next-kv-v66{
         font-size: 10.5px !important;
     }
-    .dashboard-proximas .next-badge-v66,
-    .proximas-box .next-badge-v66,
-    .dashboard-proximas .next-row-v66 .badge-days,
-    .proximas-box .next-row-v66 .badge-days {
+.dashboard-proximas .next-badge-v66,.proximas-box .next-badge-v66,.dashboard-proximas .next-row-v66 .badge-days,.proximas-box .next-row-v66 .badge-days{
         width: 92px !important;
         min-width: 92px !important;
         max-width: 92px !important;
         font-size: 8.8px !important;
         padding: 5px 5px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -14473,45 +12584,14 @@ st.markdown(
 st.markdown(
     """
 <style>
-:root {
+:root{
     --menu-panel-width: 280px !important;
     --menu-inner-width: 248px !important;
     --menu-panel-width-final: 280px !important;
     --menu-inner-width-final: 248px !important;
 }
-section[data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    transform: translateX(0px) !important;
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-}
-section[data-testid="stSidebar"] > div,
-section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    width: var(--menu-panel-width) !important;
-    min-width: var(--menu-panel-width) !important;
-    max-width: var(--menu-panel-width) !important;
-}
-[data-testid="stAppViewContainer"] > .main,
-section.main,
-main {
-    margin-left: var(--menu-panel-width) !important;
-    width: calc(100vw - var(--menu-panel-width)) !important;
-    max-width: calc(100vw - var(--menu-panel-width)) !important;
-}
-section[data-testid="stSidebar"] .menu-toggle-wrap,
-section[data-testid="stSidebar"] .menu-fixed-spacer,
-[data-testid="stSidebarCollapseButton"],
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="collapsedControl"],
-button[title="Collapse sidebar"],
-button[title="Close sidebar"],
-button[title="Open sidebar"],
-button[aria-label="Collapse sidebar"],
-button[aria-label="Close sidebar"],
-button[aria-label="Open sidebar"] {
+section[data-testid="stSidebar"]{visibility: visible !important;opacity: 1 !important;}
+section[data-testid="stSidebar"] .menu-toggle-wrap,section[data-testid="stSidebar"] .menu-fixed-spacer,[data-testid="stSidebarCollapseButton"],[data-testid="stSidebarCollapsedControl"],[data-testid="collapsedControl"],button[title="Collapse sidebar"],button[title="Close sidebar"],button[title="Open sidebar"],button[aria-label="Collapse sidebar"],button[aria-label="Close sidebar"],button[aria-label="Open sidebar"]{
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
@@ -14521,21 +12601,16 @@ button[aria-label="Open sidebar"] {
     min-height: 0 !important;
     pointer-events: none !important;
 }
-section[data-testid="stSidebar"] .menu-text,
-section[data-testid="stSidebar"] .menu-footer-box,
-section[data-testid="stSidebar"] .menu-filter-area,
-section[data-testid="stSidebar"] .menu-botones-title {
+section[data-testid="stSidebar"] .menu-text,section[data-testid="stSidebar"] .menu-footer-box,section[data-testid="stSidebar"] .menu-filter-area,section[data-testid="stSidebar"] .menu-botones-title{
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
 }
-section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-section[data-testid="stSidebar"] .menu-active-item {
+section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data-testid="stSidebar"] .menu-active-item{
     justify-content: flex-start !important;
     text-align: left !important;
 }
-.dashboard-proximas:not(.dashboard-proximas-v67):empty,
-.proximas-box:empty {
+.dashboard-proximas:not(.dashboard-proximas-v67):empty,.proximas-box:empty{
     display: none !important;
     height: 0 !important;
     min-height: 0 !important;
@@ -14545,7 +12620,7 @@ section[data-testid="stSidebar"] .menu-active-item {
     box-shadow: none !important;
     background: transparent !important;
 }
-.dashboard-proximas-v67 {
+.dashboard-proximas-v67{
     background: rgba(255,255,255,.72) !important;
     border: 1px solid rgba(203,213,225,.72) !important;
     border-radius: 16px !important;
@@ -14554,7 +12629,7 @@ section[data-testid="stSidebar"] .menu-active-item {
     box-shadow: 0 10px 24px rgba(15,23,42,.045) !important;
     overflow: visible !important;
 }
-.dashboard-proximas-v67 .proximas-title-v67 {
+.dashboard-proximas-v67 .proximas-title-v67{
     display: block !important;
     margin: 0 0 8px 0 !important;
     padding: 0 0 5px 0 !important;
@@ -14564,12 +12639,12 @@ section[data-testid="stSidebar"] .menu-active-item {
     font-weight: 950 !important;
     color: #0f172a !important;
 }
-.next-list-v67 {
+.next-list-v67{
     display: flex !important;
     flex-direction: column !important;
     gap: 0 !important;
 }
-.dashboard-proximas-v67 .next-row-v67 {
+.dashboard-proximas-v67 .next-row-v67{
     display: grid !important;
     grid-template-columns: minmax(112px, .95fr) minmax(120px, 1fr) minmax(120px, 1fr) 116px !important;
     align-items: center !important;
@@ -14580,10 +12655,10 @@ section[data-testid="stSidebar"] .menu-active-item {
     border-bottom: 1px solid rgba(100,116,139,.22) !important;
     box-sizing: border-box !important;
 }
-.dashboard-proximas-v67 .next-row-v67:last-child {
+.dashboard-proximas-v67 .next-row-v67:last-child{
     border-bottom: 0 !important;
 }
-.dashboard-proximas-v67 .next-equipo-v67 {
+.dashboard-proximas-v67 .next-equipo-v67{
     color: #0f172a !important;
     font-size: 12.5px !important;
     line-height: 1.10 !important;
@@ -14592,8 +12667,7 @@ section[data-testid="stSidebar"] .menu-active-item {
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-.dashboard-proximas-v67 .next-actual-v67,
-.dashboard-proximas-v67 .next-proxima-v67 {
+.dashboard-proximas-v67 .next-actual-v67,.dashboard-proximas-v67 .next-proxima-v67{
     color: #0f172a !important;
     font-size: 12.1px !important;
     line-height: 1.10 !important;
@@ -14603,13 +12677,11 @@ section[data-testid="stSidebar"] .menu-active-item {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
-.dashboard-proximas-v67 .next-actual-v67 span,
-.dashboard-proximas-v67 .next-proxima-v67 span {
+.dashboard-proximas-v67 .next-actual-v67 span,.dashboard-proximas-v67 .next-proxima-v67 span{
     color: #334155 !important;
     font-weight: 950 !important;
 }
-.dashboard-proximas-v67 .next-badge-v67,
-.dashboard-proximas-v67 .badge-days.next-badge-v67 {
+.dashboard-proximas-v67 .next-badge-v67,.dashboard-proximas-v67 .badge-days.next-badge-v67{
     width: 116px !important;
     min-width: 116px !important;
     max-width: 116px !important;
@@ -14626,35 +12698,31 @@ section[data-testid="stSidebar"] .menu-active-item {
     white-space: normal !important;
     box-sizing: border-box !important;
 }
-.proximas-empty-v68 {
+.proximas-empty-v68{
     color: #334155 !important;
     font-size: 13px !important;
     font-weight: 800 !important;
     padding: 8px 0 !important;
 }
-@media (max-width: 1500px) {
-    .dashboard-proximas-v67 .next-row-v67 {
+@media  (max-width: 1500px) {.dashboard-proximas-v67 .next-row-v67{
         grid-template-columns: minmax(92px, .9fr) minmax(98px, 1fr) minmax(98px, 1fr) 100px !important;
         column-gap: 7px !important;
         min-height: 40px !important;
         padding: 6px 0 !important;
     }
-    .dashboard-proximas-v67 .next-equipo-v67 {
+.dashboard-proximas-v67 .next-equipo-v67{
         font-size: 11.3px !important;
     }
-    .dashboard-proximas-v67 .next-actual-v67,
-    .dashboard-proximas-v67 .next-proxima-v67 {
+.dashboard-proximas-v67 .next-actual-v67,.dashboard-proximas-v67 .next-proxima-v67{
         font-size: 10.8px !important;
     }
-    .dashboard-proximas-v67 .next-badge-v67,
-    .dashboard-proximas-v67 .badge-days.next-badge-v67 {
+.dashboard-proximas-v67 .next-badge-v67,.dashboard-proximas-v67 .badge-days.next-badge-v67{
         width: 100px !important;
         min-width: 100px !important;
         max-width: 100px !important;
         font-size: 8.7px !important;
         padding: 5px 5px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -14669,7 +12737,7 @@ section[data-testid="stSidebar"] .menu-active-item {
 st.markdown(
     """
 <style>
-.dashboard-proximas-v68 {
+.dashboard-proximas-v68{
     background: rgba(255,255,255,.72) !important;
     border: 1px solid rgba(203,213,225,.72) !important;
     border-radius: 18px !important;
@@ -14680,7 +12748,7 @@ st.markdown(
     box-sizing: border-box !important;
     max-width: 100% !important;
 }
-.dashboard-proximas-v68 .proximas-title-v68 {
+.dashboard-proximas-v68 .proximas-title-v68{
     display: block !important;
     margin: 0 0 12px 0 !important;
     padding: 0 !important;
@@ -14690,7 +12758,7 @@ st.markdown(
     font-weight: 950 !important;
     color: #0f172a !important;
 }
-.next-list-v68 {
+.next-list-v68{
     display: flex !important;
     flex-direction: column !important;
     gap: 0 !important;
@@ -14698,8 +12766,7 @@ st.markdown(
     max-width: 100% !important;
     overflow: hidden !important;
 }
-.dashboard-proximas-v68 .next-row-v68,
-.dashboard-proximas-v68 .next-item.next-row-v68 {
+.dashboard-proximas-v68 .next-row-v68,.dashboard-proximas-v68 .next-item.next-row-v68{
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) 128px !important;
     align-items: center !important;
@@ -14713,15 +12780,15 @@ st.markdown(
     max-width: 100% !important;
     overflow: hidden !important;
 }
-.dashboard-proximas-v68 .next-row-v68:last-child {
+.dashboard-proximas-v68 .next-row-v68:last-child{
     border-bottom: 0 !important;
 }
-.dashboard-proximas-v68 .next-info-v68 {
+.dashboard-proximas-v68 .next-info-v68{
     min-width: 0 !important;
     max-width: 100% !important;
     overflow: hidden !important;
 }
-.dashboard-proximas-v68 .next-equipo-v68 {
+.dashboard-proximas-v68 .next-equipo-v68{
     color: #0f172a !important;
     font-size: 13px !important;
     line-height: 1.10 !important;
@@ -14731,7 +12798,7 @@ st.markdown(
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-.dashboard-proximas-v68 .next-actual-v68 {
+.dashboard-proximas-v68 .next-actual-v68{
     color: #0f172a !important;
     font-size: 12.2px !important;
     line-height: 1.16 !important;
@@ -14741,12 +12808,11 @@ st.markdown(
     white-space: normal !important;
     overflow-wrap: anywhere !important;
 }
-.dashboard-proximas-v68 .next-actual-v68 span {
+.dashboard-proximas-v68 .next-actual-v68 span{
     color: #334155 !important;
     font-weight: 950 !important;
 }
-.dashboard-proximas-v68 .next-badge-v68,
-.dashboard-proximas-v68 .badge-days.next-badge-v68 {
+.dashboard-proximas-v68 .next-badge-v68,.dashboard-proximas-v68 .badge-days.next-badge-v68{
     justify-self: end !important;
     width: 128px !important;
     min-width: 128px !important;
@@ -14765,38 +12831,34 @@ st.markdown(
     box-sizing: border-box !important;
     overflow-wrap: anywhere !important;
 }
-.proximas-empty-v68 {
+.proximas-empty-v68{
     color: #334155 !important;
     font-size: 13px !important;
     font-weight: 800 !important;
     padding: 8px 0 !important;
 }
-@media (max-width: 1500px) {
-    .dashboard-proximas-v68 {
+@media  (max-width: 1500px) {.dashboard-proximas-v68{
         padding: 12px 12px 14px 12px !important;
     }
-    .dashboard-proximas-v68 .next-row-v68,
-    .dashboard-proximas-v68 .next-item.next-row-v68 {
+.dashboard-proximas-v68 .next-row-v68,.dashboard-proximas-v68 .next-item.next-row-v68{
         grid-template-columns: minmax(0, 1fr) 108px !important;
         column-gap: 8px !important;
         min-height: 50px !important;
         padding: 7px 0 !important;
     }
-    .dashboard-proximas-v68 .next-equipo-v68 {
+.dashboard-proximas-v68 .next-equipo-v68{
         font-size: 12px !important;
     }
-    .dashboard-proximas-v68 .next-actual-v68 {
+.dashboard-proximas-v68 .next-actual-v68{
         font-size: 11px !important;
     }
-    .dashboard-proximas-v68 .next-badge-v68,
-    .dashboard-proximas-v68 .badge-days.next-badge-v68 {
+.dashboard-proximas-v68 .next-badge-v68,.dashboard-proximas-v68 .badge-days.next-badge-v68{
         width: 108px !important;
         min-width: 108px !important;
         max-width: 108px !important;
         font-size: 8.4px !important;
         padding: 5px 5px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -14819,56 +12881,33 @@ _boton_bg = "#ef4444" if _menu_movil_abierto else "linear-gradient(135deg, #2563
 st.markdown(
     f"""
 <style>
-/* En escritorio el nuevo control no existe visualmente. */
-.st-key-saivam_mobile_menu_control,
-div[class*="st-key-saivam_mobile_menu_control"] {{
+.st-key-saivam_mobile_menu_control,div[class*="st-key-saivam_mobile_menu_control"]{{
     display: none !important;
 }}
-
-/* Safari/iPhone horizontal puede informar un ancho mayor; se complementa con pointer coarse. */
-@media (max-width: 768px),
+@media  (max-width: 768px),
        (max-width: 1100px) and (max-height: 700px),
-       (hover: none) and (pointer: coarse) and (max-width: 1100px) {{
-
-    :root {{
+       (hover: none) and (pointer: coarse) and (max-width: 1100px) {{:root{{
         --mobile-menu-width: min(86vw, 300px) !important;
         --mobile-page-padding: 10px !important;
     }}
-
-    html,
-    body,
-    .stApp,
-    [data-testid="stAppViewContainer"] {{
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        overflow-x: hidden !important;
-    }}
-
-    /* Control nativo real de Streamlit. */
-    .st-key-saivam_mobile_menu_control,
-    div[class*="st-key-saivam_mobile_menu_control"] {{
+.st-key-saivam_mobile_menu_control,div[class*="st-key-saivam_mobile_menu_control"]{{
         display: block !important;
         position: fixed !important;
         top: max(10px, env(safe-area-inset-top)) !important;
-        left: {_boton_left} !important;
+        left: {{_boton_left}} !important;
         width: 44px !important;
         height: 44px !important;
         margin: 0 !important;
         padding: 0 !important;
         z-index: 2147483647 !important;
     }}
-
-    .st-key-saivam_mobile_menu_control [data-testid="stButton"],
-    div[class*="st-key-saivam_mobile_menu_control"] [data-testid="stButton"] {{
+.st-key-saivam_mobile_menu_control [data-testid="stButton"],div[class*="st-key-saivam_mobile_menu_control"] [data-testid="stButton"]{{
         width: 44px !important;
         height: 44px !important;
         margin: 0 !important;
         padding: 0 !important;
     }}
-
-    .st-key-saivam_mobile_menu_control button,
-    div[class*="st-key-saivam_mobile_menu_control"] button {{
+.st-key-saivam_mobile_menu_control button,div[class*="st-key-saivam_mobile_menu_control"] button{{
         width: 44px !important;
         min-width: 44px !important;
         max-width: 44px !important;
@@ -14882,7 +12921,7 @@ div[class*="st-key-saivam_mobile_menu_control"] {{
         justify-content: center !important;
         border-radius: 13px !important;
         border: 2px solid #ffffff !important;
-        background: {_boton_bg} !important;
+        background: {{_boton_bg}} !important;
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
         font-size: 24px !important;
@@ -14890,83 +12929,26 @@ div[class*="st-key-saivam_mobile_menu_control"] {{
         font-weight: 950 !important;
         box-shadow: 0 8px 24px rgba(15,23,42,.42) !important;
     }}
-
-    /* Oculta controles laterales nativos que estaban en conflicto. */
-    [data-testid="stSidebarCollapsedControl"],
-    [data-testid="collapsedControl"],
-    [data-testid="stSidebarCollapseButton"],
-    button[title="Open sidebar"],
-    button[title="Close sidebar"],
-    button[aria-label="Open sidebar"],
-    button[aria-label="Close sidebar"] {{
+[data-testid="stSidebarCollapsedControl"],[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[title="Open sidebar"],button[title="Close sidebar"],button[aria-label="Open sidebar"],button[aria-label="Close sidebar"]{{
         display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
     }}
-
-    header[data-testid="stHeader"] {{
+header[data-testid="stHeader"]{{
         display: none !important;
         visibility: hidden !important;
         height: 0 !important;
         min-height: 0 !important;
         max-height: 0 !important;
     }}
-
-    /* Sidebar móvil: no reserva ancho cuando está cerrado. */
-    html body section[data-testid="stSidebar"] {{
-        display: block !important;
-        position: fixed !important;
-        inset: 0 auto 0 0 !important;
-        width: var(--mobile-menu-width) !important;
-        min-width: var(--mobile-menu-width) !important;
-        max-width: var(--mobile-menu-width) !important;
-        height: 100vh !important;
-        height: 100dvh !important;
-        margin: 0 !important;
-        transform: {_menu_transform} !important;
-        visibility: {_menu_visibility} !important;
-        opacity: 1 !important;
-        pointer-events: {_menu_pointer} !important;
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
-        overscroll-behavior: contain !important;
-        transition: transform .22s ease, visibility .22s ease !important;
-        z-index: 2147483645 !important;
-        background: #020617 !important;
-        box-shadow: 14px 0 34px rgba(2,6,23,.48) !important;
-    }}
-
-    html body section[data-testid="stSidebar"] > div,
-    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {{
-        width: var(--mobile-menu-width) !important;
-        min-width: var(--mobile-menu-width) !important;
-        max-width: var(--mobile-menu-width) !important;
-        min-height: 100vh !important;
-        min-height: 100dvh !important;
-        padding: 10px 12px calc(28px + env(safe-area-inset-bottom)) 12px !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-    }}
-
-    html body section[data-testid="stSidebar"] .menu-panel-content,
-    html body section[data-testid="stSidebar"] .menu-brand,
-    html body section[data-testid="stSidebar"] .menu-line,
-    html body section[data-testid="stSidebar"] .menu-footer-box,
-    html body section[data-testid="stSidebar"] .menu-filter-area,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"],
-    html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-    html body section[data-testid="stSidebar"] [data-baseweb="select"],
-    html body section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-    html body section[data-testid="stSidebar"] .menu-active-item,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button {{
+html body section[data-testid="stSidebar"]{{visibility: {{_menu_visibility}} !important;opacity: 1 !important;pointer-events: {{_menu_pointer}} !important;overscroll-behavior: contain !important;transition: transform .22s ease, visibility .22s ease !important;background: #020617 !important;box-shadow: 14px 0 34px rgba(2,6,23,.48) !important;}}
+html body section[data-testid="stSidebar"] .menu-panel-content,html body section[data-testid="stSidebar"] .menu-brand,html body section[data-testid="stSidebar"] .menu-line,html body section[data-testid="stSidebar"] .menu-footer-box,html body section[data-testid="stSidebar"] .menu-filter-area,html body section[data-testid="stSidebar"] div[data-testid="stButton"],html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"],html body section[data-testid="stSidebar"] [data-baseweb="select"],html body section[data-testid="stSidebar"] [data-baseweb="select"] > div,html body section[data-testid="stSidebar"] .menu-active-item,html body section[data-testid="stSidebar"] div[data-testid="stButton"] button{{
         width: calc(var(--mobile-menu-width) - 24px) !important;
         min-width: 0 !important;
         max-width: calc(var(--mobile-menu-width) - 24px) !important;
         box-sizing: border-box !important;
     }}
-
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-    html body section[data-testid="stSidebar"] .menu-active-item {{
+html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,html body section[data-testid="stSidebar"] .menu-active-item{{
         min-height: 43px !important;
         height: auto !important;
         padding: 9px 10px !important;
@@ -14976,43 +12958,11 @@ div[class*="st-key-saivam_mobile_menu_control"] {{
         overflow: visible !important;
         text-overflow: clip !important;
     }}
-
-    /* Contenido principal: ancho completo, sin el margen de 280/300 px de PC. */
-    html body [data-testid="stAppViewContainer"] > .main,
-    html body div[data-testid="stMain"],
-    html body section.main,
-    html body main {{
-        margin-left: 0 !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        overflow-x: hidden !important;
-        box-sizing: border-box !important;
-    }}
-
-    html body .main .block-container,
-    html body .block-container,
-    html body div[data-testid="stMainBlockContainer"],
-    html body section.main > div {{
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: calc(62px + env(safe-area-inset-top)) var(--mobile-page-padding)
-                 calc(74px + env(safe-area-inset-bottom)) var(--mobile-page-padding) !important;
-        overflow-x: hidden !important;
-        box-sizing: border-box !important;
-    }}
-
-    html body .main *,
-    html body main * {{
+html body .main *{{
         min-width: 0;
         box-sizing: border-box;
     }}
-
-
-    .main-fixed-header,
-    .header-principal {{
+.main-fixed-header,.header-principal{{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
@@ -15023,9 +12973,7 @@ div[class*="st-key-saivam_mobile_menu_control"] {{
         gap: 8px !important;
         overflow: hidden !important;
     }}
-
-    .main-fixed-title,
-    .title-main {{
+.main-fixed-title,.title-main{{
         min-width: 0 !important;
         max-width: 100% !important;
         font-size: clamp(20px, 6vw, 29px) !important;
@@ -15033,43 +12981,29 @@ div[class*="st-key-saivam_mobile_menu_control"] {{
         white-space: normal !important;
         overflow-wrap: anywhere !important;
     }}
-
-    .main-fixed-logo,
-    .header-logo-box {{
+.main-fixed-logo,.header-logo-box{{
         flex: 0 0 auto !important;
         max-width: 28% !important;
     }}
-
-    .main-fixed-logo img,
-    .header-logo-box img {{
+.main-fixed-logo img,.header-logo-box img{{
         width: min(112px, 27vw) !important;
         max-width: 100% !important;
         height: auto !important;
     }}
-
-    /* En vertical: todos los bloques quedan en una sola columna legible. */
-    html body [data-testid="stHorizontalBlock"] {{
+html body [data-testid="stHorizontalBlock"]{{
         display: flex !important;
         flex-direction: column !important;
         flex-wrap: nowrap !important;
         width: 100% !important;
         gap: .55rem !important;
     }}
-
-    html body [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+html body [data-testid="stHorizontalBlock"] > [data-testid="column"]{{
         flex: 1 1 100% !important;
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
     }}
-
-    .kpi-card,
-    .panel-box,
-    .chart-card,
-    .equipo-card,
-    .dashboard-proximas,
-    .dashboard-proximas-v68,
-    .proximas-box {{
+.kpi-card,.panel-box,.chart-card,.equipo-card,.dashboard-proximas,.dashboard-proximas-v68,.proximas-box{{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
@@ -15077,101 +13011,73 @@ div[class*="st-key-saivam_mobile_menu_control"] {{
         margin-right: 0 !important;
         overflow: hidden !important;
     }}
-
-    .panel-title,
-    .page-section-title,
-    .chart-title {{
+.panel-title,.page-section-title,.chart-title{{
         font-size: clamp(17px, 5vw, 22px) !important;
         line-height: 1.15 !important;
         white-space: normal !important;
         overflow-wrap: anywhere !important;
     }}
-
-    [data-testid="stPlotlyChart"],
-    [data-testid="stDataFrame"],
-    [data-testid="stTable"] {{
+[data-testid="stPlotlyChart"],[data-testid="stDataFrame"],[data-testid="stTable"]{{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
     }}
-
-    [data-testid="stDataFrame"] {{
+[data-testid="stDataFrame"]{{
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
     }}
-
-    [data-testid="stPlotlyChart"] {{
+[data-testid="stPlotlyChart"]{{
         min-height: 260px !important;
         overflow: hidden !important;
     }}
-
-    [data-testid="stPlotlyChart"] > div,
-    [data-testid="stPlotlyChart"] iframe {{
+[data-testid="stPlotlyChart"] > div,[data-testid="stPlotlyChart"] iframe{{
         width: 100% !important;
         max-width: 100% !important;
     }}
-
-    .equipo-img,
-    .equipo-img-placeholder {{
+.equipo-img,.equipo-img-placeholder{{
         width: 100% !important;
         height: 170px !important;
         min-height: 170px !important;
         object-fit: cover !important;
     }}
-
-    .dashboard-proximas-v68 .next-row-v68,
-    .dashboard-proximas-v68 .next-item.next-row-v68 {{
+.dashboard-proximas-v68 .next-row-v68,.dashboard-proximas-v68 .next-item.next-row-v68{{
         grid-template-columns: minmax(0, 1fr) !important;
         row-gap: 7px !important;
     }}
-
-    .dashboard-proximas-v68 .next-badge-v68,
-    .dashboard-proximas-v68 .badge-days.next-badge-v68 {{
+.dashboard-proximas-v68 .next-badge-v68,.dashboard-proximas-v68 .badge-days.next-badge-v68{{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
-    }}
-}}
-
-/* Teléfono horizontal: dos columnas generales y tres KPI por fila. */
-@media (min-width: 601px) and (max-width: 1100px)
+    }}}}
+@media  (min-width: 601px) and (max-width: 1100px)
        and (orientation: landscape) and (max-height: 700px),
        (hover: none) and (pointer: coarse)
-       and (min-width: 601px) and (max-width: 1100px) {{
-
-    :root {{
+       and (min-width: 601px) and (max-width: 1100px) {{:root{{
         --mobile-menu-width: min(42vw, 320px) !important;
     }}
-
-    html body [data-testid="stHorizontalBlock"] {{
+html body [data-testid="stHorizontalBlock"]{{
         flex-direction: row !important;
         flex-wrap: wrap !important;
     }}
-
-    html body [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+html body [data-testid="stHorizontalBlock"] > [data-testid="column"]{{
         flex: 1 1 calc(50% - .35rem) !important;
         width: calc(50% - .35rem) !important;
         max-width: calc(50% - .35rem) !important;
     }}
-
-    html body [data-testid="stHorizontalBlock"]:has(.kpi-card)
-    > [data-testid="column"] {{
+html body [data-testid="stHorizontalBlock"]:has(.kpi-card)
+    > [data-testid="column"]{{
         flex: 1 1 calc(33.333% - .4rem) !important;
         width: calc(33.333% - .4rem) !important;
         max-width: calc(33.333% - .4rem) !important;
     }}
-
-    .kpi-card {{
+.kpi-card{{
         min-height: 100px !important;
         padding: 9px 10px !important;
     }}
-
-    .equipo-img,
-    .equipo-img-placeholder {{
+.equipo-img,.equipo-img-placeholder{{
         height: 145px !important;
         min-height: 145px !important;
-    }}
-}}
+    }}}}
 </style>
     """,
     unsafe_allow_html=True,
@@ -15185,37 +13091,26 @@ div[class*="st-key-saivam_mobile_menu_control"] {{
 st.markdown(
     """
 <style>
-/* Reduce el espacio automático entre bloques internos del sidebar */
-section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] {
+section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"]{
     gap: 0.22rem !important;
 }
-
-/* Menor separación entre cada opción del menú */
-section[data-testid="stSidebar"] div[data-testid="stButton"] {
+section[data-testid="stSidebar"] div[data-testid="stButton"]{
     margin-top: 0px !important;
     margin-bottom: 4px !important;
 }
-
-/* Mantiene todos los botones con el mismo tamaño */
-section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+section[data-testid="stSidebar"] div[data-testid="stButton"] > button,section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     margin-top: 0px !important;
     margin-bottom: 0px !important;
 }
-
-/* Acerca el último menú a los filtros Equipo y Contrato */
-section[data-testid="stSidebar"] .menu-line {
+section[data-testid="stSidebar"] .menu-line{
     margin-top: 6px !important;
     margin-bottom: 6px !important;
 }
-
-/* Compacta ligeramente los filtros sin reducir su legibilidad */
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"]{
     margin-top: 0px !important;
     margin-bottom: 2px !important;
 }
-
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label {
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label{
     margin-bottom: 2px !important;
 }
 </style>
@@ -15236,90 +13131,8 @@ section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label {
 st.markdown(
     """
 <style>
-
-
-
-/* =========================================================
-   ESCRITORIO: SIDEBAR FIJO Y CONTENIDO TOTALMENTE SEPARADO
-   ========================================================= */
-@media screen and (min-width: 1101px) {
-
-    html body section[data-testid="stSidebar"] {
-        position: fixed !important;
-        inset: 0 auto 0 0 !important;
-        width: var(--menu-panel-width) !important;
-        min-width: var(--menu-panel-width) !important;
-        max-width: var(--menu-panel-width) !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        transform: none !important;
-        z-index: 10000 !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
-    }
-
-    /*
-    Selector correcto para las versiones actuales de Streamlit:
-    stMain es un elemento SECTION, no un DIV.
-    */
-    html body section[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"],
-    html body section.stMain {
-        position: relative !important;
-        left: 0 !important;
-        transform: none !important;
-        margin-left: var(--menu-panel-width) !important;
-        margin-right: 0 !important;
-        width: calc(100vw - var(--menu-panel-width)) !important;
-        min-width: 0 !important;
-        max-width: calc(100vw - var(--menu-panel-width)) !important;
-        flex: 0 0 calc(100vw - var(--menu-panel-width)) !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        z-index: 1 !important;
-    }
-
-    html body section[data-testid="stMain"] > div,
-    html body div[data-testid="stMainBlockContainer"],
-    html body .stMainBlockContainer,
-    html body .block-container {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding-left: 14px !important;
-        padding-right: 14px !important;
-        box-sizing: border-box !important;
-    }
-
-    /*
-    Evita que cualquier regla antigua vuelva a desplazar el contenido
-    debajo del menú.
-    */
-    html body [data-testid="stAppViewContainer"] {
-        width: 100vw !important;
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
-    }
-}
-
-/* =========================================================
-   MÓVIL: NO SE APLICA EL DESPLAZAMIENTO DE ESCRITORIO
-   ========================================================= */
-@media screen and (max-width: 1100px) {
-    html body section[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"],
-    html body section.stMain {
-        margin-left: 0 !important;
-        width: 100vw !important;
-        max-width: 100vw !important;
-        flex-basis: 100vw !important;
-    }
-
-
-}
+@media  screen and (min-width: 1101px) {}
+@media  screen and (max-width: 1100px) {}
 </style>
     """,
     unsafe_allow_html=True,
@@ -15336,52 +13149,23 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    html body section[data-testid="stSidebar"] {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        bottom: 0 !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
-        overflow-x: hidden !important;
-        overflow-y: hidden !important;
-        overscroll-behavior: none !important;
-        z-index: 10000 !important;
-    }
-
-    html body section[data-testid="stSidebar"] > div,
-    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-        height: 100vh !important;
-        max-height: 100vh !important;
-        overflow: hidden !important;
-        box-sizing: border-box !important;
-    }
-}
-
-/* Espacio visual entre SEGUIMIENTO EQUIPOS MÓVILES y el primer botón. */
-section[data-testid="stSidebar"] .menu-top-gap {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"]{overscroll-behavior: none !important;}}
+section[data-testid="stSidebar"] .menu-top-gap{
     display: block !important;
     height: 22px !important;
     min-height: 22px !important;
     width: 100% !important;
 }
-
-/* Separa el bloque de navegación de los filtros. */
-section[data-testid="stSidebar"] .menu-filter-gap {
+section[data-testid="stSidebar"] .menu-filter-gap{
     display: block !important;
     height: 26px !important;
     min-height: 26px !important;
     width: 100% !important;
 }
-
-/* La caja Contrato/Cliente/Versión queda más abajo respecto de los filtros. */
-section[data-testid="stSidebar"] .menu-footer-box {
+section[data-testid="stSidebar"] .menu-footer-box{
     margin-top: 28px !important;
 }
-
-/* Mantiene una separación limpia bajo la marca superior. */
-section[data-testid="stSidebar"] .menu-brand {
+section[data-testid="stSidebar"] .menu-brand{
     margin-bottom: 10px !important;
 }
 </style>
@@ -15397,82 +13181,40 @@ section[data-testid="stSidebar"] .menu-brand {
 st.markdown(
     """
 <style>
-/* Sidebar siempre visible y pegado al borde superior. */
-html body section[data-testid="stSidebar"] {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-    overflow-y: hidden !important;
-    z-index: 10000 !important;
-}
-
-/* Corrección principal: nunca desplazar el contenido interno hacia arriba. */
-html body section[data-testid="stSidebar"] > div,
-html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-    top: 0 !important;
-    margin-top: 0 !important;
-    padding-top: 14px !important;
-    transform: none !important;
-    translate: none !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    overflow-x: hidden !important;
-    overflow-y: hidden !important;
-    box-sizing: border-box !important;
-}
-
-/* La marca superior queda completamente visible. */
-html body section[data-testid="stSidebar"] .menu-panel-content {
+html body section[data-testid="stSidebar"] .menu-panel-content{
     margin-top: 0 !important;
     padding-top: 0 !important;
     transform: none !important;
     overflow: visible !important;
 }
-
-html body section[data-testid="stSidebar"] .menu-brand {
+html body section[data-testid="stSidebar"] .menu-brand{
     margin-top: 0 !important;
     margin-bottom: 12px !important;
     transform: none !important;
     min-height: 58px !important;
 }
-
-/* Espacio solicitado antes de Resumen Ejecutivo. */
-html body section[data-testid="stSidebar"] .menu-top-gap {
+html body section[data-testid="stSidebar"] .menu-top-gap{
     display: block !important;
     height: 46px !important;
     min-height: 46px !important;
     margin: 0 !important;
     padding: 0 !important;
 }
-
-/* Separación entre navegación y filtros. */
-html body section[data-testid="stSidebar"] .menu-filter-gap {
+html body section[data-testid="stSidebar"] .menu-filter-gap{
     display: block !important;
     height: 24px !important;
     min-height: 24px !important;
     margin: 0 !important;
     padding: 0 !important;
 }
-
-/* Filtros y caja informativa más abajo, pero sin salir de pantalla. */
-html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"]{
     margin-bottom: 8px !important;
 }
-
-html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
     margin-top: 22px !important;
     margin-bottom: 0 !important;
 }
-
-/* Evita que Streamlit conserve un scroll interno del sidebar. */
-html body section[data-testid="stSidebar"]::-webkit-scrollbar,
-html body section[data-testid="stSidebar"] *::-webkit-scrollbar {
+html body section[data-testid="stSidebar"]::-webkit-scrollbar,html body section[data-testid="stSidebar"] *::-webkit-scrollbar{
     width: 0 !important;
     height: 0 !important;
     display: none !important;
@@ -15490,16 +13232,7 @@ html body section[data-testid="stSidebar"] *::-webkit-scrollbar {
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    /* El contenedor lateral sirve de referencia para la marca superior. */
-    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-        position: relative !important;
-        padding-top: 12px !important;
-        margin-top: 0 !important;
-    }
-
-    /* Logo + título siempre pegados a la parte superior. */
-    html body section[data-testid="stSidebar"] .menu-panel-content {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-panel-content{
         position: absolute !important;
         top: 18px !important;
         left: 14px !important;
@@ -15511,37 +13244,27 @@ st.markdown(
         transform: none !important;
         z-index: 5 !important;
     }
-
-    html body section[data-testid="stSidebar"] .menu-brand {
+html body section[data-testid="stSidebar"] .menu-brand{
         margin: 0 0 8px 0 !important;
         padding: 0 !important;
         transform: none !important;
         min-height: 58px !important;
     }
-
-    /* Reserva el espacio bajo la cabecera y deja el aire solicitado
-       antes de que comience Resumen Ejecutivo. */
-    html body section[data-testid="stSidebar"] .menu-top-gap {
+html body section[data-testid="stSidebar"] .menu-top-gap{
         display: block !important;
         height: 148px !important;
         min-height: 148px !important;
         margin: 0 !important;
         padding: 0 !important;
-    }
-}
-
-/* En pantallas angostas conserva el comportamiento móvil sin desplazar la cabecera. */
-@media screen and (max-width: 1100px) {
-    html body section[data-testid="stSidebar"] .menu-panel-content {
+    }}
+@media  screen and (max-width: 1100px) {html body section[data-testid="stSidebar"] .menu-panel-content{
         margin-top: 0 !important;
         transform: none !important;
     }
-
-    html body section[data-testid="stSidebar"] .menu-top-gap {
+html body section[data-testid="stSidebar"] .menu-top-gap{
         height: 34px !important;
         min-height: 34px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -15555,9 +13278,7 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    /* La cabecera ya no depende de la posición del bloque Markdown. */
-    html body section[data-testid="stSidebar"] .menu-panel-content {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-panel-content{
         position: fixed !important;
         top: 12px !important;
         left: 17px !important;
@@ -15569,38 +13290,29 @@ st.markdown(
         transform: none !important;
         z-index: 10020 !important;
     }
-
-    html body section[data-testid="stSidebar"] .menu-brand {
+html body section[data-testid="stSidebar"] .menu-brand{
         margin: 0 0 10px 0 !important;
         padding: 0 !important;
         min-height: 58px !important;
         align-items: center !important;
     }
-
-    /* La línea queda inmediatamente bajo el logo/título. */
-    html body section[data-testid="stSidebar"] .menu-panel-content .menu-line {
+html body section[data-testid="stSidebar"] .menu-panel-content .menu-line{
         margin-top: 8px !important;
         margin-bottom: 0 !important;
     }
-
-    /* Reserva espacio únicamente debajo de la cabecera fija. */
-    html body section[data-testid="stSidebar"] .menu-top-gap {
+html body section[data-testid="stSidebar"] .menu-top-gap{
         display: block !important;
         height: 118px !important;
         min-height: 118px !important;
         margin: 0 !important;
         padding: 0 !important;
-    }
-}
-
-@media screen and (max-width: 1100px) {
-    html body section[data-testid="stSidebar"] .menu-panel-content {
+    }}
+@media  screen and (max-width: 1100px) {html body section[data-testid="stSidebar"] .menu-panel-content{
         position: relative !important;
         top: auto !important;
         left: auto !important;
         right: auto !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -15614,43 +13326,34 @@ st.markdown(
 st.markdown(
     """
 <style>
-/* Reduce la altura total de los cuatro filtros del menú lateral. */
-html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"]{
     margin-top: 0 !important;
     margin-bottom: 3px !important;
     padding: 0 !important;
 }
-
-html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,
-html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label * {
+html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label,html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label *{
     font-size: 12px !important;
     line-height: 1.05 !important;
     margin-bottom: 2px !important;
     min-height: 0 !important;
 }
-
-html body section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+html body section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     min-height: 36px !important;
     height: 36px !important;
     border-radius: 11px !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
-
-html body section[data-testid="stSidebar"] [data-baseweb="select"] span,
-html body section[data-testid="stSidebar"] [data-baseweb="select"] input {
+html body section[data-testid="stSidebar"] [data-baseweb="select"] span,html body section[data-testid="stSidebar"] [data-baseweb="select"] input{
     font-size: 14px !important;
     line-height: 36px !important;
 }
-
-/* Con cuatro filtros, acerca la caja informativa para mantener todo visible. */
-html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
     margin-top: 12px !important;
     min-height: 96px !important;
     padding: 13px 14px !important;
 }
-
-html body section[data-testid="stSidebar"] .menu-filter-gap {
+html body section[data-testid="stSidebar"] .menu-filter-gap{
     height: 12px !important;
     min-height: 12px !important;
 }
@@ -15666,8 +13369,7 @@ html body section[data-testid="stSidebar"] .menu-filter-gap {
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    html body section[data-testid="stSidebar"] .sidebar-credit-footer {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .sidebar-credit-footer{
         position: fixed !important;
         left: 18px !important;
         bottom: 14px !important;
@@ -15681,34 +13383,26 @@ st.markdown(
         padding: 8px 6px 2px 6px !important;
         background: #020817 !important;
     }
-
-    html body section[data-testid="stSidebar"] .sidebar-credit-management {
+html body section[data-testid="stSidebar"] .sidebar-credit-management{
         color: #e2e8f0 !important;
         font-weight: 600 !important;
     }
-
-    html body section[data-testid="stSidebar"] .sidebar-credit-management div:first-child {
+html body section[data-testid="stSidebar"] .sidebar-credit-management div:first-child{
         font-size: 11px !important;
         margin-bottom: 2px !important;
     }
-
-    html body section[data-testid="stSidebar"] .sidebar-credit-divider {
+html body section[data-testid="stSidebar"] .sidebar-credit-divider{
         height: 1px !important;
         background: rgba(148, 163, 184, 0.28) !important;
         margin: 7px 14px 6px 14px !important;
     }
-
-    html body section[data-testid="stSidebar"] .sidebar-credit-developed {
+html body section[data-testid="stSidebar"] .sidebar-credit-developed{
         color: #94a3b8 !important;
     }
-
-    html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
         margin-bottom: 94px !important;
-    }
-}
-
-@media screen and (max-width: 1100px) {
-    html body section[data-testid="stSidebar"] .sidebar-credit-footer {
+    }}
+@media  screen and (max-width: 1100px) {html body section[data-testid="stSidebar"] .sidebar-credit-footer{
         position: relative !important;
         left: auto !important;
         bottom: auto !important;
@@ -15720,13 +13414,11 @@ st.markdown(
         font-size: 10.5px !important;
         line-height: 1.35 !important;
     }
-
-    html body section[data-testid="stSidebar"] .sidebar-credit-divider {
+html body section[data-testid="stSidebar"] .sidebar-credit-divider{
         height: 1px !important;
         background: rgba(148, 163, 184, 0.28) !important;
         margin: 7px 14px 6px 14px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -15740,8 +13432,7 @@ st.markdown(
 st.markdown(
     """
 <style>
-/* El recuadro de versión se ajusta exactamente al contenido. */
-html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
     display: block !important;
     width: fit-content !important;
     min-width: 0 !important;
@@ -15755,9 +13446,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box {
     box-sizing: border-box !important;
     border-radius: 12px !important;
 }
-
-html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,
-html body section[data-testid="stSidebar"] .menu-footer-box .menu-info * {
+html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,html body section[data-testid="stSidebar"] .menu-footer-box .menu-info *{
     display: inline !important;
     width: auto !important;
     height: auto !important;
@@ -15768,12 +13457,9 @@ html body section[data-testid="stSidebar"] .menu-footer-box .menu-info * {
     white-space: nowrap !important;
     text-align: center !important;
 }
-
-@media screen and (min-width: 1101px) {
-    html body section[data-testid="stSidebar"] .menu-footer-box {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-footer-box{
         margin-bottom: 94px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -15801,11 +13487,7 @@ def aplicar_sello_agua_saivam():
     st.markdown(
         f"""
 <style>
-/*
-   Capa fija de sello de agua sobre toda el área principal.
-   El borde izquierdo comienza exactamente después del menú.
-*/
-[data-testid="stAppViewContainer"]::after {{
+[data-testid="stAppViewContainer"]::after{{
     content: "" !important;
     position: fixed !important;
     top: 0 !important;
@@ -15823,18 +13505,9 @@ def aplicar_sello_agua_saivam():
     user-select: none !important;
     z-index: 9000 !important;
 }}
-
-/* El menú siempre queda sobre la capa y nunca recibe el sello. */
-section[data-testid="stSidebar"] {{
-    z-index: 10000 !important;
-}}
-
-/* En pantallas pequeñas se mantiene respetado el ancho real del menú. */
-@media screen and (max-width: 1100px) {{
-    [data-testid="stAppViewContainer"]::after {{
+@media  screen and (max-width: 1100px) {{[data-testid="stAppViewContainer"]::after{{
         left: var(--menu-panel-width, 250px) !important;
-    }}
-}}
+    }}}}
 </style>
         """,
         unsafe_allow_html=True,
@@ -15853,33 +13526,24 @@ aplicar_sello_agua_saivam()
 st.markdown(
     """
 <style>
-/* Menú de navegación: anclado hacia el borde izquierdo del sidebar. */
-@media screen and (min-width: 1101px) {
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] div[data-testid="stButton"]{
         margin-left: 0 !important;
         margin-right: auto !important;
         transform: translateX(-4px) !important;
     }
-
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,html body section[data-testid="stSidebar"] div[data-testid="stButton"] button{
         margin-left: 0 !important;
         margin-right: 0 !important;
         justify-content: flex-start !important;
         text-align: left !important;
     }
-
-    /* La versión es el único bloque del menú que se mantiene centrado. */
-    html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
         margin-left: auto !important;
         margin-right: auto !important;
         transform: none !important;
         text-align: center !important;
-    }
-}
-
-/* Separación breve entre la tabla y el gráfico compacto. */
-.exec9-evolution-under-table-gap {
+    }}
+.exec9-evolution-under-table-gap{
     height: 18px !important;
     min-height: 18px !important;
 }
@@ -15894,16 +13558,14 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    html body section[data-testid="stSidebar"] .menu-footer-box {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-footer-box{
         position: relative !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
         text-align: center !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -15919,57 +13581,18 @@ st.markdown(
 st.markdown(
     """
 <style>
-:root {
+:root{
     --menu-panel-width: 260px !important;
     --menu-inner-width: 230px !important;
     --menu-panel-width-final: 260px !important;
     --menu-inner-width-final: 230px !important;
 }
-
-@media screen and (min-width: 1101px) {
-    /* Panel lateral un poco más angosto. */
-    html body section[data-testid="stSidebar"] {
-        width: var(--menu-panel-width) !important;
-        min-width: var(--menu-panel-width) !important;
-        max-width: var(--menu-panel-width) !important;
-    }
-
-    html body section[data-testid="stSidebar"] > div,
-    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-        width: var(--menu-panel-width) !important;
-        min-width: var(--menu-panel-width) !important;
-        max-width: var(--menu-panel-width) !important;
-        padding-left: 14px !important;
-        padding-right: 14px !important;
-    }
-
-    /* Ajusta el contenido principal al nuevo ancho del sidebar. */
-    html body section[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"],
-    html body section.stMain,
-    html body [data-testid="stAppViewContainer"] > .main,
-    html body section.main,
-    html body main {
-        margin-left: var(--menu-panel-width) !important;
-        width: calc(100vw - var(--menu-panel-width)) !important;
-        max-width: calc(100vw - var(--menu-panel-width)) !important;
-        flex-basis: calc(100vw - var(--menu-panel-width)) !important;
-    }
-
-    /* Todos los elementos de navegación respetan el ancho compacto. */
-    html body section[data-testid="stSidebar"] .menu-panel-content,
-    html body section[data-testid="stSidebar"] .menu-line,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"],
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-    html body section[data-testid="stSidebar"] .menu-active-item {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-panel-content,html body section[data-testid="stSidebar"] .menu-line,html body section[data-testid="stSidebar"] div[data-testid="stButton"],html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,html body section[data-testid="stSidebar"] .menu-active-item{
         width: var(--menu-inner-width) !important;
         min-width: var(--menu-inner-width) !important;
         max-width: var(--menu-inner-width) !important;
     }
-
-    /* Créditos: suben ligeramente para dejar la versión debajo de Ricardo. */
-    html body section[data-testid="stSidebar"] .sidebar-credit-footer {
+html body section[data-testid="stSidebar"] .sidebar-credit-footer{
         position: fixed !important;
         left: 15px !important;
         bottom: 67px !important;
@@ -15980,9 +13603,7 @@ st.markdown(
         text-align: center !important;
         box-sizing: border-box !important;
     }
-
-    /* Versión: último elemento, centrado debajo de Ricardo Grez. */
-    html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
         position: fixed !important;
         left: calc(var(--menu-panel-width) / 2) !important;
         right: auto !important;
@@ -16001,16 +13622,11 @@ st.markdown(
         box-sizing: border-box !important;
         z-index: 10040 !important;
     }
-
-    html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,
-    html body section[data-testid="stSidebar"] .menu-footer-box .menu-info * {
+html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,html body section[data-testid="stSidebar"] .menu-footer-box .menu-info *{
         text-align: center !important;
         white-space: nowrap !important;
-    }
-}
-
-/* El sello de agua comienza después del nuevo ancho del menú. */
-[data-testid="stAppViewContainer"]::after {
+    }}
+[data-testid="stAppViewContainer"]::after{
     left: var(--menu-panel-width) !important;
 }
 </style>
@@ -16027,84 +13643,26 @@ st.markdown(
 st.markdown(
     """
 <style>
-:root {
+:root{
     --sidebar-compact-width: 260px !important;
     --sidebar-compact-inner: 230px !important;
 }
-
-@media screen and (min-width: 1101px) {
-    /* El sidebar participa del layout con el mismo ancho visual. */
-    html body section[data-testid="stSidebar"] {
-        width: var(--sidebar-compact-width) !important;
-        min-width: var(--sidebar-compact-width) !important;
-        max-width: var(--sidebar-compact-width) !important;
-        flex: 0 0 var(--sidebar-compact-width) !important;
-        flex-basis: var(--sidebar-compact-width) !important;
-        box-sizing: border-box !important;
-    }
-
-    html body section[data-testid="stSidebar"] > div,
-    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-        width: var(--sidebar-compact-width) !important;
-        min-width: var(--sidebar-compact-width) !important;
-        max-width: var(--sidebar-compact-width) !important;
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Elimina anchos heredados de 360 px dentro del menú. */
-    html body section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"],
-    html body section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] > div,
-    html body section[data-testid="stSidebar"] div[data-testid="element-container"],
-    html body section[data-testid="stSidebar"] .menu-panel-content,
-    html body section[data-testid="stSidebar"] .menu-brand,
-    html body section[data-testid="stSidebar"] .menu-line,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"],
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-    html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-    html body section[data-testid="stSidebar"] [data-baseweb="select"],
-    html body section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-    html body section[data-testid="stSidebar"] .menu-active-item {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"],html body section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] > div,html body section[data-testid="stSidebar"] div[data-testid="element-container"],html body section[data-testid="stSidebar"] .menu-panel-content,html body section[data-testid="stSidebar"] .menu-brand,html body section[data-testid="stSidebar"] .menu-line,html body section[data-testid="stSidebar"] div[data-testid="stButton"],html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"],html body section[data-testid="stSidebar"] [data-baseweb="select"],html body section[data-testid="stSidebar"] [data-baseweb="select"] > div,html body section[data-testid="stSidebar"] .menu-active-item{
         width: var(--sidebar-compact-inner) !important;
         min-width: var(--sidebar-compact-inner) !important;
         max-width: var(--sidebar-compact-inner) !important;
         box-sizing: border-box !important;
     }
-
-    /* Contenido principal directamente al costado, sin doble margen. */
-    html body [data-testid="stAppViewContainer"] {
-        display: flex !important;
-        align-items: stretch !important;
-    }
-
-    html body [data-testid="stAppViewContainer"] > .main,
-    html body div[data-testid="stMain"],
-    html body section[data-testid="stMain"],
-    html body section.stMain,
-    html body section.main,
-    html body main {
-        margin-left: 0 !important;
-        flex: 1 0 auto !important;
-        width: auto !important;
-        max-width: none !important;
-    }
-
-    /* Créditos y versión alineados al nuevo ancho. */
-    html body section[data-testid="stSidebar"] .sidebar-credit-footer {
+html body section[data-testid="stSidebar"] .sidebar-credit-footer{
         left: 15px !important;
         width: var(--sidebar-compact-inner) !important;
         max-width: var(--sidebar-compact-inner) !important;
     }
-
-    html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
         left: calc(var(--sidebar-compact-width) / 2) !important;
         max-width: calc(var(--sidebar-compact-inner) - 12px) !important;
-    }
-}
-
-[data-testid="stAppViewContainer"]::after {
+    }}
+[data-testid="stAppViewContainer"]::after{
     left: var(--sidebar-compact-width) !important;
 }
 </style>
@@ -16122,58 +13680,17 @@ st.markdown(
 st.markdown(
     """
 <style>
-:root {
+:root{
     --sidebar-final-width: 230px !important;
     --sidebar-final-inner: 204px !important;
 }
-
-@media screen and (min-width: 1101px) {
-    /* 1) Barra lateral realmente más angosta. */
-    html body section[data-testid="stSidebar"] {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        bottom: 0 !important;
-        width: var(--sidebar-final-width) !important;
-        min-width: var(--sidebar-final-width) !important;
-        max-width: var(--sidebar-final-width) !important;
-        flex: 0 0 var(--sidebar-final-width) !important;
-        flex-basis: var(--sidebar-final-width) !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-    }
-
-    html body section[data-testid="stSidebar"] > div,
-    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-        width: var(--sidebar-final-width) !important;
-        min-width: var(--sidebar-final-width) !important;
-        max-width: var(--sidebar-final-width) !important;
-        padding-left: 13px !important;
-        padding-right: 13px !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Elementos internos del menú dentro del nuevo ancho. */
-    html body section[data-testid="stSidebar"] .menu-panel-content,
-    html body section[data-testid="stSidebar"] .menu-brand,
-    html body section[data-testid="stSidebar"] .menu-line,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"],
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-    html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
-    html body section[data-testid="stSidebar"] [data-baseweb="select"],
-    html body section[data-testid="stSidebar"] [data-baseweb="select"] > div,
-    html body section[data-testid="stSidebar"] .menu-active-item {
+@media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-panel-content,html body section[data-testid="stSidebar"] .menu-brand,html body section[data-testid="stSidebar"] .menu-line,html body section[data-testid="stSidebar"] div[data-testid="stButton"],html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"],html body section[data-testid="stSidebar"] [data-baseweb="select"],html body section[data-testid="stSidebar"] [data-baseweb="select"] > div,html body section[data-testid="stSidebar"] .menu-active-item{
         width: var(--sidebar-final-inner) !important;
         min-width: var(--sidebar-final-inner) !important;
         max-width: var(--sidebar-final-inner) !important;
         box-sizing: border-box !important;
     }
-
-    /* Ítems Resumen Ejecutivo / Equipos / Intervenciones / Documentación. */
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,
-    html body section[data-testid="stSidebar"] .menu-active-item {
+html body section[data-testid="stSidebar"] div[data-testid="stButton"] > button,html body section[data-testid="stSidebar"] div[data-testid="stButton"] button,html body section[data-testid="stSidebar"] .menu-active-item{
         min-height: 43px !important;
         padding: 8px 9px !important;
         font-size: 13.2px !important;
@@ -16181,85 +13698,29 @@ st.markdown(
         border-radius: 12px !important;
         white-space: nowrap !important;
     }
-
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button p,
-    html body section[data-testid="stSidebar"] div[data-testid="stButton"] button span,
-    html body section[data-testid="stSidebar"] .menu-active-item,
-    html body section[data-testid="stSidebar"] .menu-active-item * {
+html body section[data-testid="stSidebar"] div[data-testid="stButton"] button p,html body section[data-testid="stSidebar"] div[data-testid="stButton"] button span,html body section[data-testid="stSidebar"] .menu-active-item,html body section[data-testid="stSidebar"] .menu-active-item *{
         font-size: 13.2px !important;
         line-height: 1.18 !important;
     }
-
-    /* Marca superior proporcionada al sidebar compacto. */
-    html body section[data-testid="stSidebar"] .menu-brand {
+html body section[data-testid="stSidebar"] .menu-brand{
         gap: 8px !important;
     }
-
-    html body section[data-testid="stSidebar"] .menu-icon,
-    html body section[data-testid="stSidebar"] .menu-icon-img {
+html body section[data-testid="stSidebar"] .menu-icon,html body section[data-testid="stSidebar"] .menu-icon-img{
         flex-basis: 43px !important;
         width: 43px !important;
         max-width: 43px !important;
     }
-
-    /* 2) La página principal comienza exactamente al lado del menú fijo. */
-    html body [data-testid="stAppViewContainer"] {
-        display: block !important;
-        width: 100vw !important;
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
-    }
-
-    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] > .main {
-        margin-left: var(--sidebar-final-width) !important;
-        width: calc(100vw - var(--sidebar-final-width)) !important;
-        max-width: calc(100vw - var(--sidebar-final-width)) !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-        position: relative !important;
-    }
-
-    /* Evita doble desplazamiento en elementos main internos. */
-    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"] main,
-    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"] section.main,
-    html body [data-testid="stAppViewContainer"] > .main main {
-        margin-left: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    /* El dashboard se adapta al ancho útil en vez de conservar mínimos antiguos. */
-    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"] .block-container,
-    html body [data-testid="stAppViewContainer"] > .main .block-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-    }
-
-    /* Footer y versión alineados con el nuevo ancho. */
-    html body section[data-testid="stSidebar"] .sidebar-credit-footer {
+html body section[data-testid="stSidebar"] .sidebar-credit-footer{
         left: 13px !important;
         width: var(--sidebar-final-inner) !important;
         max-width: var(--sidebar-final-inner) !important;
         font-size: 9.6px !important;
     }
-
-    html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
         left: calc(var(--sidebar-final-width) / 2) !important;
         max-width: calc(var(--sidebar-final-inner) - 12px) !important;
-    }
-}
-
-/* El sello de agua también respeta el ancho definitivo del menú. */
-[data-testid="stAppViewContainer"]::after {
+    }}
+[data-testid="stAppViewContainer"]::after{
     left: var(--sidebar-final-width) !important;
 }
 </style>
@@ -16278,102 +13739,13 @@ st.markdown(
 st.markdown(
     """
 <style>
-:root {
+:root{
     --sidebar-final-width: 230px !important;
     --sidebar-final-inner: 204px !important;
     --main-edge-gap: 16px !important;
 }
-
-@media screen and (min-width: 1101px) {
-    /* Sidebar fijo y con un único ancho de referencia. */
-    html body section[data-testid="stSidebar"] {
-        position: fixed !important;
-        inset: 0 auto 0 0 !important;
-        width: var(--sidebar-final-width) !important;
-        min-width: var(--sidebar-final-width) !important;
-        max-width: var(--sidebar-final-width) !important;
-        box-sizing: border-box !important;
-        z-index: 10000 !important;
-    }
-
-    /*
-       Corrección clave:
-       stMain conserva el ancho total del viewport, pero reserva a la izquierda
-       exactamente el espacio ocupado por el menú. Así ningún elemento del
-       dashboard puede comenzar debajo del sidebar, incluso si cambia el DOM
-       interno de Streamlit.
-    */
-    html body section[data-testid="stMain"],
-    html body div[data-testid="stMain"] {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding-left: var(--sidebar-final-width) !important;
-        width: 100vw !important;
-        min-width: 0 !important;
-        max-width: 100vw !important;
-        box-sizing: border-box !important;
-        position: relative !important;
-        left: 0 !important;
-        right: auto !important;
-        transform: none !important;
-        overflow-x: hidden !important;
-    }
-
-    /* La zona útil del dashboard ocupa solo el espacio a la derecha. */
-    html body div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] .stMainBlockContainer,
-    html body section[data-testid="stMain"] .block-container,
-    html body div[data-testid="stMain"] .block-container {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding-left: var(--main-edge-gap) !important;
-        padding-right: var(--main-edge-gap) !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-    }
-
-    /* Anula desplazamientos antiguos que podían volver a meter el contenido debajo. */
-    html body section[data-testid="stMain"] main,
-    html body section[data-testid="stMain"] section.main,
-    html body section[data-testid="stMain"] .main,
-    html body div[data-testid="stMain"] main,
-    html body div[data-testid="stMain"] section.main,
-    html body div[data-testid="stMain"] .main {
-        margin-left: 0 !important;
-        padding-left: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Los bloques horizontales pueden reducirse sin forzar solapamiento. */
-    html body section[data-testid="stMain"] [data-testid="stHorizontalBlock"],
-    html body div[data-testid="stMain"] [data-testid="stHorizontalBlock"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Gráficos/tablas siempre dentro del ancho útil. */
-    html body section[data-testid="stMain"] [data-testid="stPlotlyChart"],
-    html body section[data-testid="stMain"] [data-testid="stDataFrame"],
-    html body div[data-testid="stMain"] [data-testid="stPlotlyChart"],
-    html body div[data-testid="stMain"] [data-testid="stDataFrame"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-    }
-}
-
-/* El sello de agua parte después del menú, igual que el contenido. */
-[data-testid="stAppViewContainer"]::after {
+@media  screen and (min-width: 1101px) {}
+[data-testid="stAppViewContainer"]::after{
     left: var(--sidebar-final-width) !important;
 }
 </style>
@@ -16390,17 +13762,7 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    html body div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] .stMainBlockContainer,
-    html body section[data-testid="stMain"] .block-container,
-    html body div[data-testid="stMain"] .block-container {
-        margin-top: -185px !important;
-        padding-top: 0 !important;
-    }
-
-    html body .main-fixed-header {
+@media  screen and (min-width: 1101px) {html body .main-fixed-header{
         min-height: 38px !important;
         height: 38px !important;
         margin-top: 0 !important;
@@ -16409,16 +13771,13 @@ st.markdown(
         padding-bottom: 0 !important;
         align-items: flex-end !important;
     }
-
-    html body .main-fixed-header-spacer,
-    html body .header-separador {
+html body .main-fixed-header-spacer,html body .header-separador{
         height: 0 !important;
         min-height: 0 !important;
         max-height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -16434,20 +13793,7 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    html body div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
-    html body [data-testid="stAppViewContainer"] div[data-testid="stMainBlockContainer"] {
-        position: relative !important;
-        top: -110px !important;
-        transform: none !important;
-        margin-top: 0 !important;
-        margin-bottom: -110px !important;
-        padding-top: 0 !important;
-        padding-bottom: 0.25rem !important;
-    }
-
-    html body .main-fixed-header {
+@media  screen and (min-width: 1101px) {html body .main-fixed-header{
         margin-top: 0 !important;
         margin-bottom: 3px !important;
         min-height: 40px !important;
@@ -16455,17 +13801,14 @@ st.markdown(
         padding: 0 10px 0 0 !important;
         align-items: flex-end !important;
     }
-
-    html body .main-fixed-header-spacer,
-    html body .header-separador {
+html body .main-fixed-header-spacer,html body .header-separador{
         display: none !important;
         height: 0 !important;
         min-height: 0 !important;
         max-height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -16480,17 +13823,12 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    html body .main-fixed-header {
+@media  screen and (min-width: 1101px) {html body .main-fixed-header{
         margin-bottom: 12px !important;
     }
-
-    /* Pequeño aire adicional antes de las etiquetas de los filtros. */
-    html body div[data-testid="stMain"] div[data-testid="stSelectbox"] > label,
-    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] > label {
+html body div[data-testid="stMain"] div[data-testid="stSelectbox"] > label,html body section[data-testid="stMain"] div[data-testid="stSelectbox"] > label{
         margin-top: 1px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -16505,7 +13843,7 @@ st.markdown(
 st.markdown(
     """
 <style>
-html body section[data-testid="stSidebar"] .menu-footer-box {
+html body section[data-testid="stSidebar"] .menu-footer-box{
     background: transparent !important;
     background-color: transparent !important;
     border: 0 !important;
@@ -16516,9 +13854,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box {
     min-height: 0 !important;
     height: auto !important;
 }
-
-html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,
-html body section[data-testid="stSidebar"] .menu-footer-box .menu-info * {
+html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,html body section[data-testid="stSidebar"] .menu-footer-box .menu-info *{
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
@@ -16543,15 +13879,12 @@ html body section[data-testid="stSidebar"] .menu-footer-box .menu-info * {
 st.markdown(
     """
 <style>
-@media screen and (min-width: 1101px) {
-    html body .main-fixed-logo img,
-    html body .header-logo-box img {
+@media  screen and (min-width: 1101px) {html body .main-fixed-logo img,html body .header-logo-box img{
         width: 232px !important;
         min-width: 232px !important;
         max-width: 232px !important;
         height: auto !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -16604,86 +13937,33 @@ def render_mobile_top_navigation():
 st.markdown(
     """
 <style>
-/* La navegación superior existe en el DOM, pero no altera escritorio/tablet. */
-.st-key-saivam_mobile_topnav,
-div[class*="st-key-saivam_mobile_topnav"] {
+.st-key-saivam_mobile_topnav,div[class*="st-key-saivam_mobile_topnav"]{
     display: none !important;
 }
-
-/* Teléfono vertical + teléfono horizontal. No toca escritorio ni tablet grande. */
-@media screen and (max-width: 768px),
-       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
-
-    :root {
+@media  screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {:root{
         --phone-page-gap: 9px !important;
     }
-
-    /* El sidebar y el antiguo botón hamburguesa dejan de participar en móvil. */
-    html body section[data-testid="stSidebar"],
-    .st-key-saivam_mobile_menu_control,
-    div[class*="st-key-saivam_mobile_menu_control"],
-    [data-testid="stSidebarCollapsedControl"],
-    [data-testid="collapsedControl"],
-    [data-testid="stSidebarCollapseButton"] {
+html body section[data-testid="stSidebar"]{visibility: hidden !important;pointer-events: none !important;}
+.st-key-saivam_mobile_menu_control,div[class*="st-key-saivam_mobile_menu_control"],[data-testid="stSidebarCollapsedControl"],[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"]{
         display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
     }
-
-    /* El contenido ocupa todo el teléfono desde arriba. */
-    html body section[data-testid="stMain"],
-    html body div[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"] {
-        width: 100vw !important;
-        min-width: 0 !important;
-        max-width: 100vw !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        left: 0 !important;
-        transform: none !important;
-        flex: 0 0 100vw !important;
-        overflow-x: hidden !important;
-    }
-
-    html body div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] .block-container,
-    html body div[data-testid="stMain"] .block-container {
-        position: relative !important;
-        top: 0 !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: calc(8px + env(safe-area-inset-top)) var(--phone-page-gap)
-                 calc(64px + env(safe-area-inset-bottom)) var(--phone-page-gap) !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-    }
-
-    /* Corrige el fondo/sello para que no comience después del ancho del sidebar. */
-    html body [data-testid="stAppViewContainer"]::after {
+html body [data-testid="stAppViewContainer"]::after{
         left: 0 !important;
         right: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
     }
-
-    /* Se usa la cabecera móvil superior; evita duplicar el título original. */
-    html body .main-fixed-header,
-    html body .header-principal,
-    html body .main-fixed-header-spacer,
-    html body .header-separador {
+html body .main-fixed-header,html body .header-principal,html body .main-fixed-header-spacer,html body .header-separador{
         display: none !important;
         height: 0 !important;
         min-height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    /* Contenedor principal del nuevo menú superior. */
-    .st-key-saivam_mobile_topnav,
-    div[class*="st-key-saivam_mobile_topnav"] {
+.st-key-saivam_mobile_topnav,div[class*="st-key-saivam_mobile_topnav"]{
         display: block !important;
         width: 100% !important;
         min-width: 0 !important;
@@ -16692,16 +13972,12 @@ div[class*="st-key-saivam_mobile_topnav"] {
         padding: 0 !important;
         box-sizing: border-box !important;
     }
-
-    .st-key-saivam_mobile_topnav > div,
-    div[class*="st-key-saivam_mobile_topnav"] > div {
+.st-key-saivam_mobile_topnav > div,div[class*="st-key-saivam_mobile_topnav"] > div{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
     }
-
-    /* Tarjeta superior inspirada en la referencia. */
-    .mobile-app-hero {
+.mobile-app-hero{
         width: 100% !important;
         min-height: 78px !important;
         padding: 16px 13px 13px 13px !important;
@@ -16712,8 +13988,7 @@ div[class*="st-key-saivam_mobile_topnav"] {
         box-shadow: 0 8px 22px rgba(15,23,42,.16) !important;
         box-sizing: border-box !important;
     }
-
-    .mobile-app-title {
+.mobile-app-title{
         margin: 0 !important;
         padding: 0 !important;
         color: #ffffff !important;
@@ -16723,8 +13998,7 @@ div[class*="st-key-saivam_mobile_topnav"] {
         font-weight: 900 !important;
         letter-spacing: -.2px !important;
     }
-
-    .mobile-app-subtitle {
+.mobile-app-subtitle{
         margin-top: 10px !important;
         color: rgba(255,255,255,.82) !important;
         -webkit-text-fill-color: rgba(255,255,255,.82) !important;
@@ -16732,10 +14006,7 @@ div[class*="st-key-saivam_mobile_topnav"] {
         line-height: 1.1 !important;
         font-weight: 500 !important;
     }
-
-    /* Anula la regla móvil general que apila TODOS los st.columns. */
-    .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
-    div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+.st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]{
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
@@ -16746,9 +14017,7 @@ div[class*="st-key-saivam_mobile_topnav"] {
         padding: 0 !important;
         overflow: visible !important;
     }
-
-    .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="column"],
-    div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+.st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="column"],div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="column"]{
         flex: 1 1 0 !important;
         width: 0 !important;
         min-width: 0 !important;
@@ -16756,16 +14025,12 @@ div[class*="st-key-saivam_mobile_topnav"] {
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    .st-key-saivam_mobile_topnav div[data-testid="stButton"],
-    div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stButton"] {
+.st-key-saivam_mobile_topnav div[data-testid="stButton"],div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stButton"]{
         width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    .st-key-saivam_mobile_topnav button,
-    div[class*="st-key-saivam_mobile_topnav"] button {
+.st-key-saivam_mobile_topnav button,div[class*="st-key-saivam_mobile_topnav"] button{
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
@@ -16787,11 +14052,7 @@ div[class*="st-key-saivam_mobile_topnav"] {
         overflow: hidden !important;
         text-overflow: ellipsis !important;
     }
-
-    .st-key-saivam_mobile_topnav button p,
-    .st-key-saivam_mobile_topnav button span,
-    div[class*="st-key-saivam_mobile_topnav"] button p,
-    div[class*="st-key-saivam_mobile_topnav"] button span {
+.st-key-saivam_mobile_topnav button p,.st-key-saivam_mobile_topnav button span,div[class*="st-key-saivam_mobile_topnav"] button p,div[class*="st-key-saivam_mobile_topnav"] button span{
         margin: 0 !important;
         padding: 0 !important;
         color: inherit !important;
@@ -16801,10 +14062,7 @@ div[class*="st-key-saivam_mobile_topnav"] {
         line-height: 1 !important;
         white-space: nowrap !important;
     }
-
-    /* Pestaña seleccionada. */
-    .st-key-saivam_mobile_topnav button:disabled,
-    div[class*="st-key-saivam_mobile_topnav"] button:disabled {
+.st-key-saivam_mobile_topnav button:disabled,div[class*="st-key-saivam_mobile_topnav"] button:disabled{
         opacity: 1 !important;
         cursor: default !important;
         background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important;
@@ -16813,25 +14071,16 @@ div[class*="st-key-saivam_mobile_topnav"] {
         -webkit-text-fill-color: #ffffff !important;
         box-shadow: 0 5px 13px rgba(37,99,235,.28) !important;
     }
-
-    /* Filtros móviles más compactos para conservar el patrón de la referencia. */
-    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] {
+html body section[data-testid="stMain"] div[data-testid="stSelectbox"]{
         margin-top: 0 !important;
         margin-bottom: 4px !important;
     }
-
-    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label {
+html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label{
         margin-bottom: 3px !important;
         font-size: 11px !important;
         line-height: 1.1 !important;
     }
-
-    html body section[data-testid="stMain"] [data-baseweb="select"] > div {
-        min-height: 38px !important;
-        height: 38px !important;
-        border-radius: 8px !important;
-    }
-}
+html body section[data-testid="stMain"] [data-baseweb="select"] > div{border-radius: 8px !important;}}
 </style>
     """,
     unsafe_allow_html=True,
@@ -16848,36 +14097,12 @@ div[class*="st-key-saivam_mobile_topnav"] {
 st.markdown(
     """
 <style>
-@media screen and (max-width: 768px),
-       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
-
-    /*
-       En este archivo existen varios bloques <style> creados antes del contenido
-       visible. Streamlit conserva el gap vertical entre esos elementos aunque
-       visualmente estén vacíos. Este margen negativo compensa únicamente en
-       teléfono ese espacio acumulado y deja la cabecera casi pegada arriba.
-    */
-    html body .st-key-saivam_mobile_topnav,
-    html body div[class*="st-key-saivam_mobile_topnav"] {
+@media  screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {html body .st-key-saivam_mobile_topnav,html body div[class*="st-key-saivam_mobile_topnav"]{
         margin-top: -168px !important;
         margin-bottom: 9px !important;
     }
-
-    /* Mantiene un margen mínimo real respecto del borde superior del teléfono. */
-    html body div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"],
-    html body section[data-testid="stMain"] .block-container,
-    html body div[data-testid="stMain"] .block-container {
-        padding-top: calc(7px + env(safe-area-inset-top)) !important;
-    }
-
-    /*
-       Barra móvil tipo pestañas: botones pequeños, una sola fila y scroll
-       horizontal con el dedo. Se usa stColumn (nombre actual de Streamlit),
-       además del selector antiguo por compatibilidad.
-    */
-    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
-    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]{
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
@@ -16897,18 +14122,12 @@ st.markdown(
         scrollbar-width: none !important;
         touch-action: pan-x !important;
     }
-
-    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"]::-webkit-scrollbar,
-    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]::-webkit-scrollbar {
+html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"]::-webkit-scrollbar,html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]::-webkit-scrollbar{
         display: none !important;
         width: 0 !important;
         height: 0 !important;
     }
-
-    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],
-    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],
-    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="column"],
-    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"] > [data-testid="column"],html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] > [data-testid="column"]{
         flex: 0 0 88px !important;
         width: 88px !important;
         min-width: 88px !important;
@@ -16917,9 +14136,7 @@ st.markdown(
         padding: 0 !important;
         scroll-snap-align: start !important;
     }
-
-    html body .st-key-saivam_mobile_topnav div[data-testid="stButton"],
-    html body div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stButton"] {
+html body .st-key-saivam_mobile_topnav div[data-testid="stButton"],html body div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stButton"]{
         width: 88px !important;
         min-width: 88px !important;
         max-width: 88px !important;
@@ -16927,9 +14144,7 @@ st.markdown(
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    html body .st-key-saivam_mobile_topnav button,
-    html body div[class*="st-key-saivam_mobile_topnav"] button {
+html body .st-key-saivam_mobile_topnav button,html body div[class*="st-key-saivam_mobile_topnav"] button{
         width: 88px !important;
         min-width: 88px !important;
         max-width: 88px !important;
@@ -16947,34 +14162,25 @@ st.markdown(
         text-overflow: ellipsis !important;
         box-shadow: 0 3px 8px rgba(15,23,42,.14) !important;
     }
-
-    html body .st-key-saivam_mobile_topnav button p,
-    html body .st-key-saivam_mobile_topnav button span,
-    html body div[class*="st-key-saivam_mobile_topnav"] button p,
-    html body div[class*="st-key-saivam_mobile_topnav"] button span {
+html body .st-key-saivam_mobile_topnav button p,html body .st-key-saivam_mobile_topnav button span,html body div[class*="st-key-saivam_mobile_topnav"] button p,html body div[class*="st-key-saivam_mobile_topnav"] button span{
         font-size: 10px !important;
         line-height: 1 !important;
         white-space: nowrap !important;
     }
-
-    /* La tarjeta superior conserva el diseño, pero queda levemente más compacta. */
-    html body .mobile-app-hero {
+html body .mobile-app-hero{
         min-height: 66px !important;
         padding: 13px 12px 11px 12px !important;
         margin-bottom: 7px !important;
         border-radius: 11px !important;
     }
-
-    html body .mobile-app-title {
+html body .mobile-app-title{
         font-size: 13px !important;
         line-height: 1.12 !important;
     }
-
-    html body .mobile-app-subtitle {
+html body .mobile-app-subtitle{
         margin-top: 7px !important;
         font-size: 8.5px !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -16991,37 +14197,21 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (max-width: 768px),
-       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
-
-    /* 1) Separa físicamente las pestañas de la tarjeta azul. */
-    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
-    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+@media  screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]{
         margin-top: 9px !important;
         margin-bottom: 0 !important;
         position: relative !important;
         z-index: 2 !important;
     }
-
-    /* La cabecera no necesita margen propio inferior: lo controla la fila de pestañas. */
-    html body .mobile-app-hero {
+html body .mobile-app-hero{
         margin-bottom: 0 !important;
     }
-
-    /* El contenedor móvil termina justo al finalizar la fila de navegación. */
-    html body .st-key-saivam_mobile_topnav,
-    html body div[class*="st-key-saivam_mobile_topnav"] {
+html body .st-key-saivam_mobile_topnav,html body div[class*="st-key-saivam_mobile_topnav"]{
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
     }
-
-    /*
-       2) encabezado() sigue generándose para escritorio. En teléfono sus hijos
-       estaban ocultos, pero el contenedor Streamlit podía seguir reservando
-       espacio vertical. Se elimina el elemento completo solamente en móvil.
-    */
-    html body div[data-testid="stElementContainer"]:has(.main-fixed-header),
-    html body div[data-testid="stElementContainer"]:has(.header-principal) {
+html body div[data-testid="stElementContainer"]:has(.main-fixed-header),html body div[data-testid="stElementContainer"]:has(.header-principal){
         display: none !important;
         visibility: hidden !important;
         width: 0 !important;
@@ -17032,37 +14222,24 @@ st.markdown(
         padding: 0 !important;
         overflow: hidden !important;
     }
-
-    /* Compatibilidad con versiones de Streamlit donde Markdown agrega un wrapper extra. */
-    html body div[data-testid="stMarkdownContainer"]:has(.main-fixed-header),
-    html body div[data-testid="stMarkdownContainer"]:has(.header-principal) {
+html body div[data-testid="stMarkdownContainer"]:has(.main-fixed-header),html body div[data-testid="stMarkdownContainer"]:has(.header-principal){
         display: none !important;
         height: 0 !important;
         min-height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    /* Reduce el aire del bloque principal inmediatamente después del menú móvil. */
-    html body div[data-testid="stMainBlockContainer"] > div[data-testid="stVerticalBlock"],
-    html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"] > div[data-testid="stVerticalBlock"] {
-        row-gap: 0.18rem !important;
-    }
-
-    /* Los filtros comienzan casi inmediatamente bajo las pestañas. */
-    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] {
+html body div[data-testid="stMainBlockContainer"] > div[data-testid="stVerticalBlock"],html body section[data-testid="stMain"] div[data-testid="stMainBlockContainer"] > div[data-testid="stVerticalBlock"]{row-gap: 0.18rem !important;}
+html body section[data-testid="stMain"] div[data-testid="stSelectbox"]{
         margin-top: 0 !important;
         margin-bottom: 3px !important;
     }
-
-    /* Evita que un bloque vacío de Markdown deje aire antes del primer filtro. */
-    html body section[data-testid="stMain"] div[data-testid="stElementContainer"]:has(> div[data-testid="stMarkdownContainer"]:empty) {
+html body section[data-testid="stMain"] div[data-testid="stElementContainer"]:has(> div[data-testid="stMarkdownContainer"]:empty){
         min-height: 0 !important;
         height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -17079,44 +14256,23 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (max-width: 768px),
-       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
-
-    /* 1) Baja un poco la fila de navegación sin mover la cabecera completa. */
-    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
-    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+@media  screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]{
         margin-top: 13px !important;
         transform: translateY(2px) !important;
     }
-
-    /*
-       2) Streamlit conserva altura entre el contenedor del menú y el primer
-       bloque de la página aunque el encabezado de escritorio esté oculto.
-       Este margen negativo elimina ese aire únicamente en teléfono.
-    */
-    html body .st-key-saivam_mobile_topnav,
-    html body div[class*="st-key-saivam_mobile_topnav"] {
+html body .st-key-saivam_mobile_topnav,html body div[class*="st-key-saivam_mobile_topnav"]{
         margin-bottom: -66px !important;
         padding-bottom: 0 !important;
     }
-
-    /* El primer bloque real después del menú no agrega separación extra. */
-    html body .st-key-saivam_mobile_topnav + div,
-    html body div[class*="st-key-saivam_mobile_topnav"] + div {
+html body .st-key-saivam_mobile_topnav + div,html body div[class*="st-key-saivam_mobile_topnav"] + div{
         margin-top: 0 !important;
         padding-top: 0 !important;
     }
-
-    /* Compacta el espacio superior de columnas/filtros en las páginas móviles. */
-    html body section[data-testid="stMain"] [data-testid="stHorizontalBlock"]:not(.st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"]) {
-        margin-top: 0 !important;
-    }
-
-    html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label {
+html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label{
         margin-top: 0 !important;
         padding-top: 0 !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -17133,65 +14289,39 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (max-width: 768px),
-       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
-
-    /* 1) Separación limpia: tarjeta azul arriba y pestañas debajo, sin solaparse. */
-    html body .mobile-app-hero {
+@media  screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {html body .mobile-app-hero{
         margin-bottom: 0 !important;
     }
-
-    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
-    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]{
         margin-top: 8px !important;
         margin-bottom: 0 !important;
         transform: none !important;
         position: relative !important;
         z-index: 3 !important;
     }
-
-    /* Mantiene el cierre compacto del contenedor del menú. */
-    html body .st-key-saivam_mobile_topnav,
-    html body div[class*="st-key-saivam_mobile_topnav"] {
+html body .st-key-saivam_mobile_topnav,html body div[class*="st-key-saivam_mobile_topnav"]{
         margin-bottom: -60px !important;
         padding-bottom: 0 !important;
     }
-
-    /*
-       2) El contenido de cada página ahora tiene un contenedor con key propio.
-       Lo subimos de forma controlada para eliminar el espacio que Streamlit
-       reserva entre la navegación y el primer filtro/tarjeta.
-    */
-    html body .st-key-saivam_mobile_page_content,
-    html body div[class*="st-key-saivam_mobile_page_content"] {
+html body .st-key-saivam_mobile_page_content,html body div[class*="st-key-saivam_mobile_page_content"]{
         position: relative !important;
         top: -58px !important;
         margin-top: 0 !important;
         margin-bottom: -58px !important;
         padding-top: 0 !important;
     }
-
-    html body .st-key-saivam_mobile_page_content > div,
-    html body div[class*="st-key-saivam_mobile_page_content"] > div,
-    html body .st-key-saivam_mobile_page_content [data-testid="stVerticalBlock"],
-    html body div[class*="st-key-saivam_mobile_page_content"] [data-testid="stVerticalBlock"] {
+html body .st-key-saivam_mobile_page_content > div,html body div[class*="st-key-saivam_mobile_page_content"] > div,html body .st-key-saivam_mobile_page_content [data-testid="stVerticalBlock"],html body div[class*="st-key-saivam_mobile_page_content"] [data-testid="stVerticalBlock"]{
         margin-top: 0 !important;
         padding-top: 0 !important;
     }
-
-    /* El primer control no agrega aire superior adicional. */
-    html body .st-key-saivam_mobile_page_content div[data-testid="stSelectbox"]:first-of-type,
-    html body div[class*="st-key-saivam_mobile_page_content"] div[data-testid="stSelectbox"]:first-of-type {
+html body .st-key-saivam_mobile_page_content div[data-testid="stSelectbox"]:first-of-type,html body div[class*="st-key-saivam_mobile_page_content"] div[data-testid="stSelectbox"]:first-of-type{
         margin-top: 0 !important;
         padding-top: 0 !important;
     }
-
-    /* En móvil los grupos de columnas del contenido no deben sumar margen superior. */
-    html body .st-key-saivam_mobile_page_content [data-testid="stHorizontalBlock"],
-    html body div[class*="st-key-saivam_mobile_page_content"] [data-testid="stHorizontalBlock"] {
+html body .st-key-saivam_mobile_page_content [data-testid="stHorizontalBlock"],html body div[class*="st-key-saivam_mobile_page_content"] [data-testid="stHorizontalBlock"]{
         margin-top: 0 !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
@@ -17206,27 +14336,19 @@ st.markdown(
 st.markdown(
     """
 <style>
-@media screen and (max-width: 768px),
-       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {
-
-    /* Reserva espacio REAL debajo de la tarjeta azul en su wrapper Streamlit. */
-    html body .st-key-saivam_mobile_topnav div[data-testid="stElementContainer"]:has(.mobile-app-hero),
-    html body div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stElementContainer"]:has(.mobile-app-hero) {
+@media  screen and (max-width: 768px),
+       screen and (max-width: 1100px) and (max-height: 700px) and (hover: none) and (pointer: coarse) {html body .st-key-saivam_mobile_topnav div[data-testid="stElementContainer"]:has(.mobile-app-hero),html body div[class*="st-key-saivam_mobile_topnav"] div[data-testid="stElementContainer"]:has(.mobile-app-hero){
         position: relative !important;
         margin: 0 !important;
         padding: 0 0 7px 0 !important;
         overflow: visible !important;
     }
-
-    html body .mobile-app-hero {
+html body .mobile-app-hero{
         position: relative !important;
         margin: 0 !important;
         transform: none !important;
     }
-
-    /* Los 4 botones quedan físicamente debajo, con solo un pequeño aire. */
-    html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],
-    html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"] {
+html body .st-key-saivam_mobile_topnav [data-testid="stHorizontalBlock"],html body div[class*="st-key-saivam_mobile_topnav"] [data-testid="stHorizontalBlock"]{
         position: relative !important;
         top: auto !important;
         transform: none !important;
@@ -17235,130 +14357,151 @@ st.markdown(
         padding-top: 5px !important;
         padding-bottom: 0 !important;
     }
-
-    /* No vuelve a agregar espacio hacia los filtros/tarjetas inferiores. */
-    html body .st-key-saivam_mobile_topnav,
-    html body div[class*="st-key-saivam_mobile_topnav"] {
+html body .st-key-saivam_mobile_topnav,html body div[class*="st-key-saivam_mobile_topnav"]{
         padding-bottom: 0 !important;
-    }
-}
+    }}
 </style>
     """,
     unsafe_allow_html=True,
 )
 
 # =========================================================
-# DISTRIBUCIÓN DEFINITIVA DESKTOP: MENÚ Y PANEL EN DOS ÁREAS
-# - La barra y el panel son dos superficies diferentes y no se superponen.
-# - El panel ocupa exclusivamente el ancho libre a la derecha del menú.
-# - Se anulan los márgenes heredados de versiones previas sin sumar offsets.
-# - El diseño móvil se mantiene igual (regla solo para escritorio).
+# SAIVAM 4.0 - DISEÑO ESTRUCTURAL REAL, SIN SUPERPOSICIONES
+# Streamlit utiliza dos elementos hermanos (stSidebar y stMain).
+# Ambos permanecen en el flujo normal de flexbox. NO position:fixed,
+# NO margin-left manual y NO porcentajes calculados con 100vw.
 # =========================================================
 st.markdown(
     """
 <style>
 @media screen and (min-width: 1101px) {
     html:root {
-        --saivam-desktop-sidebar: 230px !important;
-        --saivam-desktop-gap: 16px !important;
+        --menu-panel-width: 280px !important;
+        --menu-inner-width: 252px !important;
+        --menu-panel-width-final: 280px !important;
+        --menu-inner-width-final: 252px !important;
+        --sidebar-final-width: 280px !important;
+        --sidebar-final-inner: 252px !important;
+        --sidebar-compact-width: 280px !important;
+        --sidebar-compact-inner: 252px !important;
     }
 
-    /* Menú fijo, opaco, independiente del dashboard y sin transparencias. */
-    html body section[data-testid="stSidebar"] {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
+    html body [data-testid="stAppViewContainer"] {
+        position: relative !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: 100dvh !important;
+        overflow-x: hidden !important;
+        overflow-y: hidden !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Sidebar es una columna real del layout. No se superpone al contenido. */
+    html body [data-testid="stAppViewContainer"] > section[data-testid="stSidebar"],
+    html body [data-testid="stAppViewContainer"] > div[data-testid="stSidebar"] {
+        position: relative !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        inset: auto !important;
+        left: auto !important;
         right: auto !important;
-        bottom: 0 !important;
-        width: var(--saivam-desktop-sidebar) !important;
-        min-width: var(--saivam-desktop-sidebar) !important;
-        max-width: var(--saivam-desktop-sidebar) !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
+        top: auto !important;
+        bottom: auto !important;
+        flex: 0 0 280px !important;
+        flex-basis: 280px !important;
+        flex-shrink: 0 !important;
+        width: 280px !important;
+        min-width: 280px !important;
+        max-width: 280px !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
         margin: 0 !important;
         padding: 0 !important;
         transform: none !important;
-        box-sizing: border-box !important;
-        background-color: #020617 !important;
-        opacity: 1 !important;
-        z-index: 10000 !important;
         overflow-x: hidden !important;
-    }
-    html body section[data-testid="stSidebar"] > div,
-    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
-        background-color: #020617 !important;
-        opacity: 1 !important;
+        overflow-y: auto !important;
+        z-index: 20 !important;
+        background: #020617 !important;
+        border-right: 1px solid rgba(148,163,184,.22) !important;
         box-sizing: border-box !important;
     }
 
-    /* IMPORTANTE: Se fija físicamente el panel en el ESPACIO RESTANTE.
-       Las reglas históricas de margin-left, left y padding-left dejan
-       de moverlo o de reducir el ancho disponible por duplicado. */
+    /* El bloque principal es OTRA columna, flexible y con scroll autónomo. */
     html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] > div[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] > .main,
-    html body section[data-testid="stMain"],
-    html body div[data-testid="stMain"] {
-        position: fixed !important;
-        inset: 0 0 0 var(--saivam-desktop-sidebar) !important;
-        top: 0 !important;
-        left: var(--saivam-desktop-sidebar) !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        margin: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding: 0 !important;
-        padding-left: 0 !important;
-        width: calc(100vw - var(--saivam-desktop-sidebar)) !important;
+    html body [data-testid="stAppViewContainer"] > div[data-testid="stMain"] {
+        position: relative !important;
+        display: block !important;
+        inset: auto !important;
+        left: auto !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        flex: 1 1 0 !important;
+        flex-basis: 0 !important;
+        flex-grow: 1 !important;
+        flex-shrink: 1 !important;
+        width: auto !important;
         min-width: 0 !important;
-        max-width: calc(100vw - var(--saivam-desktop-sidebar)) !important;
-        height: 100vh !important;
+        max-width: none !important;
         height: 100dvh !important;
-        box-sizing: border-box !important;
-        flex: none !important;
-        flex-basis: auto !important;
+        max-height: 100dvh !important;
+        margin: 0 !important;
+        padding: 0 !important;
         transform: none !important;
         overflow-x: hidden !important;
         overflow-y: auto !important;
         z-index: 1 !important;
+        box-sizing: border-box !important;
+        background-color: #eef3f9 !important;
     }
 
-    /* Evita que un <main> interno sume un segundo desplazamiento. */
+    /* Ningún main interno puede volver a agregar margen lateral. */
     html body [data-testid="stMain"] main,
     html body [data-testid="stMain"] section.main,
-    html body [data-testid="stMain"] div.main {
+    html body [data-testid="stMain"] div.main,
+    html body [data-testid="stMain"] .main {
         position: relative !important;
-        left: 0 !important;
-        right: auto !important;
-        transform: none !important;
+        left: auto !important;
+        top: auto !important;
         margin: 0 !important;
-        margin-left: 0 !important;
-        padding-left: 0 !important;
+        padding: 0 !important;
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
+        height: auto !important;
+        transform: none !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
     }
 
-    /* El contenido, las KPI y los gráficos no pueden invadir el menú. */
-    html body [data-testid="stMain"] div[data-testid="stMainBlockContainer"],
+    /* Todo el contenido queda en su propio contenedor y respeta su caja. */
+    html body [data-testid="stMain"] [data-testid="stMainBlockContainer"],
     html body [data-testid="stMain"] .stMainBlockContainer,
     html body [data-testid="stMain"] .block-container {
+        position: relative !important;
+        inset: auto !important;
         left: auto !important;
+        top: auto !important;
         right: auto !important;
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding-left: var(--saivam-desktop-gap) !important;
-        padding-right: var(--saivam-desktop-gap) !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 26px 22px 32px 22px !important;
         box-sizing: border-box !important;
+        transform: none !important;
         overflow-x: hidden !important;
     }
+
     html body [data-testid="stMain"] [data-testid="stHorizontalBlock"],
+    html body [data-testid="stMain"] [data-testid="stVerticalBlock"],
     html body [data-testid="stMain"] [data-testid="column"],
     html body [data-testid="stMain"] [data-testid="stPlotlyChart"],
     html body [data-testid="stMain"] [data-testid="stDataFrame"] {
@@ -17366,19 +14509,261 @@ st.markdown(
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
-    html body [data-testid="stMain"] .main-fixed-header {
+
+    html body [data-testid="stSidebar"] > div,
+    html body [data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+        background: #020617 !important;
+        box-sizing: border-box !important;
         width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 14px !important;
+        overflow-x: hidden !important;
+    }
+    html body [data-testid="stSidebar"] .menu-panel-content {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+    }
+    html body [data-testid="stSidebar"] .menu-brand,
+    html body [data-testid="stSidebar"] .menu-line,
+    html body [data-testid="stSidebar"] .menu-active-item,
+    html body [data-testid="stSidebar"] div[data-testid="stButton"],
+    html body [data-testid="stSidebar"] div[data-testid="stButton"] button {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    html body [data-testid="stSidebar"] .menu-top-gap {
+        height: 125px !important;
+        min-height: 125px !important;
+    }
+    html body [data-testid="stSidebar"] .menu-footer-box {
+        position: relative !important;
+        inset: auto !important;
+        left: auto !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        transform: none !important;
+        margin: 28px 0 0 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Encabezado dentro del espacio disponible: sin offset negativo. */
+    html body [data-testid="stMain"] .main-fixed-header {
+        position: relative !important;
+        inset: auto !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        min-height: 82px !important;
+        height: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 2px 4px 12px !important;
+        margin: 0 0 14px !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        z-index: 2 !important;
+        box-sizing: border-box !important;
+    }
+    html body [data-testid="stMain"] .main-fixed-title {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+        font-size: clamp(25px, 2vw, 36px) !important;
+        line-height: 1.13 !important;
+    }
+    html body [data-testid="stMain"] .main-fixed-logo img {
+        width: 172px !important;
+        max-width: 172px !important;
+    }
+    html body [data-testid="stMain"] .main-fixed-header-spacer {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+    }
+    html body [data-testid="stMain"] .kpi-card {
+        min-width: 0 !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
 
-    /* Sello de agua: solo sobre el panel y no sobre la barra izquierda. */
+    /* Sello de agua: limitado al panel principal, jamás al menú. */
     html body [data-testid="stAppViewContainer"]::after {
-        left: var(--saivam-desktop-sidebar) !important;
+        left: 280px !important;
         right: 0 !important;
-        width: calc(100vw - var(--saivam-desktop-sidebar)) !important;
-        max-width: calc(100vw - var(--saivam-desktop-sidebar)) !important;
+        width: calc(100% - 280px) !important;
+        max-width: calc(100% - 280px) !important;
         pointer-events: none !important;
+    }
+}
+
+/* Tablet y móvil: sin reservas falsas de ancho desktop. */
+@media screen and (max-width: 1100px) {
+    html body [data-testid="stAppViewContainer"] {
+        display: flex !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    html body [data-testid="stAppViewContainer"] > [data-testid="stMain"] {
+        position: relative !important;
+        left: auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+        flex: 1 1 100% !important;
+        overflow-x: hidden !important;
+    }
+    html body [data-testid="stMain"] [data-testid="stMainBlockContainer"] {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+/* Tablet: navegación lateral compacta y panel a la derecha. */
+@media screen and (min-width: 769px) and (max-width: 1100px) {
+    html body [data-testid="stAppViewContainer"] > section[data-testid="stSidebar"],
+    html body [data-testid="stAppViewContainer"] > div[data-testid="stSidebar"] {
+        display: block !important;
+        position: relative !important;
+        flex: 0 0 245px !important;
+        width: 245px !important;
+        min-width: 245px !important;
+        max-width: 245px !important;
+        height: 100dvh !important;
+        padding: 0 !important;
+        overflow-y: auto !important;
+        background: #020617 !important;
+        box-sizing: border-box !important;
+    }
+    html body [data-testid="stAppViewContainer"] > [data-testid="stMain"] {
+        flex: 1 1 0 !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 0 !important;
+    }
+    html body [data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+        padding: 12px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+    html body [data-testid="stSidebar"] .menu-panel-content {
+        position: relative !important;
+        inset: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        transform: none !important;
+    }
+    html body [data-testid="stSidebar"] .menu-active-item,
+    html body [data-testid="stSidebar"] div[data-testid="stButton"],
+    html body [data-testid="stSidebar"] div[data-testid="stButton"] button {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    html body [data-testid="stSidebar"] .menu-top-gap {
+        height: 115px !important;
+        min-height: 115px !important;
+    }
+    html body [data-testid="stMain"] .main-fixed-header {
+        position: relative !important;
+        inset: auto !important;
+        margin: 0 0 12px !important;
+        height: auto !important;
+        min-height: 78px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        transform: none !important;
+    }
+    html body [data-testid="stMain"] .main-fixed-title {
+        white-space: normal !important;
+        font-size: clamp(22px, 3vw, 32px) !important;
+    }
+    html body [data-testid="stMain"] [data-testid="stMainBlockContainer"] {
+        position: relative !important;
+        inset: auto !important;
+        margin: 0 !important;
+        padding: 20px 16px 30px !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+    }
+    html body [data-testid="stMain"] [data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+    }
+    html body [data-testid="stMain"] [data-testid="column"] {
+        min-width: min(100%, 190px) !important;
+    }
+}
+
+/* Teléfonos: no se reserva espacio para el menú lateral oculto. */
+@media screen and (max-width: 768px) {
+    html body [data-testid="stAppViewContainer"] > section[data-testid="stSidebar"],
+    html body [data-testid="stAppViewContainer"] > div[data-testid="stSidebar"] {
+        display: none !important;
+        visibility: hidden !important;
+        flex: 0 0 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        height: 0 !important;
+    }
+    html body [data-testid="stAppViewContainer"] > [data-testid="stMain"] {
+        display: block !important;
+        position: relative !important;
+        inset: auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 1 1 100% !important;
+        transform: none !important;
+        overflow-x: hidden !important;
+    }
+    html body [data-testid="stMain"] [data-testid="stMainBlockContainer"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: calc(8px + env(safe-area-inset-top)) 9px 64px !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+    }
+    html body [data-testid="stAppViewContainer"]::after {
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
 </style>
