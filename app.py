@@ -14773,6 +14773,53 @@ st.markdown(
 
 
 # =========================================================
+# SAIVAM V5 - RETIRAR ESPACIOS VACÍOS DE ESTILOS
+# Los múltiples bloques CSS incrustados con st.markdown se estaban
+# contando como elementos separados en el layout vertical de Streamlit.
+# Al ocultar solo sus contenedores (no el propio bloque CSS) los estilos
+# siguen aplicándose, pero no generan separación encima del título.
+# NO afecta contenido real, filtros, gráficos ni la columna de menú.
+# =========================================================
+st.markdown(
+    """
+<style>
+/* Escritorio/tablet: evita huecos causados por contenedores CSS sin contenido.
+   Estos contenedores solamente contienen una etiqueta CSS style. */
+@media screen and (min-width: 769px) {
+  html body [data-testid="stMain"] div[data-testid="stElementContainer"]:has(> div[data-testid="stMarkdownContainer"] > style),
+  html body [data-testid="stMain"] div[data-testid="stElementContainer"]:has(> div[data-testid="stMarkdownContainer"] > p > style) {
+      display: none !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+  }
+  /* Si Streamlit introduce un envoltorio adicional al Markdown, usar
+     el mismo comportamiento para los estilos puros, sin tocar contenido. */
+  html body [data-testid="stMain"] div[data-testid="stElementContainer"]:has(> div[data-testid="stMarkdownContainer"] > div > style):not(:has(.main-fixed-header, .main-fixed-title, .mobile-app-hero, .panel-title, .kpi-card)) {
+      display: none !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+  }
+}
+
+/* El título queda próximo al borde superior del dashboard sin invadir el menú.
+   Es importante mantener el diseño de dos columnas de la versión 4. */
+@media screen and (min-width: 1101px) {
+  html body [data-testid="stMain"] [data-testid="stMainBlockContainer"] {
+      padding-top: 22px !important;
+  }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
 # EJECUCIÓN FINAL
 # Se deja deliberadamente al final del archivo para que todo el CSS esté
 # cargado antes de dibujar el dashboard. Evita el efecto de "acomodarse"
