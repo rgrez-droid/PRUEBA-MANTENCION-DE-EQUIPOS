@@ -146,17 +146,20 @@ html body div[data-testid="stMain"] {
         white-space: nowrap !important;
     }
 
-    /* Área principal: reserva el sidebar desde el primer frame. */
+    /* El panel principal se DESPLAZA completo; no basta con añadir padding,
+       porque Plotly, columnas y otros bloques podrían quedar detrás del menú. */
     html body [data-testid="stAppViewContainer"] section[data-testid="stMain"],
     html body [data-testid="stAppViewContainer"] div[data-testid="stMain"] {
-        margin: 0 !important;
-        padding-left: 230px !important;
-        width: 100vw !important;
-        min-width: 0 !important;
-        max-width: 100vw !important;
-        box-sizing: border-box !important;
         position: relative !important;
-        left: 0 !important;
+        left: 230px !important;
+        right: auto !important;
+        margin: 0 !important;
+        padding-left: 0 !important;
+        width: calc(100vw - 230px) !important;
+        min-width: 0 !important;
+        max-width: calc(100vw - 230px) !important;
+        flex: 0 0 calc(100vw - 230px) !important;
+        box-sizing: border-box !important;
         transform: none !important;
         overflow-x: hidden !important;
     }
@@ -17243,6 +17246,138 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+# =========================================================
+# ESCRITORIO - SEPARACIÓN FÍSICA ENTRE EL MENÚ Y EL DASHBOARD
+# - Evita el solapamiento visible de título, KPI y gráficos.
+# - Separa el área principal del menú (sin superponerlos).
+# - En pantallas móviles se conserva la navegación superior existente.
+# =========================================================
+st.markdown(
+    """
+<style>
+@media screen and (min-width: 1101px) {
+    html:root {
+        --saivam-sidebar-width: 230px;
+        --saivam-sidebar-padding: 16px;
+    }
+
+    /* La barra izquierda es una superficie opaca, fija y separada. */
+    html body section[data-testid="stSidebar"] {
+        position: fixed !important;
+        inset: 0 auto 0 0 !important;
+        width: var(--saivam-sidebar-width) !important;
+        min-width: var(--saivam-sidebar-width) !important;
+        max-width: var(--saivam-sidebar-width) !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #020617 !important;
+        opacity: 1 !important;
+        box-sizing: border-box !important;
+        flex: none !important;
+        z-index: 10000 !important;
+    }
+
+    /* Sin el display:flex heredado, el sidebar fijo no ocupa ni solapa
+       una franja adicional en el flujo de la página. */
+    html body [data-testid="stAppViewContainer"] {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: clip !important;
+    }
+
+    /* CLAVE: desplazar el CONTENEDOR completo en lugar de simular
+       la separación con padding-left en un elemento de ancho 100vw. */
+    html body [data-testid="stAppViewContainer"] section[data-testid="stMain"],
+    html body [data-testid="stAppViewContainer"] div[data-testid="stMain"] {
+        display: block !important;
+        position: relative !important;
+        left: var(--saivam-sidebar-width) !important;
+        right: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: calc(100% - var(--saivam-sidebar-width)) !important;
+        min-width: 0 !important;
+        max-width: calc(100% - var(--saivam-sidebar-width)) !important;
+        flex: 0 0 calc(100% - var(--saivam-sidebar-width)) !important;
+        flex-basis: calc(100% - var(--saivam-sidebar-width)) !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Anular reglas heredadas que desplazan un <main> interno otra vez.
+       La separación se aplica UNA SOLA VEZ en stMain. */
+    html body [data-testid="stMain"] main,
+    html body [data-testid="stMain"] section.main,
+    html body [data-testid="stMain"] div.main {
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex-basis: auto !important;
+        box-sizing: border-box !important;
+    }
+
+    /* KPI, cabeceras, selectores y gráficos usan únicamente la zona útil. */
+    html body [data-testid="stMain"] div[data-testid="stMainBlockContainer"],
+    html body [data-testid="stMain"] .stMainBlockContainer,
+    html body [data-testid="stMain"] .block-container {
+        left: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: var(--saivam-sidebar-padding) !important;
+        padding-right: var(--saivam-sidebar-padding) !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    html body [data-testid="stMain"] [data-testid="stHorizontalBlock"],
+    html body [data-testid="stMain"] [data-testid="column"],
+    html body [data-testid="stMain"] [data-testid="stPlotlyChart"] {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    html body [data-testid="stMain"] .main-fixed-header {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    html body [data-testid="stMain"] .main-fixed-title {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* La imagen de fondo empieza junto al dashboard, nunca en el menú. */
+    html body [data-testid="stAppViewContainer"]::after {
+        left: var(--saivam-sidebar-width) !important;
+        right: 0 !important;
+        width: calc(100% - var(--saivam-sidebar-width)) !important;
+        max-width: calc(100% - var(--saivam-sidebar-width)) !important;
+        pointer-events: none !important;
+    }
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # =========================================================
 # EJECUCIÓN FINAL
