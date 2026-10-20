@@ -17248,86 +17248,101 @@ st.markdown(
 )
 
 # =========================================================
-# ESCRITORIO - SEPARACIÓN FÍSICA ENTRE EL MENÚ Y EL DASHBOARD
-# - Evita el solapamiento visible de título, KPI y gráficos.
-# - Separa el área principal del menú (sin superponerlos).
-# - En pantallas móviles se conserva la navegación superior existente.
+# DISTRIBUCIÓN DEFINITIVA DESKTOP: MENÚ Y PANEL EN DOS ÁREAS
+# - La barra y el panel son dos superficies diferentes y no se superponen.
+# - El panel ocupa exclusivamente el ancho libre a la derecha del menú.
+# - Se anulan los márgenes heredados de versiones previas sin sumar offsets.
+# - El diseño móvil se mantiene igual (regla solo para escritorio).
 # =========================================================
 st.markdown(
     """
 <style>
 @media screen and (min-width: 1101px) {
     html:root {
-        --saivam-sidebar-width: 230px;
-        --saivam-sidebar-padding: 16px;
+        --saivam-desktop-sidebar: 230px !important;
+        --saivam-desktop-gap: 16px !important;
     }
 
-    /* La barra izquierda es una superficie opaca, fija y separada. */
+    /* Menú fijo, opaco, independiente del dashboard y sin transparencias. */
     html body section[data-testid="stSidebar"] {
         position: fixed !important;
-        inset: 0 auto 0 0 !important;
-        width: var(--saivam-sidebar-width) !important;
-        min-width: var(--saivam-sidebar-width) !important;
-        max-width: var(--saivam-sidebar-width) !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: #020617 !important;
-        opacity: 1 !important;
-        box-sizing: border-box !important;
-        flex: none !important;
-        z-index: 10000 !important;
-    }
-
-    /* Sin el display:flex heredado, el sidebar fijo no ocupa ni solapa
-       una franja adicional en el flujo de la página. */
-    html body [data-testid="stAppViewContainer"] {
-        display: block !important;
-        position: relative !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: clip !important;
-    }
-
-    /* CLAVE: desplazar el CONTENEDOR completo en lugar de simular
-       la separación con padding-left en un elemento de ancho 100vw. */
-    html body [data-testid="stAppViewContainer"] section[data-testid="stMain"],
-    html body [data-testid="stAppViewContainer"] div[data-testid="stMain"] {
-        display: block !important;
-        position: relative !important;
-        left: var(--saivam-sidebar-width) !important;
+        top: 0 !important;
+        left: 0 !important;
         right: auto !important;
+        bottom: 0 !important;
+        width: var(--saivam-desktop-sidebar) !important;
+        min-width: var(--saivam-desktop-sidebar) !important;
+        max-width: var(--saivam-desktop-sidebar) !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
         margin: 0 !important;
         padding: 0 !important;
-        width: calc(100% - var(--saivam-sidebar-width)) !important;
-        min-width: 0 !important;
-        max-width: calc(100% - var(--saivam-sidebar-width)) !important;
-        flex: 0 0 calc(100% - var(--saivam-sidebar-width)) !important;
-        flex-basis: calc(100% - var(--saivam-sidebar-width)) !important;
         transform: none !important;
         box-sizing: border-box !important;
+        background-color: #020617 !important;
+        opacity: 1 !important;
+        z-index: 10000 !important;
         overflow-x: hidden !important;
     }
+    html body section[data-testid="stSidebar"] > div,
+    html body section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+        background-color: #020617 !important;
+        opacity: 1 !important;
+        box-sizing: border-box !important;
+    }
 
-    /* Anular reglas heredadas que desplazan un <main> interno otra vez.
-       La separación se aplica UNA SOLA VEZ en stMain. */
+    /* IMPORTANTE: Se fija físicamente el panel en el ESPACIO RESTANTE.
+       Las reglas históricas de margin-left, left y padding-left dejan
+       de moverlo o de reducir el ancho disponible por duplicado. */
+    html body [data-testid="stAppViewContainer"] > section[data-testid="stMain"],
+    html body [data-testid="stAppViewContainer"] > div[data-testid="stMain"],
+    html body [data-testid="stAppViewContainer"] > .main,
+    html body section[data-testid="stMain"],
+    html body div[data-testid="stMain"] {
+        position: fixed !important;
+        inset: 0 0 0 var(--saivam-desktop-sidebar) !important;
+        top: 0 !important;
+        left: var(--saivam-desktop-sidebar) !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        margin: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 0 !important;
+        padding-left: 0 !important;
+        width: calc(100vw - var(--saivam-desktop-sidebar)) !important;
+        min-width: 0 !important;
+        max-width: calc(100vw - var(--saivam-desktop-sidebar)) !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        box-sizing: border-box !important;
+        flex: none !important;
+        flex-basis: auto !important;
+        transform: none !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        z-index: 1 !important;
+    }
+
+    /* Evita que un <main> interno sume un segundo desplazamiento. */
     html body [data-testid="stMain"] main,
     html body [data-testid="stMain"] section.main,
     html body [data-testid="stMain"] div.main {
         position: relative !important;
-        left: auto !important;
+        left: 0 !important;
         right: auto !important;
+        transform: none !important;
+        margin: 0 !important;
         margin-left: 0 !important;
-        margin-right: 0 !important;
         padding-left: 0 !important;
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
-        flex-basis: auto !important;
         box-sizing: border-box !important;
+        overflow-x: hidden !important;
     }
 
-    /* KPI, cabeceras, selectores y gráficos usan únicamente la zona útil. */
+    /* El contenido, las KPI y los gráficos no pueden invadir el menú. */
     html body [data-testid="stMain"] div[data-testid="stMainBlockContainer"],
     html body [data-testid="stMain"] .stMainBlockContainer,
     html body [data-testid="stMain"] .block-container {
@@ -17338,38 +17353,31 @@ st.markdown(
         max-width: 100% !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
-        padding-left: var(--saivam-sidebar-padding) !important;
-        padding-right: var(--saivam-sidebar-padding) !important;
+        padding-left: var(--saivam-desktop-gap) !important;
+        padding-right: var(--saivam-desktop-gap) !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
     }
-
     html body [data-testid="stMain"] [data-testid="stHorizontalBlock"],
     html body [data-testid="stMain"] [data-testid="column"],
-    html body [data-testid="stMain"] [data-testid="stPlotlyChart"] {
+    html body [data-testid="stMain"] [data-testid="stPlotlyChart"],
+    html body [data-testid="stMain"] [data-testid="stDataFrame"] {
         min-width: 0 !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
-
     html body [data-testid="stMain"] .main-fixed-header {
         width: 100% !important;
         max-width: 100% !important;
-        padding-left: 0 !important;
         box-sizing: border-box !important;
     }
 
-    html body [data-testid="stMain"] .main-fixed-title {
-        min-width: 0 !important;
-        max-width: 100% !important;
-    }
-
-    /* La imagen de fondo empieza junto al dashboard, nunca en el menú. */
+    /* Sello de agua: solo sobre el panel y no sobre la barra izquierda. */
     html body [data-testid="stAppViewContainer"]::after {
-        left: var(--saivam-sidebar-width) !important;
+        left: var(--saivam-desktop-sidebar) !important;
         right: 0 !important;
-        width: calc(100% - var(--saivam-sidebar-width)) !important;
-        max-width: calc(100% - var(--saivam-sidebar-width)) !important;
+        width: calc(100vw - var(--saivam-desktop-sidebar)) !important;
+        max-width: calc(100vw - var(--saivam-desktop-sidebar)) !important;
         pointer-events: none !important;
     }
 }
