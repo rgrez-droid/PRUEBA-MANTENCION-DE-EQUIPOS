@@ -41,7 +41,7 @@ st.set_page_config(
 # - Evita el "salto" visual que antes ocurría mientras se cargaban
 #   los overrides CSS ubicados más abajo en el archivo.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 html:root{
@@ -114,9 +114,7 @@ html body .main-fixed-logo img,html body .header-logo-box img{
         max-width: 116px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # Actualización automática de la aplicación cada 60 segundos.
 # El caché de Google Sheets dura 45 s, por lo que cada rerun automático
@@ -1467,7 +1465,7 @@ def estado_clase(estado):
 # =========================================================
 
 def aplicar_estilo():
-    st.markdown(
+    st.html(
         """
 <style>
 :root{
@@ -1572,11 +1570,9 @@ section[data-testid="stSidebar"] [data-baseweb="select"] *{
     overflow: hidden !important;
 }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
-    st.markdown(
+    st.html(
         """
 <style>
 header[data-testid="stHeader"],[data-testid="stToolbar"],[data-testid="stDecoration"],[data-testid="stStatusWidget"],[data-testid="stDeployButton"],#MainMenu,footer,[data-testid="collapsedControl"],button[kind="header"]{
@@ -2585,9 +2581,7 @@ section[data-testid="stSidebar"] .menu-info b{
     height: 0px !important;
 }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
 
 # =========================================================
@@ -3706,7 +3700,7 @@ def pagina_equipos(equipos_f):
         st.session_state["filtro_estado_pagina_equipos"] = "Todos los estados"
 
     # Estilo local del módulo Equipos. No modifica el resto de las páginas.
-    st.markdown(
+    st.html(
         """
         <style>
 div[data-testid="stMain"] div[data-testid="stSelectbox"] label p{
@@ -3782,9 +3776,7 @@ div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"]
             margin: -2px 0 7px 0;
         }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
     c_eq, c_ct, c_mod, c_est, _ = st.columns([1.15, 1.15, 1.15, 1.15, 1.8])
     with c_eq:
@@ -5038,7 +5030,7 @@ _aplicar_estilo_v38_final = aplicar_estilo
 def aplicar_estilo():
     _aplicar_estilo_v38_final()
 
-    st.markdown(
+    st.html(
         """
 <style>
 :root{
@@ -5087,9 +5079,7 @@ section[data-testid="stSidebar"] [data-baseweb="select"] > div{
     text-align: center !important;
 }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
 # =========================================================
 # AJUSTE FINAL V4.0
@@ -5194,7 +5184,7 @@ _aplicar_estilo_v39_final = aplicar_estilo
 def aplicar_estilo():
     _aplicar_estilo_v39_final()
 
-    st.markdown(
+    st.html(
         """
 <style>
 :root{
@@ -5307,9 +5297,7 @@ section[data-testid="stSidebar"] .menu-footer-box{
     padding: 12px !important;
 }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
 
 # =========================================================
@@ -5324,7 +5312,7 @@ _aplicar_estilo_v41_final = aplicar_estilo
 def aplicar_estilo():
     _aplicar_estilo_v41_final()
 
-    st.markdown(
+    st.html(
         """
 <style>
 section[data-testid="stSidebar"],section[data-testid="stSidebar"] > div,section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"]{scrollbar-width: none !important;-ms-overflow-style: none !important;}
@@ -5334,9 +5322,7 @@ section[data-testid="stSidebar"]::-webkit-scrollbar,section[data-testid="stSideb
     display: none !important;
 }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
 
 # =========================================================
@@ -5442,7 +5428,7 @@ def crear_donut_costos(costos_item):
 def aplicar_estilo():
     _aplicar_estilo_v45_base()
 
-    st.markdown(
+    st.html(
         """
 <style>
 :root{
@@ -5512,9 +5498,7 @@ section[data-testid="stSidebar"] .menu-info{
 }
 @media  (max-width: 1100px) {}
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
 # =========================================================
 # EJECUCIÓN FINAL V4.8
@@ -5527,7 +5511,7 @@ aplicar_estilo()
 # AJUSTE FINAL MENÚ IZQUIERDO - SIN CAMBIAR ANCHO
 # Corrige espacio superior, título y separación entre items.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 section[data-testid="stSidebar"] [data-testid="stVerticalBlock"],section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div,section[data-testid="stSidebar"] div[data-testid="element-container"]{
@@ -5633,9 +5617,7 @@ section[data-testid="stSidebar"] .menu-active-item,section[data-testid="stSideba
     font-weight: 950 !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
@@ -5643,7 +5625,7 @@ section[data-testid="stSidebar"] .menu-active-item,section[data-testid="stSideba
 # CORRECCIÓN DEFINITIVA MENÚ IZQUIERDO - SIN ESPACIO SUPERIOR
 # No modifica el ancho del menú. Solo sube el contenido interno.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 section[data-testid="stSidebar"] [data-testid="stVerticalBlock"]:first-child,section[data-testid="stSidebar"] div[data-testid="element-container"]:first-child{
@@ -5715,9 +5697,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] > button,section[da
     line-height: 1.20 !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -6101,7 +6081,7 @@ def pagina_documentos(documentos_f):
 # =========================================================
 # AJUSTE V22 - LOGO MENÚ MÁS PEQUEÑO Y DOCUMENTACIÓN LEGAL
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .menu-icon-img,section[data-testid="stSidebar"] .menu-icon-img{
@@ -6123,9 +6103,7 @@ st.markdown(
     margin: 0 !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
@@ -6355,7 +6333,7 @@ def mostrar_tabla_clara(df, height=280):
     st.markdown(tabla_html_clara(df, height=height), unsafe_allow_html=True)
 
 
-st.markdown(
+st.html(
     """
 <style>
 .tabla-clara-wrap{
@@ -6427,16 +6405,14 @@ st.markdown(
     border-radius: 13px !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
 # =========================================================
 # CORRECCIÓN FINAL: CAJA INFERIOR DEL MENÚ COMPLETA
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 section[data-testid="stSidebar"] .menu-footer-box{
@@ -6479,9 +6455,7 @@ section[data-testid="stSidebar"] .menu-info b{
     font-weight: 950 !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -6763,7 +6737,7 @@ def crear_donut_costos(costos_item):
     return fig
 
 
-st.markdown(
+st.html(
     """
 <style>
 .panel-title{
@@ -6789,9 +6763,7 @@ st.markdown(
     text-align: center !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
@@ -6889,7 +6861,7 @@ def celda_html_con_enlace(columna, valor):
 # - Gráficos de costos con eje Y en millones CLP.
 # - Mejor aprovechamiento de espacios verticales del dashboard.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .panel-title{
@@ -6919,9 +6891,7 @@ st.markdown(
     text-align: center !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
@@ -7204,7 +7174,7 @@ def pagina_repuestos(gastos_f):
 # - Próximas Mantenciones más ancho en Dashboard Ejecutivo.
 # - Se elimina la palabra "indefinido" del gráfico Evolución de Costos.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .proximas-box{
@@ -7236,9 +7206,7 @@ st.markdown(
     padding: 5px 7px !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -7429,7 +7397,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
             tarjeta_equipo(fila)
 
 
-st.markdown(
+st.html(
     """
 <style>
 .main-fixed-header{
@@ -7483,9 +7451,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     font-size: 13.6px !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
@@ -7752,7 +7718,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f, combustible_f, proximas_origin
             tarjeta_equipo(fila)
 
 
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -7847,9 +7813,7 @@ st.markdown(
     text-align: center !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
@@ -7953,7 +7917,7 @@ section[data-testid="stSidebar"] .menu-active-item * {{
 }}
 """
 
-    st.markdown(
+    st.html(
         f"""
 <style>
 :root{{
@@ -8176,9 +8140,7 @@ div[data-testid="stPlotlyChart"]{{
         font-size: clamp(27px, 2vw, 36px) !important;
     }}}}
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
 
 def construir_menu(equipos, mantenciones, gastos, combustible, checklist, documentos):
@@ -9087,7 +9049,7 @@ def pagina_documentos(documentos_f):
 
 
 def aplicar_correcciones_visuales_v80():
-    st.markdown(
+    st.html(
         """
 <style>
 section[data-testid="stSidebar"] div[data-testid="stButton"],section[data-testid="stSidebar"] div[data-testid="stButton"] button{
@@ -9126,9 +9088,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button:disabled *{
     font-weight: 950 !important;
 }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
 
 aplicar_ajustes_finales_ui()
@@ -9886,7 +9846,7 @@ def pagina_mantenciones(mant_f, equipos_ref=None):
     # -----------------------------------------------------
     # Presentación compacta de los filtros debajo del título
     # -----------------------------------------------------
-    st.markdown(
+    st.html(
         """
         <style>
 div[data-testid="stMain"] div[data-testid="stSelectbox"] label p{
@@ -9898,9 +9858,7 @@ div[data-testid="stMain"] div[data-testid="stSelectbox"] [data-baseweb="select"]
             height: 38px !important;
         }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
     col_equipo, col_contrato, col_modelo, col_anio, col_mes, _ = st.columns([1.45, 1.45, 1.45, 0.75, 0.9, 2.0])
     with col_equipo:
@@ -10813,7 +10771,7 @@ def pagina_dashboard(equipos_f, mant_f, gastos_f=None, combustible_f=None, proxi
     """Resumen ejecutivo profesional basado únicamente en datos reales de Intervenciones."""
     mant_base = _dashboard_base_intervenciones(mant_f)
 
-    st.markdown(
+    st.html(
         """
 <style>
 .exec9-subtitle{
@@ -11071,9 +11029,7 @@ div[data-testid="stDataFrame"]{
     overflow: hidden !important;
 }
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
     if mant_base.empty:
         st.info("No existen intervenciones registradas para construir el resumen ejecutivo.")
@@ -11423,7 +11379,7 @@ def mostrar_panel():
 # - Contenido principal sin ancho mínimo forzado.
 # - Evita que el título, KPIs, tablas y gráficos queden cortados.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -11517,15 +11473,13 @@ section[data-testid="stSidebar"] .menu-icon-img{
     box-sizing: border-box !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
 # AJUSTE FINAL DASHBOARD EJECUTIVO 100%
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -11594,9 +11548,7 @@ section[data-testid="stSidebar"] .menu-panel-content,section[data-testid="stSide
 .equipo-sub{ font-size: 11px !important; }
 td,th{ white-space: normal !important; }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -11604,7 +11556,7 @@ td,th{ white-space: normal !important; }
 # - Elimina espacio superior vacío en Dashboard, Mantenciones, Costos, Alertas, etc.
 # - Mantiene título y logo más arriba para aprovechar pantalla al 100%.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .main-fixed-header{
@@ -11670,9 +11622,7 @@ div[data-testid="stVerticalBlock"]{gap: 0.32rem !important;}
         max-width: 104px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -11681,7 +11631,7 @@ div[data-testid="stVerticalBlock"]{gap: 0.32rem !important;}
 # - Deja un pequeño espacio entre título/logo y contenido.
 # - Compacta la zona Gastos Adicionales / Próximas Mantenciones.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .main-fixed-header{
@@ -11765,15 +11715,13 @@ div[data-testid="stVerticalBlock"]{gap: 0.24rem !important;}
         margin-bottom: 7px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
 # OVERRIDE VISUAL FINAL V5.9
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -11866,9 +11814,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button{
     text-align: center !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL SOLICITADO V6.0
@@ -11877,7 +11823,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button{
 # 3) Próximas mantenciones ordenadas, con tipografía uniforme y mejor espaciado.
 # 4) Gráfico de torta de Historial de Mantenciones encuadrado completo.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -12018,9 +11964,7 @@ div[data-testid="stPlotlyChart"]{
         font-size: 9.5px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
@@ -12032,7 +11976,7 @@ aplicar_ajustes_finales_ui()
 # - Botón menú solo con ícono.
 # - Separación segura de títulos/subtítulos para que no queden debajo de tablas, KPIs o tarjetas.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 section[data-testid="stSidebar"] .menu-toggle-wrap,section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"],section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] button{
@@ -12111,16 +12055,14 @@ section[data-testid="stSidebar"] .menu-toggle-wrap div[data-testid="stButton"] b
     overflow: visible !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V6.3
 # - Próximas Mantenciones dashboard con formato uniforme por equipo.
 # - Íconos centrados cuando el menú está minimizado.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .dashboard-proximas,.proximas-box{
@@ -12288,9 +12230,7 @@ body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wr
         font-size: 9.7px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -12298,7 +12238,7 @@ body:has(.menu-state-collapsed) section[data-testid="stSidebar"] .menu-toggle-wr
 # - Baja el cuadro Distribución de Costos en Dashboard Ejecutivo.
 # - Próximas Mantenciones en una fila uniforme por equipo.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .dashboard-costos-spacer{
@@ -12428,9 +12368,7 @@ st.markdown(
         font-size: 9.3px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -12438,7 +12376,7 @@ st.markdown(
 # - Distribución de Costos más abajo respecto a los KPI.
 # - Próximas Mantenciones: una fila limpia por equipo con Actual, Próxima y Faltan.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .dashboard-costos-spacer{
@@ -12570,9 +12508,7 @@ st.markdown(
         padding: 5px 5px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -12581,7 +12517,7 @@ st.markdown(
 # - Elimina barra blanca superior en Próximas Mantenciones.
 # - Próximas Mantenciones: una fila limpia por equipo, solo Actual/Próxima/Faltan.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -12724,9 +12660,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data
         padding: 5px 5px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -12734,7 +12668,7 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button,section[data
 # - Próximas Mantenciones dashboard: sin texto Próxima, lectura actual bajo equipo.
 # - Badge naranjo/rojo siempre dentro del cuadro.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 .dashboard-proximas-v68{
@@ -12860,9 +12794,7 @@ st.markdown(
         padding: 5px 5px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -12878,7 +12810,7 @@ _menu_pointer = "auto" if _menu_movil_abierto else "none"
 _boton_left = "calc(var(--mobile-menu-width) - 54px)" if _menu_movil_abierto else "max(10px, env(safe-area-inset-left))"
 _boton_bg = "#ef4444" if _menu_movil_abierto else "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
 
-st.markdown(
+st.html(
     f"""
 <style>
 .st-key-saivam_mobile_menu_control,div[class*="st-key-saivam_mobile_menu_control"]{{
@@ -13079,16 +13011,14 @@ html body [data-testid="stHorizontalBlock"]:has(.kpi-card)
         min-height: 145px !important;
     }}}}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V8.1 - MENÚ Y FILTROS MÁS COMPACTOS
 # Reduce moderadamente la separación vertical sin cambiar
 # el ancho, alto ni posición de los elementos seleccionados.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"]{
@@ -13114,9 +13044,7 @@ section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label{
     margin-bottom: 2px !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -13128,15 +13056,13 @@ section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label{
 # =========================================================
 # REFUERZO FINAL V9.1 - MARCA OFICIAL SIEMPRE VISIBLE
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {}
 @media  screen and (max-width: 1100px) {}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
@@ -13146,7 +13072,7 @@ st.markdown(
 # - Mayor separación entre marca superior y Resumen Ejecutivo.
 # - Filtros Equipo/Contrato y caja informativa desplazados hacia abajo.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"]{overscroll-behavior: none !important;}}
@@ -13169,16 +13095,14 @@ section[data-testid="stSidebar"] .menu-brand{
     margin-bottom: 10px !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
 # CORRECCIÓN FINAL V10.1 - SIDEBAR FIJO SIN CORTE SUPERIOR
 # Neutraliza desplazamientos antiguos que ocultaban la cabecera y filtros.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 html body section[data-testid="stSidebar"] .menu-panel-content{
@@ -13220,16 +13144,14 @@ html body section[data-testid="stSidebar"]::-webkit-scrollbar,html body section[
     display: none !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V10.2 - MARCA ARRIBA + ESPACIO ANTES DEL MENÚ
 # La marca queda anclada a la parte superior del sidebar y el espacio
 # se reserva debajo de ella, antes de "Resumen Ejecutivo".
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-panel-content{
@@ -13266,16 +13188,14 @@ html body section[data-testid="stSidebar"] .menu-top-gap{
         min-height: 34px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V10.3 - LOGO/CABECERA PEGADOS AL BORDE SUPERIOR
 # Fuerza la marca del menú a la parte superior real del viewport.
 # El espacio se conserva debajo de la cabecera, antes de los botones.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-panel-content{
@@ -13314,16 +13234,14 @@ html body section[data-testid="stSidebar"] .menu-top-gap{
         right: auto !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
 # AJUSTE FINAL V10.5 - CUATRO FILTROS COMPACTOS
 # Equipo + Contrato + Año + Mes con menor altura y separación.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 html body section[data-testid="stSidebar"] div[data-testid="stSelectbox"]{
@@ -13358,15 +13276,13 @@ html body section[data-testid="stSidebar"] .menu-filter-gap{
     min-height: 12px !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
 # AJUSTE FINAL - CRÉDITOS FIJOS AL PIE DEL MENÚ IZQUIERDO
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .sidebar-credit-footer{
@@ -13420,16 +13336,14 @@ html body section[data-testid="stSidebar"] .sidebar-credit-divider{
         margin: 7px 14px 6px 14px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 
 # =========================================================
 # AJUSTE FINAL - RECUADRO DE VERSION COMPACTO
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 html body section[data-testid="stSidebar"] .menu-footer-box{
@@ -13461,9 +13375,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,html body
         margin-bottom: 94px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -13484,7 +13396,7 @@ def aplicar_sello_agua_saivam():
 
     mime_sello = extension_mime(ruta_sello)
 
-    st.markdown(
+    st.html(
         f"""
 <style>
 [data-testid="stAppViewContainer"]::after{{
@@ -13509,9 +13421,7 @@ def aplicar_sello_agua_saivam():
         left: var(--menu-panel-width, 250px) !important;
     }}}}
 </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """)
 
 
 aplicar_sello_agua_saivam()
@@ -13523,7 +13433,7 @@ aplicar_sello_agua_saivam()
 # - Solo el recuadro de Versión permanece centrado.
 # - Evolución mensual queda compacta debajo de Costos por contrato.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] div[data-testid="stButton"]{
@@ -13548,14 +13458,12 @@ html body section[data-testid="stSidebar"] .menu-footer-box{
     min-height: 18px !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V2.6 - CENTRADO EXACTO DEL RECUADRO DE VERSIÓN
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body section[data-testid="stSidebar"] .menu-footer-box{
@@ -13567,9 +13475,7 @@ st.markdown(
         text-align: center !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -13578,7 +13484,7 @@ st.markdown(
 # - Mantiene los ítems alineados a la izquierda.
 # - Créditos al pie y Versión 2.6 centrada debajo de Ricardo Grez.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -13630,9 +13536,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,html body
     left: var(--menu-panel-width) !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -13640,7 +13544,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,html body
 # - Corrige el ancho flex heredado de ajustes anteriores.
 # - Reduce efectivamente la barra oscura izquierda.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -13666,9 +13570,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box{
     left: var(--sidebar-compact-width) !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V2.6 - SIDEBAR MÁS ANGOSTO + CONTENIDO AL COSTADO
@@ -13677,7 +13579,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box{
 # - Evita que la página principal quede debajo del menú fijo.
 # - Hace que el contenido use solamente el ancho disponible a la derecha.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -13724,9 +13626,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box{
     left: var(--sidebar-final-width) !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -13736,7 +13636,7 @@ html body section[data-testid="stSidebar"] .menu-footer-box{
 # - Evita que títulos, filtros, KPI, gráficos y tablas queden ocultos
 #   detrás del sidebar fijo al cambiar resolución o zoom del navegador.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 :root{
@@ -13749,9 +13649,7 @@ st.markdown(
     left: var(--sidebar-final-width) !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V2.8 - CONTENIDO MÁS ARRIBA EN TODAS LAS PÁGINAS
@@ -13759,7 +13657,7 @@ st.markdown(
 # - Aplica por igual a Resumen Ejecutivo, Equipos, Intervenciones y Documentación.
 # - Se declara al final para prevalecer sobre ajustes visuales anteriores.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body .main-fixed-header{
@@ -13779,9 +13677,7 @@ html body .main-fixed-header-spacer,html body .header-separador{
         padding: 0 !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -13790,7 +13686,7 @@ html body .main-fixed-header-spacer,html body .header-separador{
 # - Aplica a Resumen Ejecutivo, Equipos, Intervenciones y Documentación.
 # - Se declara al final para anular márgenes/paddings heredados de Streamlit.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body .main-fixed-header{
@@ -13810,9 +13706,7 @@ html body .main-fixed-header-spacer,html body .header-separador{
         padding: 0 !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V3.1 - AIRE ENTRE TÍTULO Y FILTROS
@@ -13820,7 +13714,7 @@ html body .main-fixed-header-spacer,html body .header-separador{
 #   y la primera fila de filtros/contenido.
 # - Aplica a Resumen Ejecutivo, Equipos, Intervenciones y Documentación.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body .main-fixed-header{
@@ -13830,9 +13724,7 @@ html body div[data-testid="stMain"] div[data-testid="stSelectbox"] > label,html 
         margin-top: 1px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL V3.2 - VERSIÓN COMPACTA SIN RECUADRO
@@ -13840,7 +13732,7 @@ html body div[data-testid="stMain"] div[data-testid="stSelectbox"] > label,html 
 # - Elimina borde, fondo y sombra del indicador de versión.
 # - Reduce tipografía y espaciado para dejarlo discreto.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 html body section[data-testid="stSidebar"] .menu-footer-box{
@@ -13867,16 +13759,14 @@ html body section[data-testid="stSidebar"] .menu-footer-box .menu-info,html body
     margin: 0 !important;
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # AJUSTE FINAL - LOGO SUPERIOR SAIVAM
 # - Fuerza el tamaño final después de todos los overrides anteriores.
 # - En escritorio queda al doble del ancho base de 116 px.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (min-width: 1101px) {html body .main-fixed-logo img,html body .header-logo-box img{
@@ -13886,9 +13776,7 @@ st.markdown(
         height: auto !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # MÓVIL V11.0 - NAVEGACIÓN SUPERIOR TIPO APP
@@ -13934,7 +13822,7 @@ def render_mobile_top_navigation():
                     st.rerun()
 
 
-st.markdown(
+st.html(
     """
 <style>
 .st-key-saivam_mobile_topnav,div[class*="st-key-saivam_mobile_topnav"]{
@@ -14082,9 +13970,7 @@ html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label{
     }
 html body section[data-testid="stMain"] [data-baseweb="select"] > div{border-radius: 8px !important;}}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -14094,7 +13980,7 @@ html body section[data-testid="stMain"] [data-baseweb="select"] > div{border-rad
 # - Convierte la navegación superior en una tira compacta y desplazable,
 #   similar a una barra de pestañas de aplicación móvil.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (max-width: 768px),
@@ -14182,9 +14068,7 @@ html body .mobile-app-subtitle{
         font-size: 8.5px !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -14194,7 +14078,7 @@ html body .mobile-app-subtitle{
 # - Elimina el espacio residual del encabezado de escritorio oculto, de modo
 #   que los filtros/títulos comiencen inmediatamente debajo del menú móvil.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (max-width: 768px),
@@ -14241,9 +14125,7 @@ html body section[data-testid="stMain"] div[data-testid="stElementContainer"]:ha
         padding: 0 !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -14253,7 +14135,7 @@ html body section[data-testid="stMain"] div[data-testid="stElementContainer"]:ha
 # - Compensa el espacio vertical que Streamlit sigue reservando antes del
 #   contenido de cada página, acercando filtros/KPI al menú superior.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (max-width: 768px),
@@ -14274,9 +14156,7 @@ html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label{
         padding-top: 0 !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -14286,7 +14166,7 @@ html body section[data-testid="stMain"] div[data-testid="stSelectbox"] label{
 # - Acerca el contenido real (filtros/KPI) inmediatamente bajo el menú.
 # - No altera escritorio ni tablet.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (max-width: 768px),
@@ -14323,9 +14203,7 @@ html body .st-key-saivam_mobile_page_content [data-testid="stHorizontalBlock"],h
         margin-top: 0 !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # MÓVIL V11.5 - SEPARACIÓN FINAL CABECERA / PESTAÑAS
@@ -14333,7 +14211,7 @@ html body .st-key-saivam_mobile_page_content [data-testid="stHorizontalBlock"],h
 # - Baja físicamente los 4 botones respecto de la tarjeta azul.
 # - Deja un espacio mínimo visible y conserva compacto el contenido inferior.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media  screen and (max-width: 768px),
@@ -14361,9 +14239,7 @@ html body .st-key-saivam_mobile_topnav,html body div[class*="st-key-saivam_mobil
         padding-bottom: 0 !important;
     }}
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 # =========================================================
 # SAIVAM 4.0 - DISEÑO ESTRUCTURAL REAL, SIN SUPERPOSICIONES
@@ -14371,7 +14247,7 @@ html body .st-key-saivam_mobile_topnav,html body div[class*="st-key-saivam_mobil
 # Ambos permanecen en el flujo normal de flexbox. NO position:fixed,
 # NO margin-left manual y NO porcentajes calculados con 100vw.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 @media screen and (min-width: 1101px) {
@@ -14767,9 +14643,7 @@ st.markdown(
     }
 }
 </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
 # =========================================================
@@ -14780,7 +14654,7 @@ st.markdown(
 # siguen aplicándose, pero no generan separación encima del título.
 # NO afecta contenido real, filtros, gráficos ni la columna de menú.
 # =========================================================
-st.markdown(
+st.html(
     """
 <style>
 /* Escritorio/tablet: evita huecos causados por contenedores CSS sin contenido.
@@ -14814,8 +14688,52 @@ st.markdown(
   }
 }
 </style>
-    """,
-    unsafe_allow_html=True,
+    """)
+
+
+# =========================================================
+# SAIVAM V6 - ENCABEZADO SIN ESPACIO ARTIFICIAL
+# Cambio principal: los 64 bloques que contenían ÚNICAMENTE CSS se
+# inyectan ahora con st.html, que no reserva una fila de Markdown.
+# Se conserva el diseño en columnas independientes de la V4.
+# =========================================================
+st.html(
+    """
+<style>
+@media screen and (min-width: 1101px) {
+    html body [data-testid="stMain"] [data-testid="stMainBlockContainer"] {
+        padding: 16px 22px 32px !important;
+    }
+    html body [data-testid="stMain"] .main-fixed-header {
+        min-height: 72px !important;
+        height: auto !important;
+        padding: 0 4px 8px !important;
+        margin: 0 0 12px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    html body [data-testid="stMain"] .main-fixed-header-spacer {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+@media screen and (min-width: 769px) and (max-width: 1100px) {
+    html body [data-testid="stMain"] [data-testid="stMainBlockContainer"] {
+        padding-top: 15px !important;
+    }
+}
+/* Solo estilos: se ocultan sus elementos host si una versión de Streamlit
+   aún les da altura. No se ocultan los textos, filtros ni gráficos. */
+html body [data-testid="stMain"] div[data-testid="stElementContainer"]:has(> div[data-testid="stHtml"]:has(> style:only-child)) {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+</style>
+    """
 )
 
 
